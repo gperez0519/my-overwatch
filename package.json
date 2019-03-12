@@ -1,0 +1,26 @@
+{
+  "name": "scary-stories",
+  "version": "1.0.0",
+  "description": "Skill to tell scary stories to anyone that wishes to listen",
+  "main": "index.js",
+  "dependencies": {
+    "ask-sdk-core": "^2.5.1",
+    "ask-sdk-model": "^1.12.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "scary",
+    "stories",
+    "fiction",
+    "monsters",
+    "thrillers",
+    "spooky",
+    "storytellers",
+    "story"
+  ],
+  "author": "Gabriel Perez",
+  "license": "ISC"
+}
