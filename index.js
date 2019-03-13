@@ -4,16 +4,20 @@
 const Alexa = require('ask-sdk-core');
 
 const appName = 'Scary Stories';
-const LIGHTNING_SOUND = "";
+const LIGHTNING_SOUND_ONE = "<audio src='soundbank://soundlibrary/nature/amzn_sfx_lightning_strike_01'/>";
+const LIGHTNING_SOUND_TWO = "<audio src='soundbank://soundlibrary/nature/amzn_sfx_lightning_strike_02'/>";
+const RAIN_THUNDER = "<audio src='soundbank://soundlibrary/nature/amzn_sfx_rain_thunder_01'/>";
+const GHOST_SOUND_ONE = "<audio src='soundbank://soundlibrary/magic/amzn_sfx_ghost_spooky_01'/>";
 const TWIG_BREAK_SOUND = "";
 
 /**  THE STORIES   **/
 
-const GHOST_STORY = "It all started on a winter night in 1978."
-    + " A couple of friends of mine decided to finally suck it up and spend the night at the old miller's house,"
-    + " the abandoned mansion at the top of the hill. We have been talking about breaking into that place for the longest time ever since we were children...but we were all too scared. After some drinking"
-    + " and seeing as the girls were around us, we decided that it would be a good opportunity to scare the girls so that they might too scared and ask to protect them, then"
-    + " they would be eating out of our hands...at least that it how it went in our heads...to be continued...";
+const GHOST_STORY = "<voice name='Joey'>" + LIGHTNING_SOUND_ONE + "It all started on a cold rainy night in 1978."
+    + RAIN_THUNDER + " A couple of friends of mine decided to finally suck it up and spend the night at the old miller's house,"
+    + " the abandoned mansion at the top of the hill. " + GHOST_SOUND_ONE + "We have been talking about breaking into that place for the longest time ever since we were children...but we were all too scared. "
+    + LIGHTNING_SOUND_TWO + "After some drinking"
+    + " and seeing as the girls were around us, we decided that it would be a good opportunity to scare the girls so that they might be too scared and ask to protect them, then"
+    + " they would be eating out the palm of our hands...or at least that is how it played out in our heads...to be continued...</voice>";
 
 
 let card = 'Something went wrong. Please try again.';
