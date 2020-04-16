@@ -1,30 +1,30 @@
-/* eslint-disable  func-names */
-/* eslint-disable  no-console */
-
 const Alexa = require('ask-sdk-core');
+const ow = require('overwatch-stats-api');
 
-const appName = 'Scary Stories';
-const LIGHTNING_SOUND_ONE = "<audio src='soundbank://soundlibrary/nature/amzn_sfx_lightning_strike_01'/>";
-const LIGHTNING_SOUND_TWO = "<audio src='soundbank://soundlibrary/nature/amzn_sfx_lightning_strike_02'/>";
-const RAIN_THUNDER = "<audio src='soundbank://soundlibrary/nature/amzn_sfx_rain_thunder_01'/>";
-const GHOST_SOUND_ONE = "<audio src='soundbank://soundlibrary/magic/amzn_sfx_ghost_spooky_01'/>";
-const TWIG_BREAK_SOUND = "";
+const appName = 'My Overwatch';
 
-/**  THE STORIES   **/
+/** OVERWATCH GENERAL RESPONSES **/
+const responses = {
+    WELCOME: "Welcome to My Overwatch! Please tell us your battletag and we will give you an update on your stats. Make sure you say the full battle tag with username, hashtag and number",
+    GOODBYE: "Thank you for choosing My Overwatch! Always thrive to attain Grand Master if you haven't already. Good luck in your battles! Come back again for an updated look at your Overwatch profile and some tips to help in your gameplay to get you to the top!",
+    DEFAULT_ERROR_BATTLETAG: "Sorry, we could not find that battletag. Please repeat the full battle tag. For example, say soldier#1337",
+    DEFAULT_ERROR_PLATFORM: "Sorry, we did not recognize that platform. Please say either Xbox, PC, or Playstation.",
+    PLATFORM_INQUIRY: "Great! Which platform do you want to get your stats for? Xbox, PC or Playstation?"
+}
 
-const GHOST_STORY = "<voice name='Joey'>" + LIGHTNING_SOUND_ONE + "It all started on a cold rainy night in 1978."
-    + RAIN_THUNDER + " A couple of friends of mine decided to finally suck it up and spend the night at the old miller's house,"
-    + " the abandoned mansion at the top of the hill. " + GHOST_SOUND_ONE + "We have been talking about breaking into that place for the longest time ever since we were children...but we were all too scared. "
-    + LIGHTNING_SOUND_TWO + "After some drinking"
-    + " and seeing as the girls were around us, we decided that it would be a good opportunity to scare the girls so that they might be too scared and ask to protect them, then"
-    + " they would be eating out the palm of our hands...or at least that is how it played out in our heads...to be continued...</voice>";
+/** COOL OVERWATCH SOUND EFFECTS **/
+const heroes = {
+    SOLDIER76: "test value",
+
+}
 
 
 let card = 'Something went wrong. Please try again.';
 let outputSpeech = 'Something went wrong. Please try again.';
-let retrievedToken = '';
-let apiEndPoint = '';
-let apiPhoneNumEndPoint = '/v2/accounts/~current/settings/Profile.mobileNumber';
+
+// OVERWATCH API STATS REQUIRED PARAMETERS
+let battletag = '';
+let platform = '';
 
 //code for the handlers
 const LaunchRequestHandler = {
@@ -32,63 +32,113 @@ const LaunchRequestHandler = {
         return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
     },
     handle(handlerInput) {
-        // REQUEST THE API ACCESS TOKEN FOR CUSTOMER PROFILE API
-        retrievedToken = handlerInput.requestEnvelope.context.System.apiAccessToken;
 
-        // GET THE MAIN ALEXA API ENDPOINT PREFIX EX: https://api.amazonalexa.com
-        apiEndPoint = handlerInput.requestEnvelope.context.System.apiEndpoint;
+        // welcome message
+        let welcomeText = responses.WELCOME;
 
-        //welcome message
-        let speechText = 'Hello there fellow spooksters and welcome to your source of scary stories! Ask me for a scary story by saying something like, tell me a story about ghosts or tell me a scary story';
-        //speechText = `API EndPoint is ${apiEndPoint}`;
+        // welcome screen message
+        let displayText = responses.WELCOME;
 
-        //welcome screen message
-        let displayText = "Welcome to Scary Stories!";
         return handlerInput.responseBuilder
-            .speak(speechText)
-            .reprompt(speechText)
+            .speak(welcomeText)
+            .reprompt(welcomeText)
             .withSimpleCard(appName, displayText)
             .getResponse();
     }
 }; // end of launch request handler
 
-
-
-const GetScaryStoryIntentHandler = {
+const GetBattleTagIntentHandler = {
     canHandle(handlerInput) {
         return (handlerInput.requestEnvelope.request.type === 'IntentRequest'
-            && handlerInput.requestEnvelope.request.intent.name === 'GetScaryStoryIntent');
+            && handlerInput.requestEnvelope.request.intent.name === 'GetBattleTagIntent');
     },
-    async handle(handlerInput) {
-        outputSpeech = 'Sorry, we did not understand your last command. You can say things like, tell me a story about ghosts or tell me a scary story';
-        let promptUser = 'Would you like to hear another story?';
+    handle(handlerInput) {
+        outputSpeech = responses.DEFAULT_ERROR_BATTLETAG;
+
         let intent = handlerInput.requestEnvelope.request.intent;
-        let category = intent.slots.category.value;
+        let battletagVal = intent.slots.battletag.value;
 
-        // REQUEST THE API ACCESS TOKEN FOR CUSTOMER PROFILE API
-        retrievedToken = handlerInput.requestEnvelope.context.System.apiAccessToken;
-
-        // GET THE MAIN ALEXA API ENDPOINT PREFIX EX: https://api.amazonalexa.com
-        apiEndPoint = handlerInput.requestEnvelope.context.System.apiEndpoint;
-
-        process.env.TZ = 'America/New_York';
-
-        // DELIVER THE RIGHT STORY BASED ON THE CATEGORY
-        if (category.toLowerCase() == "ghosts" || category.toLowerCase() == "ghost" || category.toLowerCase() == "ghost story" || category.toLowerCase() == "ghost stories") {
-            outputSpeech = GHOST_STORY;
-        }
-        else {
-            outputSpeech = "You got a generic scary story. Ask us about the ghost stories."
+        if (battletagVal) {
+            battletag = battletagVal;
+            outputSpeech = responses.PLATFORM_INQUIRY;
+        } else {
+            outputSpeech = responses.DEFAULT_ERROR_BATTLETAG;
         }
 
         return handlerInput.responseBuilder
             .speak(outputSpeech)
-            .reprompt(promptUser)
+            .reprompt(outputSpeech)
+            .getResponse();
+
+    },
+};
+
+const GetPlatformIntentHandler = {
+    canHandle(handlerInput) {
+        return (handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && handlerInput.requestEnvelope.request.intent.name === 'GetPlatformIntent');
+    },
+    handle(handlerInput) {
+        outputSpeech = responses.DEFAULT_ERROR_PLATFORM;
+
+        let intent = handlerInput.requestEnvelope.request.intent;
+        let platformVal = intent.slots.platform.value;
+
+        // SET THE PLATFORM TO THE OVERWATCH STATS API PARAMETER TYPE EITHER pc, xbl or psn
+        if (platformVal.toLowerCase() == "xbox") {
+            platform = "xbl";
+        } else if (platformVal.toLowerCase() == "pc") {
+            platform = "pc";
+        } else if (platformVal.toLowerCase() == "playstation") {
+            platform = "psn";
+        }
+
+        return handlerInput.responseBuilder
+            .speak(outputSpeech)
+            .reprompt(outputSpeech)
             //.withStandardCard(appName, card)
             .getResponse();
 
     },
 };
+
+const GetStatsIntentHandler = {
+    canHandle(handlerInput) {
+        return (handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && handlerInput.requestEnvelope.request.intent.name === 'GetStatsIntent');
+    },
+    handle(handlerInput) {
+        outputSpeech = responses.DEFAULT_ERROR_BATTLETAG;
+
+        // CALL THE OVERWATCH STATS API TO GET THE PROFILE INFORMATION FOR THE PASSED BATTLETAG WITH PLATFORM
+        if (battletag && platform) {
+
+            console.log("Captured Battletag: " . battletag);
+
+            // REPLACE THE HASHTAG WITH DASH REQUIRED FOR API
+            battletag = battletag.replace("#", "-");
+
+            // CAPITALIZE FIRST LETTER OF BATTLETAG AS REQUIRED FOR BATTLETAG   
+            battletag = battletag.charAt(0).toUpperCase() + battletag.slice(1);
+
+            console.log("Battletag translated: " . battletag);
+
+           /*  (async () => {
+                    const stats = await ow.getAllStats(battletag, platform);
+                    console.log(JSON.stringify(stats));
+                })(); */
+            
+        }
+        
+        return handlerInput.responseBuilder
+            .speak(outputSpeech)
+            .reprompt(outputSpeech)
+            //.withStandardCard(appName, card)
+            .getResponse();
+
+    },
+};
+
 
 const HelpIntentHandler = {
     canHandle(handlerInput) {
@@ -96,7 +146,7 @@ const HelpIntentHandler = {
             && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
     },
     handle(handlerInput) {
-        const speechText = 'Ask me for a scary story by saying something like, tell me a story about ghosts or tell me a scary story';
+        const speechText = '';
 
         return handlerInput.responseBuilder
             .speak(speechText)
@@ -111,7 +161,7 @@ const YesIntentHandler = {
             && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.YesIntent';
     },
     handle(handlerInput) {
-        const speechText = 'Great! What kind of story would you like?';
+        const speechText = '';
 
         return handlerInput.responseBuilder
             .speak(speechText)
@@ -127,8 +177,7 @@ const CancelAndStopIntentHandler = {
                 || handlerInput.requestEnvelope.request.intent.name === 'AMAZON.StopIntent');
     },
     handle(handlerInput) {
-        //const speechText = 'Thank you for using the My Westmed Alexa Skill. We look forward to improving your experience in ensuring your wellness presently and into the future. Goodbye!';
-        const speechText = 'Ha Ha Ha! Was it too scary for you? Awww, well, visit us next time for more scary stories and remember...always check under your bed and in your closet! Ha Ha Ha Ha Ha!';
+        const speechText = responses.GOODBYE;
 
         return handlerInput.responseBuilder
             .speak(speechText)
@@ -181,7 +230,9 @@ const skillBuilder = Alexa.SkillBuilders.custom();
 exports.handler = skillBuilder
     .addRequestHandlers(
         LaunchRequestHandler,
-        GetScaryStoryIntentHandler,
+        GetBattleTagIntentHandler,
+        GetPlatformIntentHandler,
+        GetStatsIntentHandler,
         HelpIntentHandler,
         YesIntentHandler,
         CancelAndStopIntentHandler,
