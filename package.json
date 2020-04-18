@@ -4,8 +4,8 @@
   "description": "Skill to tell scary stories to anyone that wishes to listen",
   "main": "index.js",
   "dependencies": {
-    "ask-sdk-core": "^2.5.1",
-    "ask-sdk-model": "^1.12.0",
+    "ask-sdk-core": "^2.8.0",
+    "ask-sdk-model": "^1.28.0",
     "overwatch-stats-api": "^2.0.6"
   },
   "devDependencies": {},
