@@ -5,7 +5,8 @@ const appName = 'My Overwatch';
 
 /** OVERWATCH GENERAL RESPONSES **/
 const responses = {
-    WELCOME: "Welcome to My Overwatch! Please tell us your battletag and we will give you an update on your stats. Make sure you say the full battle tag with username, hashtag and number",
+    WELCOME: "Welcome to My Overwatch! We can tell you your stats of your Overwatch progress. Say get my stats to hear your stats of your Overwatch profile.",
+    BATTLETAG_NUMBER_INQUIRY: "Perfect! Now, please read off the number portion of your battle tag after the hashtag symbol.",
     GOODBYE: "Thank you for choosing My Overwatch! Always thrive to attain Grand Master if you haven't already. Good luck in your battles! Come back again for an updated look at your Overwatch profile and some tips to help in your gameplay to get you to the top!",
     DEFAULT_ERROR_BATTLETAG: "Sorry, we could not find that battletag. Please repeat the full battle tag. For example, say soldier#1337",
     DEFAULT_ERROR_PLATFORM: "Sorry, we did not recognize that platform. Please say either Xbox, PC, or Playstation.",
@@ -47,42 +48,24 @@ const LaunchRequestHandler = {
     }
 }; // end of launch request handler
 
-const GetBattleTagIntentHandler = {
+const GetMyStatsIntentHandler = {
     canHandle(handlerInput) {
         return (handlerInput.requestEnvelope.request.type === 'IntentRequest'
-            && handlerInput.requestEnvelope.request.intent.name === 'GetBattleTagIntent');
+            && handlerInput.requestEnvelope.request.intent.name === 'GetMyStatsIntent');
     },
     handle(handlerInput) {
         outputSpeech = responses.DEFAULT_ERROR_BATTLETAG;
-
         let intent = handlerInput.requestEnvelope.request.intent;
-        let battletagVal = intent.slots.battletag.value;
 
-        if (battletagVal) {
-            battletag = battletagVal;
-            outputSpeech = responses.PLATFORM_INQUIRY;
-        } else {
-            outputSpeech = responses.DEFAULT_ERROR_BATTLETAG;
-        }
-
-        return handlerInput.responseBuilder
-            .speak(outputSpeech)
-            .reprompt(outputSpeech)
-            .getResponse();
-
-    },
-};
-
-const GetPlatformIntentHandler = {
-    canHandle(handlerInput) {
-        return (handlerInput.requestEnvelope.request.type === 'IntentRequest'
-            && handlerInput.requestEnvelope.request.intent.name === 'GetPlatformIntent');
-    },
-    handle(handlerInput) {
-        outputSpeech = responses.DEFAULT_ERROR_PLATFORM;
-
-        let intent = handlerInput.requestEnvelope.request.intent;
         let platformVal = intent.slots.platform.value;
+        let battletag_username = intent.slots.battletag_username.value;
+        let battletag_number = intent.slots.battletag_number.value;
+
+        let profileInfoRetrieved = false;
+
+        console.log("Captured Battletag username: " + battletag_username);
+        console.log("Captured Battletag number: " + battletag_number);
+        console.log("Captured Platform " + platform);
 
         // SET THE PLATFORM TO THE OVERWATCH STATS API PARAMETER TYPE EITHER pc, xbl or psn
         if (platformVal.toLowerCase() == "xbox") {
@@ -93,41 +76,26 @@ const GetPlatformIntentHandler = {
             platform = "psn";
         }
 
-        return handlerInput.responseBuilder
-            .speak(outputSpeech)
-            .reprompt(outputSpeech)
-            //.withStandardCard(appName, card)
-            .getResponse();
-
-    },
-};
-
-const GetStatsIntentHandler = {
-    canHandle(handlerInput) {
-        return (handlerInput.requestEnvelope.request.type === 'IntentRequest'
-            && handlerInput.requestEnvelope.request.intent.name === 'GetStatsIntent');
-    },
-    handle(handlerInput) {
-        outputSpeech = responses.DEFAULT_ERROR_BATTLETAG;
-
         // CALL THE OVERWATCH STATS API TO GET THE PROFILE INFORMATION FOR THE PASSED BATTLETAG WITH PLATFORM
-        if (battletag && platform) {
+        if (battletag_username && battletag_number && platform) {
 
-            console.log("Captured Battletag: " . battletag);
+            // CAPITALIZE FIRST LETTER OF BATTLETAG USERNAME AS REQUIRED FOR BATTLETAG   
+            battletag_username = battletag_username.charAt(0).toUpperCase() + battletag_username.slice(1);
 
-            // REPLACE THE HASHTAG WITH DASH REQUIRED FOR API
-            battletag = battletag.replace("#", "-");
+            // CONCAT USERNAME DASH AND NUMBER TO GET THE STATS
+            battletag = battletag_username + "-" + battletag_number;
 
-            // CAPITALIZE FIRST LETTER OF BATTLETAG AS REQUIRED FOR BATTLETAG   
-            battletag = battletag.charAt(0).toUpperCase() + battletag.slice(1);
-
-            console.log("Battletag translated: " . battletag);
-
-           /*  (async () => {
+           (async () => {
                     const stats = await ow.getAllStats(battletag, platform);
                     console.log(JSON.stringify(stats));
-                })(); */
+                    profileInfoRetrieved = true;
+                })();
             
+        } 
+        if (profileInfoRetrieved) {
+            outputSpeech = `Profile info retrieved successfully! We heard you say ${platformVal} as the platform. ${battletag_username} as the username of the battletag and ${battletag_number} as the number in the battletag.`;
+        } else {
+            outputSpeech = `Profile info retrieval failed! We heard you say ${platformVal} as the platform. ${battletag_username} as the username of the battletag and ${battletag_number} as the number in the battletag.`;
         }
         
         return handlerInput.responseBuilder
@@ -230,9 +198,7 @@ const skillBuilder = Alexa.SkillBuilders.custom();
 exports.handler = skillBuilder
     .addRequestHandlers(
         LaunchRequestHandler,
-        GetBattleTagIntentHandler,
-        GetPlatformIntentHandler,
-        GetStatsIntentHandler,
+        GetMyStatsIntentHandler,
         HelpIntentHandler,
         YesIntentHandler,
         CancelAndStopIntentHandler,
