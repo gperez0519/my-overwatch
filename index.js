@@ -1,4 +1,6 @@
 const Alexa = require('ask-sdk-core');
+
+// Overwatch Stats API - NPM Package URL: https://www.npmjs.com/package/overwatch-stats-api
 const ow = require('overwatch-stats-api');
 
 const appName = 'My Overwatch';
@@ -7,6 +9,7 @@ const appName = 'My Overwatch';
 const responses = {
     WELCOME: "Welcome to My Overwatch! We can tell you your stats of your Overwatch progress. Say get my stats to hear your stats of your Overwatch profile.",
     PLEASE_WAIT: "Please wait while we try to retrieve that profile information",
+    PLACEMENTS_NOT_COMPLETE: "You have not placed yet in the Competitive season. Make sure you do so in order to hear about your ranking info.",
     BATTLETAG_NUMBER_INQUIRY: "Perfect! Now, please read off the number portion of your battle tag after the hashtag symbol.",
     GOODBYE: "Thank you for choosing My Overwatch! Always thrive to attain Grand Master if you haven't already. Good luck in your battles! Come back again for an updated look at your Overwatch profile and some tips to help in your gameplay to get you to the top!",
     DEFAULT_ERROR_BATTLETAG: "Sorry, we could not find that battletag. Please repeat the battle tag username before the hashtag. For example, say illusion or elite",
@@ -14,9 +17,19 @@ const responses = {
     PLATFORM_INQUIRY: "Great! Which platform do you want to get your stats for? Xbox, PC or Playstation?"
 }
 
+/** CUSTOM FUNCTIONS **/
+function isEmpty(obj) {
+    for(var key in obj) {
+        if(obj.hasOwnProperty(key))
+            return false;
+    }
+    return true;
+}
+
 /** COOL OVERWATCH SOUND EFFECTS **/
-const heroes = {
-    SOLDIER76: "test value",
+const hero_sound = {
+    SOLDIER76: "",
+    HANZO: "https://my-overwatch.s3.amazonaws.com/Hanzo.mp3"
 }
 
 
@@ -60,6 +73,7 @@ const GetMyStatsIntentHandler = {
         let platformVal = intent.slots.platform.value;
         let battletag_username = intent.slots.battletag_username.value;
         let battletag_number = intent.slots.battletag_number.value;
+        let hero_sound = '';
 
         let profileInfoRetrieved = false;
 
@@ -97,14 +111,37 @@ const GetMyStatsIntentHandler = {
             console.log("Full translated battletag: " + battletag);
             console.log("Platform recognized: " + platform);
 
-            const stats = await ow.getAllStats(battletag, platform);
-            console.log(JSON.stringify(stats));
-            profileInfoRetrieved = true;
+            try {
 
-            if (profileInfoRetrieved) {
-                outputSpeech = `Profile info retrieved successfully! Hello ${battletag_username}! You are currently ranked ${stats.rank.damage.sr > 2000 ? 'gold!' : 'not gold yet'}`;
-            } else {
-                outputSpeech = `Profile info retrieval failed! We heard you say ${platformVal} as the platform. ${battletag_username} as the username of the battletag and ${battletag_number} as the number in the battletag.`;
+                // get all stats for the given user
+                const stats = await ow.getAllStats(battletag, platform);
+
+                // get most played heroes per given user
+                const mostPlayed = await ow.getMostPlayed(battletag, platform);
+
+                // get the rank if user has completed their placements
+                outputSpeech = `Profile info retrieved successfully! 
+                                    Hello ${battletag_username}! ${!isEmpty(stats.rank) ?
+                                        (stats.rank.damage.sr > 4000
+                                        ? 'You are currently ranked Grandmaster!' 
+                                        : stats.rank.damage.sr < 3999 && stats.rank.damage.sr > 3500
+                                        ? 'You are currently ranked Master!'
+                                        : stats.rank.damage.sr < 3499 && stats.rank.damage.sr > 3000
+                                        ? 'You are currently ranked Diamond!'
+                                        : stats.rank.damage.sr < 2999 && stats.rank.damage.sr > 2500
+                                        ? 'You are currently ranked Platinum!'
+                                        : stats.rank.damage.sr < 2499 && stats.rank.damage.sr > 2000
+                                        ? 'You are currently ranked Gold!'
+                                        : stats.rank.damage.sr < 1999 && stats.rank.damage.sr > 1500
+                                        ? 'You are currently ranked Silver!'
+                                        : 'You are currently ranked Bronze!') : responses.PLACEMENTS_NOT_COMPLETE
+                                    }
+                                    You are level ${stats.level} 
+                                    and prestige level ${stats.prestige}.
+                                    Your most played hero is ${!isEmpty(mostPlayed) ? Object.keys(mostPlayed.quickplay)[0] : ""}`;
+                console.log(JSON.stringify(stats));
+            } catch (error) {
+                outputSpeech = `Error occurred: ${error}. Profile info retrieval failed! We heard you say ${platformVal} as the platform. ${battletag_username} as the username of the battletag and ${battletag_number} as the number in the battletag.`;
             }
             
         } 
