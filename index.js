@@ -18,7 +18,7 @@ const responses = {
 }
 
 /** CUSTOM FUNCTIONS **/
-function isEmpty(obj) {
+function isObjectEmpty(obj) {
     for(var key in obj) {
         if(obj.hasOwnProperty(key))
             return false;
@@ -121,7 +121,7 @@ const GetMyStatsIntentHandler = {
 
                 // get the rank if user has completed their placements
                 outputSpeech = `Profile info retrieved successfully! 
-                                    Hello ${battletag_username}! ${!isEmpty(stats.rank) ?
+                                    Hello ${battletag_username}! ${!isObjectEmpty(stats.rank) ?
                                         (stats.rank.damage.sr > 4000
                                         ? 'You are currently ranked Grandmaster!' 
                                         : stats.rank.damage.sr < 3999 && stats.rank.damage.sr > 3500
