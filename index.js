@@ -8,7 +8,11 @@ const appName = 'My Overwatch';
 /** OVERWATCH GENERAL RESPONSES **/
 const responses = {
     WELCOME: "Welcome to My Overwatch! We can tell you your stats of your Overwatch progress. Say get my stats to hear your stats of your Overwatch profile.",
+<<<<<<< HEAD
     TOP_MENU: "Great! We can tell you your stats of your Overwatch progress. Say get my stats to hear your stats of your Overwatch profile.",
+=======
+    OVERWATCH_SERVICE_UNAVAILABLE: "Oh no! The My Overwatch service is not available at the moment. Please try again later.",
+>>>>>>> 8c5710bd290842eec87da0c43e9a62edf434b905
     PLEASE_WAIT: "Please wait while we try to retrieve that profile information",
     PLACEMENTS_NOT_COMPLETE: "You have not placed yet in the Competitive season. Make sure you do so in order to hear about your ranking info.",
     BATTLETAG_NUMBER_INQUIRY: "Perfect! Now, please read off the number portion of your battle tag after the hashtag symbol.",
@@ -22,8 +26,8 @@ const responses = {
 
 /** CUSTOM FUNCTIONS **/
 function isObjectEmpty(obj) {
-    for(var key in obj) {
-        if(obj.hasOwnProperty(key))
+    for (var key in obj) {
+        if (obj.hasOwnProperty(key))
             return false;
     }
     return true;
@@ -98,7 +102,7 @@ const GetMyStatsIntentHandler = {
         } else if (platformVal.toLowerCase() == "playstation") {
             platform = "psn";
         }
-        
+
         // CALL THE OVERWATCH STATS API TO GET THE PROFILE INFORMATION FOR THE PASSED BATTLETAG WITH PLATFORM
         if (battletag_username && battletag_number && platform) {
 
@@ -119,34 +123,39 @@ const GetMyStatsIntentHandler = {
                 // get most played heroes per given user
                 const mostPlayed = await ow.getMostPlayed(battletag, platform);
 
-                // get the rank if user has completed their placements
-                outputSpeech = `Profile info retrieved successfully! 
-                                    Hello ${battletag_username}! ${!isObjectEmpty(stats.rank) ?
-                                        (stats.rank.damage.sr > 4000
-                                        ? 'You are currently ranked Grandmaster!' 
-                                        : stats.rank.damage.sr < 3999 && stats.rank.damage.sr > 3500
-                                        ? 'You are currently ranked Master!'
-                                        : stats.rank.damage.sr < 3499 && stats.rank.damage.sr > 3000
+                if (isObjectEmpty(mostPlayed)) {
+                    outputSpeech = responses.OVERWATCH_SERVICE_UNAVAILABLE;
+                } else {
+                    // get the rank if user has completed their placements
+                    outputSpeech = `Profile info retrieved successfully! 
+Hello ${battletag_username}! ${!isObjectEmpty(stats.rank) ?
+                            (stats.rank.damage.sr > 4000
+                                ? 'You are currently ranked Grandmaster!'
+                                : stats.rank.damage.sr < 3999 && stats.rank.damage.sr > 3500
+                                    ? 'You are currently ranked Master!'
+                                    : stats.rank.damage.sr < 3499 && stats.rank.damage.sr > 3000
                                         ? 'You are currently ranked Diamond!'
                                         : stats.rank.damage.sr < 2999 && stats.rank.damage.sr > 2500
-                                        ? 'You are currently ranked Platinum!'
-                                        : stats.rank.damage.sr < 2499 && stats.rank.damage.sr > 2000
-                                        ? 'You are currently ranked Gold!'
-                                        : stats.rank.damage.sr < 1999 && stats.rank.damage.sr > 1500
-                                        ? 'You are currently ranked Silver!'
-                                        : 'You are currently ranked Bronze!') : responses.PLACEMENTS_NOT_COMPLETE
-                                    }
-                                    You are level ${stats.level} 
-                                    and prestige level ${stats.prestige}.
-                                    Your most played hero is ${!isEmpty(mostPlayed) ? Object.keys(mostPlayed.quickplay)[0] : ""}`;
-                console.log(JSON.stringify(stats));
+                                            ? 'You are currently ranked Platinum!'
+                                            : stats.rank.damage.sr < 2499 && stats.rank.damage.sr > 2000
+                                                ? 'You are currently ranked Gold!'
+                                                : stats.rank.damage.sr < 1999 && stats.rank.damage.sr > 1500
+                                                    ? 'You are currently ranked Silver!'
+                                                    : 'You are currently ranked Bronze!') : responses.PLACEMENTS_NOT_COMPLETE
+                        }
+You are level ${stats.level} 
+and prestige level ${stats.prestige}.
+Your most played hero is ${!isObjectEmpty(mostPlayed) ? Object.keys(mostPlayed.quickplay)[0] : ""}`;
+                    console.log(JSON.stringify(stats));
+                }
+
             } catch (error) {
                 outputSpeech = `Error occurred: ${error}. Profile info retrieval failed! We heard you say ${platformVal} as the platform. ${battletag_username} as the username of the battletag and ${battletag_number} as the number in the battletag.`;
             }
-            
-        } 
-        
-        
+
+        }
+
+
         return handlerInput.responseBuilder
             .speak(`${outputSpeech} ${responses.ANYTHING_ELSE}`)
             .reprompt(`${responses.PLEASE_REPEAT} ${responses.ANYTHING_ELSE}`)
@@ -160,25 +169,25 @@ function callDirectiveService(handlerInput) {
     // Call Alexa Directive Service.
     const requestEnvelope = handlerInput.requestEnvelope;
     const directiveServiceClient = handlerInput.serviceClientFactory.getDirectiveServiceClient();
-  
+
     const requestId = requestEnvelope.request.requestId;
     const endpoint = requestEnvelope.context.System.apiEndpoint;
     const token = requestEnvelope.context.System.apiAccessToken;
-  
+
     // build the progressive response directive
     const directive = {
-      header: {
-        requestId,
-      },
-      directive: {
-        type: 'VoicePlayer.Speak',
-        speech: `${responses.PLEASE_WAIT}`,
-      },
+        header: {
+            requestId,
+        },
+        directive: {
+            type: 'VoicePlayer.Speak',
+            speech: `${responses.PLEASE_WAIT}`,
+        },
     };
-  
+
     // send directive
     return directiveServiceClient.enqueue(directive, endpoint, token);
-  }
+}
 
 
 const HelpIntentHandler = {
