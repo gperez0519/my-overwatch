@@ -8,13 +8,16 @@ const appName = 'My Overwatch';
 /** OVERWATCH GENERAL RESPONSES **/
 const responses = {
     WELCOME: "Welcome to My Overwatch! We can tell you your stats of your Overwatch progress. Say get my stats to hear your stats of your Overwatch profile.",
+    TOP_MENU: "Great! We can tell you your stats of your Overwatch progress. Say get my stats to hear your stats of your Overwatch profile.",
     PLEASE_WAIT: "Please wait while we try to retrieve that profile information",
     PLACEMENTS_NOT_COMPLETE: "You have not placed yet in the Competitive season. Make sure you do so in order to hear about your ranking info.",
     BATTLETAG_NUMBER_INQUIRY: "Perfect! Now, please read off the number portion of your battle tag after the hashtag symbol.",
     GOODBYE: "Thank you for choosing My Overwatch! Always thrive to attain Grand Master if you haven't already. Good luck in your battles! Come back again for an updated look at your Overwatch profile and some tips to help in your gameplay to get you to the top!",
     DEFAULT_ERROR_BATTLETAG: "Sorry, we could not find that battletag. Please repeat the battle tag username before the hashtag. For example, say illusion or elite",
     DEFAULT_ERROR_PLATFORM: "Sorry, we did not recognize that platform. Please say either Xbox, PC, or Playstation.",
-    PLATFORM_INQUIRY: "Great! Which platform do you want to get your stats for? Xbox, PC or Playstation?"
+    PLATFORM_INQUIRY: "Great! Which platform do you want to get your stats for? Xbox, PC or Playstation?",
+    PLEASE_REPEAT: "Sorry, we did not hear from you.",
+    ANYTHING_ELSE: "Is there anything else that you would like to know?"
 }
 
 /** CUSTOM FUNCTIONS **/
@@ -33,7 +36,7 @@ const hero_sound = {
 }
 
 
-let card = 'Something went wrong. Please try again.';
+//let card = 'Something went wrong. Please try again.';
 let outputSpeech = 'Something went wrong. Please try again.';
 
 // OVERWATCH API STATS REQUIRED PARAMETERS
@@ -73,9 +76,6 @@ const GetMyStatsIntentHandler = {
         let platformVal = intent.slots.platform.value;
         let battletag_username = intent.slots.battletag_username.value;
         let battletag_number = intent.slots.battletag_number.value;
-        let hero_sound = '';
-
-        let profileInfoRetrieved = false;
 
         console.log("Captured Battletag username: " + battletag_username);
         console.log("Captured Battletag number: " + battletag_number);
@@ -93,7 +93,7 @@ const GetMyStatsIntentHandler = {
         // SET THE PLATFORM TO THE OVERWATCH STATS API PARAMETER TYPE EITHER pc, xbl or psn
         if (platformVal.toLowerCase() == "xbox") {
             platform = "xbl";
-        } else if (platformVal.toLowerCase() == "pc" || platformVal.toLowerCase() == "peesee" || platformVal.toLowerCase() == "pz" || platformVal.toLowerCase() == "peezee") {
+        } else if (platformVal.toLowerCase() == "pc" || platformVal.toLowerCase() == "peesee" || platformVal.toLowerCase() == "pz" || platformVal.toLowerCase() == "peezee" || platformVal.toLowerCase() == "p.c") {
             platform = "pc";
         } else if (platformVal.toLowerCase() == "playstation") {
             platform = "psn";
@@ -148,8 +148,8 @@ const GetMyStatsIntentHandler = {
         
         
         return handlerInput.responseBuilder
-            .speak(outputSpeech)
-            .reprompt(outputSpeech)
+            .speak(`${outputSpeech} ${responses.ANYTHING_ELSE}`)
+            .reprompt(`${responses.PLEASE_REPEAT} ${responses.ANYTHING_ELSE}`)
             //.withStandardCard(appName, card)
             .getResponse();
 
@@ -202,11 +202,10 @@ const YesIntentHandler = {
             && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.YesIntent';
     },
     handle(handlerInput) {
-        const speechText = '';
 
         return handlerInput.responseBuilder
-            .speak(speechText)
-            .reprompt(speechText)
+            .speak(responses.TOP_MENU)
+            .reprompt(`${responses.PLEASE_REPEAT} ${responses.ANYTHING_ELSE}`)
             .getResponse();
     },
 };
