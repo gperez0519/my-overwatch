@@ -8,6 +8,7 @@ const appName = 'My Overwatch';
 /** OVERWATCH GENERAL RESPONSES **/
 const responses = {
     WELCOME: "Welcome to My Overwatch! We can tell you your stats of your Overwatch progress. Say get my stats to hear your stats of your Overwatch profile.",
+    NEED_TO_LINK_MESSAGE: 'Before we can continue, you will need to link your account to the My Overwatch skill using the card that I have sent to the Alexa app.',
     TOP_MENU: "Great! We can tell you your stats of your Overwatch progress. Say get my stats to hear your stats of your Overwatch profile.",
     OVERWATCH_SERVICE_UNAVAILABLE: "Oh no! The My Overwatch service is not available at the moment. Please try again later.",
     PLEASE_WAIT: "Please wait while we try to retrieve that profile information",
@@ -43,6 +44,33 @@ let outputSpeech = 'Something went wrong. Please try again.';
 // OVERWATCH API STATS REQUIRED PARAMETERS
 let battletag = '';
 let platform = '';
+
+function isAccountLinked(handlerInput) {
+    // if there is an access token, then assumed linked
+    return (handlerInput.requestEnvelope.session.user.accessToken === undefined);
+}
+    
+// CheckAccountLinkedHandler: This handler is always run first,
+// based on the order defined in the skillBuilder.
+// If no access token is present, then send the Link Account Card.
+//
+const CheckAccountLinkedHandler = {
+    canHandle(handlerInput) {
+        // If accessToken does not exist (ie, account is not linked),
+        // then return true, which triggers the "need to link" card.
+        // This should not be used unless the skill cannot function without
+        // a linked account.  If there's some functionality which is available without
+        // linking an account, do this check "just-in-time"
+        return isAccountLinked(handlerInput);
+    },
+    handle(handlerInput) {
+        const speakOutput = responses.NEED_TO_LINK_MESSAGE;
+        return handlerInput.responseBuilder
+        .speak(speakOutput)
+        .withLinkAccountCard()
+        .getResponse();
+    },
+};
 
 //code for the handlers
 const LaunchRequestHandler = {
@@ -275,6 +303,7 @@ const skillBuilder = Alexa.SkillBuilders.custom();
 
 exports.handler = skillBuilder
     .addRequestHandlers(
+        CheckAccountLinkedHandler,
         LaunchRequestHandler,
         GetMyStatsIntentHandler,
         HelpIntentHandler,
