@@ -1,6 +1,6 @@
 const Alexa = require('ask-sdk-core');
 
-// Overwatch Stats API - NPM Package URL: https://www.npmjs.com/package/overwatch-stats-api
+// Overwatch Stats API - NPM Package URL: https://www.npmjs.com/package/overwatch-stats-api **
 const ow = require('overwatch-stats-api');
 
 const appName = 'My Overwatch';
