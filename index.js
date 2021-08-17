@@ -1,4 +1,5 @@
 const Alexa = require('ask-sdk-core');
+const axios = require('axios');
 
 // Overwatch Stats API - NPM Package URL: https://www.npmjs.com/package/overwatch-stats-api **
 const ow = require('overwatch-stats-api');
@@ -9,9 +10,9 @@ const appName = 'My Overwatch';
 const responses = {
     GREETING: "Welcome to My Overwatch! We can tell you your stats of your Overwatch progress. Say get my stats to hear your stats of your Overwatch profile.",
     GREETING_PERSONALIZED: "Welcome Illusion! Please. have a seat and take a load off! Here's a round on the house!",
-    YOU_ARE_WELCOME: "Not a problem at all buddy!",
-    RANK_PERSONALIZED_BEGIN: "Hmm. I see that you are working hard on your rank",
-    GREETING_RESPONSE: "I'm doing just well. now that you are here!",
+    YOU_ARE_WELCOME: "Not a problem at all my friend! How have you been faring?",
+    RANK_PERSONALIZED_BEGIN: "Whoa! I see that you are working hard on your rank. Let's see here.",
+    GREETING_RESPONSE: "I'm doing just well. I'm glad that you are here!",
     NEED_TO_LINK_MESSAGE: 'Before we can continue, you will need to link your account to the My Overwatch skill using the card that I have sent to the Alexa app.',
     TOP_MENU: "Great! We can tell you your stats of your Overwatch progress. Say get my stats to hear your stats of your Overwatch profile.",
     OVERWATCH_SERVICE_UNAVAILABLE: "Oh no! The My Overwatch service is not available at the moment. Please try again later.",
@@ -138,9 +139,45 @@ const GetMyStatsIntentHandler = {
         //let battletag_username = intent.slots.battletag_username.value;
         //let battletag_number = intent.slots.battletag_number.value;
 
+        var accessToken = handlerInput.requestEnvelope.context.System.user.accessToken;
+        var userInfo = null;
+
+        if (accessToken == undefined){
+            // The request did not include a token, so tell the user to link
+            // accounts and return a LinkAccount card
+            var speechText = responses.NEED_TO_LINK_MESSAGE;
+
+            return handlerInput.responseBuilder
+                .speak(speechText)
+                .withLinkAccountCard()
+                .getResponse();
+        }
+
+        /* use the access token to query the user info
+        *  Endpoint: https://us.battle.net/oauth/userinfo
+        *  Params:
+        *  :region us
+        *  access_token {token}
+        * 
+        */
+
+        try {
+            userInfo = await axios.get(`https://us.battle.net/oauth/userinfo?:region=us&access_token=${accessToken}`);
+                console.log("Blizzard user info: ",userInfo.data);
+                console.log("Blizzard user battle tag: ",userInfo.data.battletag);
+
+        } catch(error) {
+            console.log("Error occurred getting user info: ", error);
+        }
+
         let platformVal = "PC";
-        let battletag_username = "illusion";
-        let battletag_number = "1474";
+        let battletag_username = "";
+        let battletag_number = "";
+
+        if (userInfo) {
+            battletag_username = userInfo.data.battletag.split("#")[0];
+            battletag_number = userInfo.data.battletag.split("#")[1];
+        }
 
         let rePromptText = "Well, I guess you don't find that to be very exciting but in any case I will leave you to it. Let me know if you need anything else.";
 
@@ -150,7 +187,7 @@ const GetMyStatsIntentHandler = {
 
         try {
 
-            //await callDirectiveService(handlerInput);
+            await callDirectiveService(handlerInput);
         } catch (err) {
 
             // if it failed we can continue, just the user will wait longer for first response
@@ -168,9 +205,6 @@ const GetMyStatsIntentHandler = {
 
         // CALL THE OVERWATCH STATS API TO GET THE PROFILE INFORMATION FOR THE PASSED BATTLETAG WITH PLATFORM
         if (battletag_username && battletag_number && platform) {
-
-            // CAPITALIZE FIRST LETTER OF BATTLETAG USERNAME AS REQUIRED FOR BATTLETAG   
-            battletag_username = battletag_username.charAt(0).toUpperCase() + battletag_username.slice(1);
 
             // CONCAT USERNAME DASH AND NUMBER TO GET THE STATS
             battletag = battletag_username + "-" + battletag_number;
@@ -190,7 +224,7 @@ const GetMyStatsIntentHandler = {
                     outputSpeech = responses.OVERWATCH_SERVICE_UNAVAILABLE;
                 } else {
                     // get the rank if user has completed their placements
-                    outputSpeech = `${responses.RANK_PERSONALIZED_BEGIN}! ${!isObjectEmpty(stats.rank) ?
+                    outputSpeech = `${!isObjectEmpty(stats.rank) ?
                             (stats.rank.damage.sr > 4000
                                 ? 'You are currently ranked Grandmaster!'
                                 : stats.rank.damage.sr < 3999 && stats.rank.damage.sr > 3500
@@ -206,7 +240,7 @@ const GetMyStatsIntentHandler = {
                                                     : 'You are currently ranked Bronze but you got a ways to go!') : responses.PLACEMENTS_NOT_COMPLETE
                         }
 Wow. you really love to play ${!isObjectEmpty(mostPlayed) ? Object.keys(mostPlayed.quickplay)[0] : ""} alot in Quick Play.
-and you seem to enjoy playing alot with ${!isObjectEmpty(mostPlayed) ? Object.keys(mostPlayed.competitive)[0] : ""} in Competitive.
+${!isObjectEmpty(mostPlayed.competitive) ? `and you seem to enjoy playing alot with ${Object.keys(mostPlayed.competitive)[0]} in Competitive.` : ""}
 You must really dominate the field with them. Keep going and you will be the best in no time.`;
                     console.log(JSON.stringify(stats));
                 }
@@ -219,7 +253,7 @@ You must really dominate the field with them. Keep going and you will be the bes
 
 
         return handlerInput.responseBuilder
-            .speak(`<voice name='Brian'>${responses.GREETING_RESPONSE} ${outputSpeech}</voice>`)
+            .speak(`<voice name='Brian'> ${outputSpeech}</voice>`)
             .reprompt(`<voice name='Brian'>${rePromptText}</voice>`)
             //.withStandardCard(appName, card)
             .getResponse();
@@ -236,10 +270,6 @@ function callDirectiveService(handlerInput) {
     const endpoint = requestEnvelope.context.System.apiEndpoint;
     const token = requestEnvelope.context.System.apiAccessToken;
 
-    console.log("Token:",token);
-    console.log("EndPoint:", endpoint);
-    console.log("Request ID:", requestId);
-
     // build the progressive response directive
     const directive = {
         header: {
@@ -247,7 +277,7 @@ function callDirectiveService(handlerInput) {
         },
         directive: {
             type: 'VoicePlayer.Speak',
-            speech: `<voice name='Brian'>${responses.RANK_PERSONALIZED_BEGIN}</voice>`,
+            speech: `<voice name='Brian'>${responses.GREETING_RESPONSE}${responses.RANK_PERSONALIZED_BEGIN}</voice>`,
         },
     };
 
