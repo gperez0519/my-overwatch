@@ -5,11 +5,14 @@ const axios = require('axios');
 const ow = require('overwatch-stats-api');
 
 const appName = 'My Overwatch';
+let nickName = "my friend";
 
 /** OVERWATCH GENERAL RESPONSES **/
 const responses = {
     GREETING: "Welcome to My Overwatch! We can tell you your stats of your Overwatch progress. Say get my stats to hear your stats of your Overwatch profile.",
-    GREETING_PERSONALIZED: "Welcome Illusion! Please. have a seat and take a load off! Here's a round on the house!",
+    GREETING_PERSONALIZED: `Welcome ${nickName} to Blizz Tavern! Please. have a seat and take a load off! Here's a round on the house!`,
+    GREETING_PERSONALIZED_II: `<amazon:emotion name="excited" intensity="high">Hey guys, keep it down over there.</amazon:emotion> Oh hey there my friend! Welcome to Blizz Tavern! You must be exhausted, drinks on me!`,
+    GREETING_PERSONALIZED_III: `<amazon:emotion name="excited" intensity="high">Hey Jack don't make me come back there.</amazon:emotion> Oh hey. Sorry about that. Some people get a little rowdy around here. Welcome to Blizz Tavern! You must be exhausted, drinks on me!`,
     YOU_ARE_WELCOME: "Not a problem at all my friend! How have you been faring?",
     RANK_PERSONALIZED_BEGIN: "Whoa! I see that you are working hard on your rank. Let's see here.",
     GREETING_RESPONSE: "I'm doing just well. I'm glad that you are here!",
@@ -20,14 +23,15 @@ const responses = {
     PLACEMENTS_NOT_COMPLETE: "You have not placed yet in the Competitive season. Make sure you do so in order to hear about your ranking info.",
     BATTLETAG_NUMBER_INQUIRY: "Perfect! Now, please read off the number portion of your battle tag after the hashtag symbol.",
     GOODBYE: "You are always welcome here my friend! Stop by next time and we can catch up again. Good luck in your battles!",
-    DEFAULT_ERROR_BATTLETAG: "Sorry, we could not find that battletag. Please repeat the battle tag username before the hashtag. For example, say illusion or elite",
+    DEFAULT_ERROR_BATTLETAG: "Strange. My data analysis unit is not finding your information. No worries, we can try again later.",
     DEFAULT_ERROR_PLATFORM: "Sorry, we did not recognize that platform. Please say either Xbox, PC, or Playstation.",
     PLATFORM_INQUIRY: "Great! Which platform do you want to get your stats for? Xbox, PC or Playstation?",
     PLEASE_REPEAT: "Sorry, we did not hear from you.",
     ANYTHING_ELSE: "Is there anything else that you would like to know?",
     POUR_DRINK_AUDIO: "<audio src='soundbank://soundlibrary/household/water/pour_water_01'/>",
     DOOR_OPEN_AUDIO: "<audio src='soundbank://soundlibrary/home/amzn_sfx_door_open_01'/>",
-    GLASS_CLINK_AUDIO: "<audio src='soundbank://soundlibrary/glass/clink/glasses_clink_04'/>"
+    GLASS_CLINK_AUDIO: "<audio src='soundbank://soundlibrary/glass/clink/glasses_clink_04'/>",
+    ROWDY_BAR_AMBIANCE_AUDIO: "<audio src='soundbank://soundlibrary/ambience/amzn_sfx_crowd_bar_rowdy_01'/>"
 }
 
 /** CUSTOM FUNCTIONS **/
@@ -74,7 +78,7 @@ const CheckAccountLinkedHandler = {
     handle(handlerInput) {
         const speakOutput = responses.NEED_TO_LINK_MESSAGE;
         return handlerInput.responseBuilder
-        .speak("<voice name='Brian'>" + speakOutput + "</voice>")
+        .speak("<voice name='Emma'>" + speakOutput + "</voice>")
         .withLinkAccountCard()
         .getResponse();
     },
@@ -88,7 +92,16 @@ const LaunchRequestHandler = {
     handle(handlerInput) {
 
         // welcome message
-        let welcomeText = responses.DOOR_OPEN_AUDIO + responses.GREETING_PERSONALIZED + responses.POUR_DRINK_AUDIO + responses.GLASS_CLINK_AUDIO;
+        let welcomeText = responses.DOOR_OPEN_AUDIO + responses.ROWDY_BAR_AMBIANCE_AUDIO + responses.GREETING_PERSONALIZED + responses.POUR_DRINK_AUDIO + responses.GLASS_CLINK_AUDIO;
+
+        // return a random welcome message to ensure human like interaction.
+        if (Math.floor(Math.random() * 3) == 0){
+            welcomeText = responses.DOOR_OPEN_AUDIO + responses.ROWDY_BAR_AMBIANCE_AUDIO + responses.GREETING_PERSONALIZED + responses.POUR_DRINK_AUDIO + responses.GLASS_CLINK_AUDIO;
+        } else if (Math.floor(Math.random() * 3) == 1) {
+            welcomeText = responses.DOOR_OPEN_AUDIO + responses.ROWDY_BAR_AMBIANCE_AUDIO + responses.GREETING_PERSONALIZED_II + responses.POUR_DRINK_AUDIO + responses.GLASS_CLINK_AUDIO;
+        } else if (Math.floor(Math.random() * 3) == 2) {
+            welcomeText = responses.DOOR_OPEN_AUDIO + responses.ROWDY_BAR_AMBIANCE_AUDIO + responses.GREETING_PERSONALIZED_III + responses.POUR_DRINK_AUDIO + responses.GLASS_CLINK_AUDIO;
+        }
 
         let rePromptText = "You know it is quite rude to not thank someone for giving you a round on the house you know.";
 
@@ -96,8 +109,8 @@ const LaunchRequestHandler = {
         let displayText = responses.GREETING_PERSONALIZED;
 
         return handlerInput.responseBuilder
-            .speak("<voice name='Brian'>" + welcomeText + "</voice>")
-            .reprompt("<voice name='Brian'>" + rePromptText + "</voice>")
+            .speak("<voice name='Emma'>" + welcomeText + "</voice>")
+            .reprompt("<voice name='Emma'>" + rePromptText + "</voice>")
             .withSimpleCard(appName, displayText)
             .getResponse();
     }
@@ -119,8 +132,8 @@ const ThanksIntentHandler = {
         let displayText = responses.WELCOME_PERSONALIZED;
 
         return handlerInput.responseBuilder
-            .speak("<voice name='Brian'>" + youAreWelcomeResponse + "</voice>")
-            .reprompt("<voice name='Brian'>" + rePromptText + "</voice>")
+            .speak("<voice name='Emma'>" + youAreWelcomeResponse + "</voice>")
+            .reprompt("<voice name='Emma'>" + rePromptText + "</voice>")
             .withSimpleCard(appName, displayText)
             .getResponse();
     }
@@ -148,7 +161,7 @@ const GetMyStatsIntentHandler = {
             var speechText = responses.NEED_TO_LINK_MESSAGE;
 
             return handlerInput.responseBuilder
-                .speak(speechText)
+                .speak(`<voice name='Emma'>${speechText}</voice>`)
                 .withLinkAccountCard()
                 .getResponse();
         }
@@ -212,6 +225,8 @@ const GetMyStatsIntentHandler = {
             console.log("Full translated battletag: " + battletag);
             console.log("Platform recognized: " + platform);
 
+            nickName = battletag_username;
+
             try {
 
                 // get all stats for the given user
@@ -220,71 +235,84 @@ const GetMyStatsIntentHandler = {
                 // get most played heroes per given user
                 const mostPlayed = await ow.getMostPlayed(battletag, platform);
 
-                if (isObjectEmpty(mostPlayed)) {
+                // Check if stats are retrieved for the player
+                if (isObjectEmpty(stats)) {
                     outputSpeech = responses.OVERWATCH_SERVICE_UNAVAILABLE;
                 } else {
-                    // get the rank if user has completed their placements
-                    outputSpeech = `${!isObjectEmpty(stats.rank) ?
-                            (stats.rank.damage.sr > 4000
-                                ? 'You are currently ranked Grandmaster!'
-                                : stats.rank.damage.sr < 3999 && stats.rank.damage.sr > 3500
-                                    ? 'You are currently ranked Master!'
-                                    : stats.rank.damage.sr < 3499 && stats.rank.damage.sr > 3000
-                                        ? 'You are currently ranked Diamond!'
-                                        : stats.rank.damage.sr < 2999 && stats.rank.damage.sr > 2500
-                                            ? 'You are currently ranked Platinum!'
-                                            : stats.rank.damage.sr < 2499 && stats.rank.damage.sr > 2000
-                                                ? 'You are currently ranked Gold!'
-                                                : stats.rank.damage.sr < 1999 && stats.rank.damage.sr > 1500
-                                                    ? 'You are currently ranked Silver but you got a ways to go!'
-                                                    : 'You are currently ranked Bronze but you got a ways to go!') : responses.PLACEMENTS_NOT_COMPLETE
+
+                    outputSpeech = "";
+
+                    // Check if player has ranked otherwise let them know they need to place to know their rank.
+                    if (!isObjectEmpty(stats.rank)){
+                        
+                        // Get the tank ranking if placed otherwise don't append response.
+                        if (!!stats.rank.tank) {
+                            outputSpeech = "For the tank role " + getPlayerRank(stats.rank.tank);
                         }
-Wow. you really love to play ${!isObjectEmpty(mostPlayed) ? Object.keys(mostPlayed.quickplay)[0] : ""} alot in Quick Play.
-${!isObjectEmpty(mostPlayed.competitive) ? `and you seem to enjoy playing alot with ${Object.keys(mostPlayed.competitive)[0]} in Competitive.` : ""}
-You must really dominate the field with them. Keep going and you will be the best in no time.`;
-                    console.log(JSON.stringify(stats));
+
+                        // Get the damage ranking if placed otherwise don't append response.
+                        if (!!stats.rank.damage) {
+                            if (outputSpeech != "") {
+                                outputSpeech += " For the damage role " + getPlayerRank(stats.rank.damage);
+                            } else {
+                                outputSpeech = "For the damage role " + getPlayerRank(stats.rank.damage);
+                            }
+                        }
+
+                        // Get the healer ranking if placed otherwise don't append response.
+                        if (!!stats.rank.healer) {
+                            if (outputSpeech != "") {
+                                outputSpeech += " For the healer role " + getPlayerRank(stats.rank.healer);
+                            } else {
+                                outputSpeech = "For the healer role " + getPlayerRank(stats.rank.healer);
+                            }
+                        }
+                        
+                    } else {
+                        outputSpeech = responses.PLACEMENTS_NOT_COMPLETE;
+                    }
+
+                    // Check if we retrieved data for the most played heroes
+                    if (isObjectEmpty(mostPlayed)) {
+                        outputSpeech = responses.OVERWATCH_SERVICE_UNAVAILABLE;
+                    } else {
+                        console.log("All stats data payload: ", JSON.stringify(stats));
+                        console.log("Most played data payload: ", JSON.stringify(mostPlayed));
+
+                        let quickPlayHero = Object.keys(mostPlayed.quickplay)[0];
+                        let competitiveHero = Object.keys(mostPlayed.competitive)[0];
+
+                        outputSpeech += ` It seems you really enjoy playing ${quickPlayHero} in Quickplay. `;
+                        outputSpeech += `Your current win percentage with this hero in Quickplay is ${stats.heroStats.quickplay[quickPlayHero].game.win_percentage}`;
+                        outputSpeech += ` It seems you really enjoy playing ${competitiveHero} in Competitive. `;
+                        outputSpeech += `Your current win percentage with this hero in Competitive is ${stats.heroStats.competitive[competitiveHero].game.win_percentage}`;
+                    }
+                    
+                    
                 }
 
+                
+
             } catch (error) {
-                outputSpeech = `Error occurred: ${error}. Profile info retrieval failed! We heard you say ${platformVal} as the platform. ${battletag_username} as the username of the battletag and ${battletag_number} as the number in the battletag.`;
+                if (error.message.indexOf("PROFILE_PRIVATE") >= 0){
+                    outputSpeech = `${nickName}. I would love to tell you how your Overwatch progress is going but it seems your profile is private. You should set your profile public so my analysis is able to retrieve the data we need.`;
+                } else {
+                    outputSpeech = `${nickName}. I would love to tell you how your Overwatch progress is going but it seems my analyzer is not functioning at the moment. The error I see here is ${error.message}. Try again later.`;
+                }
+                
             }
 
         }
 
 
         return handlerInput.responseBuilder
-            .speak(`<voice name='Brian'> ${outputSpeech}</voice>`)
-            .reprompt(`<voice name='Brian'>${rePromptText}</voice>`)
+            .speak(`<voice name='Emma'>${outputSpeech}</voice>`)
+            .reprompt(`<voice name='Emma'>${rePromptText}</voice>`)
             //.withStandardCard(appName, card)
             .getResponse();
 
     },
 };
-
-function callDirectiveService(handlerInput) {
-    // Call Alexa Directive Service.
-    const requestEnvelope = handlerInput.requestEnvelope;
-    const directiveServiceClient = handlerInput.serviceClientFactory.getDirectiveServiceClient();
-
-    const requestId = requestEnvelope.request.requestId;
-    const endpoint = requestEnvelope.context.System.apiEndpoint;
-    const token = requestEnvelope.context.System.apiAccessToken;
-
-    // build the progressive response directive
-    const directive = {
-        header: {
-            requestId,
-        },
-        directive: {
-            type: 'VoicePlayer.Speak',
-            speech: `<voice name='Brian'>${responses.GREETING_RESPONSE}${responses.RANK_PERSONALIZED_BEGIN}</voice>`,
-        },
-    };
-
-    // send directive
-    return directiveServiceClient.enqueue(directive, endpoint, token);
-}
-
 
 const HelpIntentHandler = {
     canHandle(handlerInput) {
@@ -323,7 +351,7 @@ const NoIntentHandler = {
     handle(handlerInput) {
 
         return handlerInput.responseBuilder
-            .speak(responses.GOODBYE)
+            .speak(`<voice name='Emma'>${response.GOODBYE}</voice>`)
             .reprompt(`${responses.PLEASE_REPEAT} ${responses.ANYTHING_ELSE}`)
             .getResponse();
     },
@@ -339,7 +367,7 @@ const CancelAndStopIntentHandler = {
         const speechText = responses.GOODBYE;
 
         return handlerInput.responseBuilder
-            .speak(speechText)
+            .speak(`<voice name='Emma'>${speechText}</voice>`)
             .getResponse();
     },
 };
@@ -363,11 +391,65 @@ const ErrorHandler = {
         console.log(`Error handled: ${error.message}`);
 
         return handlerInput.responseBuilder
-            .speak('Sorry, I can\'t understand the command. Please say again.')
-            .reprompt('Sorry, I can\'t understand the command. Please say again.')
+            .speak(`<voice name='Emma'>Sorry, my systems have malfunctioned there. Can you repeat that?</voice>`)
+            .reprompt(`<voice name='Emma'>Sorry, my systems have malfunctioned there. Can you repeat that?</voice>`)
             .getResponse();
     },
 };
+
+/** BUILT-IN FUNCTIONS **/
+function callDirectiveService(handlerInput) {
+    // Call Alexa Directive Service.
+    const requestEnvelope = handlerInput.requestEnvelope;
+    const directiveServiceClient = handlerInput.serviceClientFactory.getDirectiveServiceClient();
+
+    const requestId = requestEnvelope.request.requestId;
+    const endpoint = requestEnvelope.context.System.apiEndpoint;
+    const token = requestEnvelope.context.System.apiAccessToken;
+
+    // build the progressive response directive
+    const directive = {
+        header: {
+            requestId,
+        },
+        directive: {
+            type: 'VoicePlayer.Speak',
+            speech: `<voice name='Emma'>${responses.GREETING_RESPONSE}${responses.RANK_PERSONALIZED_BEGIN}</voice>`,
+        },
+    };
+
+    // send directive
+    return directiveServiceClient.enqueue(directive, endpoint, token);
+}
+
+/** BEGIN CUSTOM FUNCTIONS **/
+
+function getPlayerRank(heroType) {
+    let outputSpeech = "";
+    
+    // Check if rank is empty which means they haven't placed and return a message to place for the current season.
+    if (!isObjectEmpty(heroType)) {
+        if (heroType.sr > 4000) {
+            outputSpeech = 'You are currently ranked Grandmaster!';
+        } else if (heroType.sr < 3999 && heroType.sr > 3500) {
+            outputSpeech = 'You are currently ranked Master!';
+        } else if (heroType.sr < 3499 && heroType.sr > 3000) {
+            outputSpeech = 'You are currently ranked Diamond!';
+        } else if (heroType.sr < 2999 && heroType.sr > 2500) {
+            outputSpeech = 'You are currently ranked Platinum!';
+        } else if (heroType.sr < 2499 && heroType.sr > 2000) {
+            outputSpeech = 'You are currently ranked Gold!';
+        } else if (heroType.sr < 1999 && heroType.sr > 1500) {
+            outputSpeech = 'You are currently ranked Silver but you got a ways to go!';
+        } else {
+            outputSpeech = 'You are currently ranked Bronze but you got a ways to go!';
+        }
+    }
+
+    return outputSpeech;
+}
+
+/** END OF CUSTOM FUNCTIONS **/
 
 const getRemoteData = function (url) {
     return new Promise((resolve, reject) => {
