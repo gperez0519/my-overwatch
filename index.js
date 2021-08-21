@@ -1,7 +1,7 @@
 const Alexa = require('ask-sdk-core');
 const axios = require('axios');
 
-// Overwatch Stats API - NPM Package URL: https://www.npmjs.com/package/overwatch-stats-api **
+// Overwatch Stats API by FatChan (Thomas Lynch) - NPM Package URL: https://www.npmjs.com/package/overwatch-stats-api **
 const ow = require('overwatch-stats-api');
 
 const appName = 'My Overwatch';
@@ -185,7 +185,7 @@ const GetMyStatsIntentHandler = {
         console.log("Captured Platform: " + platformVal);
 
         try {
-
+            // send the progressive response while looking up blizzard user data.
             await callDirectiveService(handlerInput);
         } catch (err) {
 
@@ -193,14 +193,14 @@ const GetMyStatsIntentHandler = {
             console.log("There was an issue attempting to send the progressive response while searching for overwatch profile of the given battletag " + err);
         }
 
-        // SET THE PLATFORM TO THE OVERWATCH STATS API PARAMETER TYPE EITHER pc, xbl or psn
-        if (platformVal.toLowerCase() == "xbox") {
-            platform = "xbl";
-        } else if (platformVal.toLowerCase() == "pc" || platformVal.toLowerCase() == "peesee" || platformVal.toLowerCase() == "pz" || platformVal.toLowerCase() == "peezee" || platformVal.toLowerCase() == "p.c") {
-            platform = "pc";
-        } else if (platformVal.toLowerCase() == "playstation") {
-            platform = "psn";
-        }
+        // // SET THE PLATFORM TO THE OVERWATCH STATS API PARAMETER TYPE EITHER pc, xbl or psn
+        // if (platformVal.toLowerCase() == "xbox") {
+        //     platform = "xbl";
+        // } else if (platformVal.toLowerCase() == "pc" || platformVal.toLowerCase() == "peesee" || platformVal.toLowerCase() == "pz" || platformVal.toLowerCase() == "peezee" || platformVal.toLowerCase() == "p.c") {
+        //     platform = "pc";
+        // } else if (platformVal.toLowerCase() == "playstation") {
+        //     platform = "psn";
+        // }
 
         // CALL THE OVERWATCH STATS API TO GET THE PROFILE INFORMATION FOR THE PASSED BATTLETAG WITH PLATFORM
         if (battletag_username && battletag_number && platform) {
