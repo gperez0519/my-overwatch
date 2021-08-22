@@ -11,22 +11,22 @@ let drinkCount = 0;
 /** OVERWATCH GENERAL RESPONSES **/
 const responses = {
     GREETING: "Welcome to My Overwatch! We can tell you your stats of your Overwatch progress. Say get my stats to hear your stats of your Overwatch profile.",
-    GREETING_PERSONALIZED: `Welcome ${nickName} to Blizz Tavern! Please. have a seat and take a load off! Here's a round on the house!`,
-    GREETING_PERSONALIZED_II: `<amazon:emotion name="excited" intensity="high">Hey you miscreants! You throw another chair and I'll toss you out myself!</amazon:emotion> Oh hey there my friend! Welcome to Blizz Tavern! You must be exhausted, drinks on me!`,
-    GREETING_PERSONALIZED_III: `<amazon:emotion name="excited" intensity="high">Hey Jack! don't make me come back there.</amazon:emotion> Oh hey. Sorry about that. Some people get a little rowdy around here. Welcome to Blizz Tavern! You must be exhausted, drinks on me!`,
+    GREETING_PERSONALIZED: `Welcome ${nickName} to Blizz Tavern! Please, have a seat and take a load off! Here's a round on the house!`,
+    GREETING_PERSONALIZED_II: `<prosody volume="x-loud">Hey you miscreants! You throw another chair and I'll toss you out myself!</prosody> Oh hey there my friend! Welcome to Blizz Tavern! You must be exhausted, drinks are <emphasis level="reduced">on</emphasis> me!`,
+    GREETING_PERSONALIZED_III: `<prosody volume="x-loud">Hey Jack! don't make me come back there!</prosody> Oh hey, sorry about that. Some people get a little <emphasis level="moderate">rowdy</emphasis>, a round here. Welcome to Blizz Tavern! You must be exhausted. Here, drinks are on me!`,
     OPTIONS: `Now, what can I do for you? Would you like another drink, do you want to see how your Overwatch progress is going, or would you like to leave the tavern?`,
     TOO_MANY_DRINKS_OPTIONS: `Now. What can I do for you? Would you like to see how your Overwatch progress is going, or are you looking to leave the tavern?`,
     ALTERNATE_OPTIONS: `Amazing thus far. Now, what can I do for you? Would you like another drink, do you want to check up on your Overwatch progress again, or do you want to leave the tavern?`,
     YOU_ARE_WELCOME: "Not a problem at all my friend! How have you been faring?",
-    RANK_PERSONALIZED_BEGIN: "Fascinating. I see that you are working hard on your rank. Let's see here.",
+    RANK_PERSONALIZED_BEGIN: "Sure, let me check my data analysis unit. Let's see here.",
     GREETING_RESPONSE: "I'm doing just well. I'm glad that you are here!",
     NEED_TO_LINK_MESSAGE: 'Before we can continue, you will need to link your account to the My Overwatch skill using the card that I have sent to the Alexa app.',
     TOP_MENU: "Great! We can tell you your stats of your Overwatch progress. Say get my stats to hear your stats of your Overwatch profile.",
     OVERWATCH_SERVICE_UNAVAILABLE: "Oh no! The My Overwatch service is not available at the moment. Please try again later.",
     PLEASE_WAIT: "Please wait while we try to retrieve that profile information",
-    PLACEMENTS_NOT_COMPLETE: "You have not placed yet in the Competitive season. Make sure you do so in order to hear about your ranking info.",
-    BATTLETAG_NUMBER_INQUIRY: "Perfect! Now, please read off the number portion of your battle tag after the hashtag symbol.",
-    GOODBYE: "You are always welcome here my friend! Stop by next time and we can catch up again. Good luck in your battles!",
+    PLACEMENTS_NOT_COMPLETE: "You have not placed yet in this Competitive season. Make sure you do so in order to hear about your ranking info.",
+    GOODBYE: `You are always welcome here my friend! If you have some time, please leave us a rating on the My Overwatch skill in the skill store. We would appreciate it greatly.
+             Stop by Blizz tavern next time and we can catch up again. Good luck in your battles!`,
     DEFAULT_ERROR_BATTLETAG: "Strange, My data analysis unit is not finding your information. No worries, we can try again later.",
     DEFAULT_ERROR_PLATFORM: "Sorry, we did not recognize that platform. Please say either Xbox, PC, or Playstation.",
     PLATFORM_INQUIRY: "Great! Which platform do you want to get your stats for? Xbox, PC or Playstation?",
@@ -59,7 +59,6 @@ let outputSpeech = 'Something went wrong. Please try again.';
 
 // OVERWATCH API STATS REQUIRED PARAMETERS
 let battletag = '';
-let platform = '';
 
 function isAccountLinked(handlerInput) {
     // if there is an access token, then assumed linked
@@ -98,13 +97,16 @@ const LaunchRequestHandler = {
         // welcome message
         let welcomeText = responses.DOOR_OPEN_AUDIO + responses.ROWDY_BAR_AMBIANCE_AUDIO + responses.GREETING_PERSONALIZED + responses.POUR_DRINK_AUDIO + responses.GLASS_CLINK_AUDIO + responses.OPTIONS;
 
+        // Get a random number between 1 and 3
+        let randomChoice = getRndInteger(1,4);
+
         // return a random welcome message to ensure human like interaction.
         try {
-            if (Math.floor(Math.random() * 3) == 0){
+            if (randomChoice == 1){
                 welcomeText = responses.DOOR_OPEN_AUDIO + responses.ROWDY_BAR_AMBIANCE_AUDIO + responses.GREETING_PERSONALIZED + responses.POUR_DRINK_AUDIO + responses.GLASS_CLINK_AUDIO + responses.OPTIONS;
-            } else if (Math.floor(Math.random() * 3) == 1) {
+            } else if (randomChoice == 2) {
                 welcomeText = responses.DOOR_OPEN_AUDIO + responses.ROWDY_BAR_AMBIANCE_AUDIO + responses.GREETING_PERSONALIZED_II + responses.POUR_DRINK_AUDIO + responses.GLASS_CLINK_AUDIO + responses.OPTIONS;
-            } else if (Math.floor(Math.random() * 3) == 2) {
+            } else if (randomChoice == 3) {
                 welcomeText = responses.DOOR_OPEN_AUDIO + responses.ROWDY_BAR_AMBIANCE_AUDIO + responses.GREETING_PERSONALIZED_III + responses.POUR_DRINK_AUDIO + responses.GLASS_CLINK_AUDIO + responses.OPTIONS;
             }
         } catch (error) {
@@ -169,7 +171,7 @@ const GetMyStatsIntentHandler = {
             console.log("Error occurred getting user info: ", error);
         }
 
-        let platformVal = "PC";
+        let platform = "pc";
         let battletag_username = "";
         let battletag_number = "";
 
@@ -182,7 +184,7 @@ const GetMyStatsIntentHandler = {
 
         console.log("Captured Battletag username: " + battletag_username);
         console.log("Captured Battletag number: " + battletag_number);
-        console.log("Captured Platform: " + platformVal);
+        console.log("Captured Platform: " + platform);
 
         try {
             // send the progressive response while looking up blizzard user data.
@@ -223,31 +225,42 @@ const GetMyStatsIntentHandler = {
 
                 // Check if stats are retrieved for the player
                 if (isObjectEmpty(stats)) {
-                    outputSpeech = responses.OVERWATCH_SERVICE_UNAVAILABLE;
+                    outputSpeech = " " + responses.OVERWATCH_SERVICE_UNAVAILABLE;
                 } else {
 
                     outputSpeech = `${nickName},`;
 
+                    // Get the players current level and prestige.
+                    outputSpeech += ` you are currently level ${stats.level} at prestige ${stats.prestige}.`;
+
+                    if (stats.prestige != "") {
+                        if (stats.prestige > 3) {
+                            outputSpeech += ` Whoa, a veteran of Overwatch? Very cool!`;
+                        }
+                    }
+                    
                     // Check if player has ranked otherwise let them know they need to place to know their rank.
                     if (!isObjectEmpty(stats.rank)){
                         
+                        outputSpeech += ` Lets see here about your rank. Ahh, interesting,`;
+
                         // Get the tank ranking if placed otherwise don't append response.
                         if (!!stats.rank.tank) {
-                            outputSpeech += ` For the tank role ${getPlayerRank(stats.rank.tank)}.`;
+                            outputSpeech += ` For the tank role ${getPlayerRank(stats.rank.tank)},`;
                         }
 
                         // Get the damage ranking if placed otherwise don't append response.
                         if (!!stats.rank.damage) {
-                            outputSpeech += ` For the damage role ${getPlayerRank(stats.rank.damage)}.`;
+                            outputSpeech += ` For the damage role ${getPlayerRank(stats.rank.damage)},`;
                         }
 
                         // Get the healer ranking if placed otherwise don't append response.
                         if (!!stats.rank.healer) {
-                            outputSpeech += ` For the healer role ${getPlayerRank(stats.rank.healer)}.`;
+                            outputSpeech += ` For the healer role ${getPlayerRank(stats.rank.healer)},`;
                         }
                         
                     } else {
-                        outputSpeech = responses.PLACEMENTS_NOT_COMPLETE;
+                        outputSpeech = " " + responses.PLACEMENTS_NOT_COMPLETE;
                     }
 
                     // Check if we retrieved data for the most played heroes
@@ -259,28 +272,29 @@ const GetMyStatsIntentHandler = {
 
                         let quickPlayHero = Object.keys(mostPlayed.quickplay)[0];
 
-                        outputSpeech += ` It seems you really enjoy playing ${quickPlayHero} in Quickplay. `;
+                        // Tell the player about their most played hero in Quick Play.
+                        outputSpeech += ` It seems you really enjoy playing ${toTitleCase(quickPlayHero)} in Quickplay. `;
+
+                        // Tell the player about the most played hero's win percentage.
                         outputSpeech += `Your current win percentage with this hero in Quickplay is ${stats.heroStats.quickplay[quickPlayHero].game.win_percentage}.`;
 
+                        // Check if there are stats for competitive, if there aren't the player doesn't compete
                         if (!!stats.heroStats.competitive) {
                             let mostPlayedCompetitiveHero = Object.keys(mostPlayed.competitive)[0];
                             let statsCompHeroWinPercentage = stats.heroStats.competitive[mostPlayedCompetitiveHero].game.win_percentage;
 
-                            outputSpeech += ` Also, it seems you really enjoy playing ${mostPlayedCompetitiveHero} in Competitive. `;
+                            outputSpeech += ` Also, it seems you really enjoy playing ${toTitleCase(mostPlayedCompetitiveHero)} in Competitive. `;
                             outputSpeech += `Your current win percentage with this hero in Competitive is ${statsCompHeroWinPercentage}.`;
 
                             // Check to see if the hero in competitive the user plays the most has the best win percentage, if not suggest the hero with better win percentage.
                             var suggestedCompHero = getBestHeroForComp(mostPlayedCompetitiveHero, statsCompHeroWinPercentage, stats.heroStats.competitive);
 
                             if (suggestedCompHero !== null){
-                                outputSpeech += ` Interesting, my data analysis tells me that based on your win percentage with this hero in competitive, 
-                                                you will have more success with ${suggestedCompHero.hero} 
+                                outputSpeech += ` Fascinating, there is a tip here in my data analysis. It says that based on your win percentage with this hero in competitive, 
+                                                you will have more success with ${toTitleCase(suggestedCompHero.hero)} 
                                                 since your win percentage with that hero in competitive is ${suggestedCompHero.win_percentage}.`;
                             }
                         }
-
-                        
-                        
                     }
                     
                     // Once all stats are retrieved and appended lets append the options again for the user to choose what they want to do thereafter.
@@ -357,8 +371,8 @@ const YesIntentHandler = {
     handle(handlerInput) {
 
         return handlerInput.responseBuilder
-            .speak(responses.TOP_MENU)
-            .reprompt(`${responses.PLEASE_REPEAT} ${responses.ANYTHING_ELSE}`)
+            .speak(`<voice name='Emma'>${responses.TOP_MENU}</voice>`)
+            .reprompt(`<voice name='Emma'>${responses.PLEASE_REPEAT} ${responses.ANYTHING_ELSE}</voice>`)
             .getResponse();
     },
 };
@@ -372,7 +386,7 @@ const NoIntentHandler = {
 
         return handlerInput.responseBuilder
             .speak(`<voice name='Emma'>${responses.GOODBYE}</voice>`)
-            .reprompt(`${responses.PLEASE_REPEAT} ${responses.ANYTHING_ELSE}`)
+            .reprompt(`<voice name='Emma'>${responses.PLEASE_REPEAT} ${responses.ANYTHING_ELSE}</voice>`)
             .getResponse();
     },
 };
@@ -443,6 +457,20 @@ function callDirectiveService(handlerInput) {
 }
 
 /** BEGIN CUSTOM FUNCTIONS **/
+
+function toTitleCase(str) {
+    return str.replace(
+      /\w\S*/g,
+      function(txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+      }
+    );
+  }
+
+function getRndInteger(minimum, maximum) {
+	return Math.floor(Math.random() * (maximum - minimum)) + minimum;
+}
+
 function getBestHeroForComp(mostPlayedHero, mostPlayedWinPercentage, compHeroes){
     var bestHeroToPlay = null;
 	var iter = 0;
@@ -505,19 +533,19 @@ function getPlayerRank(heroType) {
     // Check if rank is empty which means they haven't placed and return a message to place for the current season.
     if (!isObjectEmpty(heroType)) {
         if (heroType.sr > 4000) {
-            outputSpeech = `You are currently ranked Grandmaster at ${heroType.sr}!`;
+            outputSpeech = `you are currently ranked Grandmaster at ${heroType.sr}!`;
         } else if (heroType.sr < 3999 && heroType.sr > 3500) {
-            outputSpeech = `You are currently ranked Master at ${heroType.sr}!`;
+            outputSpeech = `you are currently ranked Master at ${heroType.sr}, ${heroType.sr > 3950 ? 'you are very close to Grandmaster rank. Keep going' : 'you got a ways to go to get to Grandmaster rank. Keep pushing'}!`;
         } else if (heroType.sr < 3499 && heroType.sr > 3000) {
-            outputSpeech = `You are currently ranked Diamond at ${heroType.sr}!`;
+            outputSpeech = `you are currently ranked Diamond at ${heroType.sr}, ${heroType.sr > 3450 ? 'you are very close to Master rank. Keep going' : 'you got a ways to go to get to Master rank. Keep pushing'}!`;
         } else if (heroType.sr < 2999 && heroType.sr > 2500) {
-            outputSpeech = `You are currently ranked Platinum at ${heroType.sr}!`;
+            outputSpeech = `you are currently ranked Platinum at ${heroType.sr}, ${heroType.sr > 2950 ? 'you are very close to Diamond rank. Keep going' : 'you got a ways to go to get to Diamond rank. Keep pushing'}!`;
         } else if (heroType.sr < 2499 && heroType.sr > 2000) {
-            outputSpeech = `You are currently ranked Gold at ${heroType.sr}!`;
+            outputSpeech = `you are currently ranked Gold at ${heroType.sr}, ${heroType.sr > 2450 ? 'you are very close to Platinum rank. Keep going' : 'you got a ways to go to get to Platinum rank. Keep pushing'}!`;
         } else if (heroType.sr < 1999 && heroType.sr > 1500) {
-            outputSpeech = `You are currently ranked Silver at ${heroType.sr} but you got a ways to go!`;
+            outputSpeech = `you are currently ranked Silver at ${heroType.sr}, ${heroType.sr > 1950 ? 'you are very close to Gold rank. Keep going' : 'you got a ways to go to get to Gold rank. Keep pushing'}!`;
         } else {
-            outputSpeech = `You are currently ranked Bronze at ${heroType.sr} but you got a ways to go!`;
+            outputSpeech = `you are currently ranked Bronze at ${heroType.sr}, ${heroType.sr > 1450 ? 'you are very close to Silver rank. Keep going' : 'you got a ways to go to get to Silver rank. Keep pushing'}!`;
         }
     }
 
