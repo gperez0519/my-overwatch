@@ -4,9 +4,15 @@ const axios = require('axios');
 // Overwatch Stats API by FatChan (Thomas Lynch) - NPM Package URL: https://www.npmjs.com/package/overwatch-stats-api **
 const ow = require('overwatch-stats-api');
 
+// Default parameters
 const appName = 'My Overwatch';
 let nickName = "my friend";
 let drinkCount = 0;
+let platforms = [
+    "pc",
+    "xbl",
+    "psn"
+];
 
 /** OVERWATCH GENERAL RESPONSES **/
 const responses = {
@@ -171,7 +177,6 @@ const GetMyStatsIntentHandler = {
             console.log("Error occurred getting user info: ", error);
         }
 
-        let platform = "pc";
         let battletag_username = "";
         let battletag_number = "";
 
@@ -184,7 +189,7 @@ const GetMyStatsIntentHandler = {
 
         console.log("Captured Battletag username: " + battletag_username);
         console.log("Captured Battletag number: " + battletag_number);
-        console.log("Captured Platform: " + platform);
+        // console.log("Captured Platform: " + platform);
 
         try {
             // send the progressive response while looking up blizzard user data.
@@ -195,33 +200,41 @@ const GetMyStatsIntentHandler = {
             console.log("There was an issue attempting to send the progressive response while searching for overwatch profile of the given battletag " + err);
         }
 
-        // // SET THE PLATFORM TO THE OVERWATCH STATS API PARAMETER TYPE EITHER pc, xbl or psn
-        // if (platformVal.toLowerCase() == "xbox") {
-        //     platform = "xbl";
-        // } else if (platformVal.toLowerCase() == "pc" || platformVal.toLowerCase() == "peesee" || platformVal.toLowerCase() == "pz" || platformVal.toLowerCase() == "peezee" || platformVal.toLowerCase() == "p.c") {
-        //     platform = "pc";
-        // } else if (platformVal.toLowerCase() == "playstation") {
-        //     platform = "psn";
-        // }
-
         // CALL THE OVERWATCH STATS API TO GET THE PROFILE INFORMATION FOR THE PASSED BATTLETAG WITH PLATFORM
-        if (battletag_username && battletag_number && platform) {
+        if (battletag_username && battletag_number) {
 
             // CONCAT USERNAME DASH AND NUMBER TO GET THE STATS
             battletag = battletag_username + "-" + battletag_number;
 
             console.log("Full translated battletag: " + battletag);
-            console.log("Platform recognized: " + platform);
+            // console.log("Platform recognized: " + platform);
 
             nickName = battletag_username;
 
+            var stats = null;
+            var mostPlayed = null;
+
+            // loop through rest of platforms.
+            for (const platform in platforms){
+                try {
+                    // get all stats for the given user
+                    stats = await ow.getAllStats(battletag, platforms[platform]);
+
+                    // get most played heroes per given user
+                    mostPlayed = await ow.getMostPlayed(battletag, platforms[platform]);
+
+                    break;
+                } catch (error) {
+                    if (error.message.indexOf("PROFILE_PRIVATE") >= 0){
+                        outputSpeech = `${nickName}. I would love to tell you how your Overwatch progress is going but it seems your profile is private. You should set your profile public so my analysis is able to retrieve the data we need.`;
+                    } else {
+                        outputSpeech = `${nickName}. I would love to tell you how your Overwatch progress is going but it seems my analyzer is not functioning at the moment. The error I see here is ${error.message}. Try again later.`;
+                    }
+                    
+                }
+            }
+
             try {
-
-                // get all stats for the given user
-                const stats = await ow.getAllStats(battletag, platform);
-
-                // get most played heroes per given user
-                const mostPlayed = await ow.getMostPlayed(battletag, platform);
 
                 // Check if stats are retrieved for the player
                 if (isObjectEmpty(stats)) {
@@ -302,12 +315,7 @@ const GetMyStatsIntentHandler = {
                 }
 
             } catch (error) {
-                if (error.message.indexOf("PROFILE_PRIVATE") >= 0){
-                    outputSpeech = `${nickName}. I would love to tell you how your Overwatch progress is going but it seems your profile is private. You should set your profile public so my analysis is able to retrieve the data we need.`;
-                } else {
-                    outputSpeech = `${nickName}. I would love to tell you how your Overwatch progress is going but it seems my analyzer is not functioning at the moment. The error I see here is ${error.message}. Try again later.`;
-                }
-                
+                outputSpeech = `${nickName}. I would love to tell you how your Overwatch progress is going but it seems my analyzer is not functioning at the moment. The error I see here is ${error.message}. Try again later.`;
             }
 
         }
