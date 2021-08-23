@@ -101,7 +101,7 @@ const LaunchRequestHandler = {
     handle(handlerInput) {
 
         // welcome message
-        let welcomeText = responses.DOOR_OPEN_AUDIO + responses.ROWDY_BAR_AMBIANCE_AUDIO + responses.GREETING_PERSONALIZED + responses.POUR_DRINK_AUDIO + responses.GLASS_CLINK_AUDIO + responses.OPTIONS;
+        let welcomeText = `${responses.DOOR_OPEN_AUDIO} ${responses.ROWDY_BAR_AMBIANCE_AUDIO} ${responses.GREETING_PERSONALIZED} ${responses.POUR_DRINK_AUDIO} Cheers, my friend! ${responses.GLASS_CLINK_AUDIO} ${responses.OPTIONS}`;
 
         // Get a random number between 1 and 3
         let randomChoice = getRndInteger(1,4);
@@ -109,11 +109,11 @@ const LaunchRequestHandler = {
         // return a random welcome message to ensure human like interaction.
         try {
             if (randomChoice == 1){
-                welcomeText = responses.DOOR_OPEN_AUDIO + responses.ROWDY_BAR_AMBIANCE_AUDIO + responses.GREETING_PERSONALIZED + responses.POUR_DRINK_AUDIO + responses.GLASS_CLINK_AUDIO + responses.OPTIONS;
+                welcomeText = responses.DOOR_OPEN_AUDIO + responses.ROWDY_BAR_AMBIANCE_AUDIO + responses.GREETING_PERSONALIZED + responses.POUR_DRINK_AUDIO + "Cheers, my friend!" + responses.GLASS_CLINK_AUDIO + responses.OPTIONS;
             } else if (randomChoice == 2) {
-                welcomeText = responses.DOOR_OPEN_AUDIO + responses.ROWDY_BAR_AMBIANCE_AUDIO + responses.GREETING_PERSONALIZED_II + responses.POUR_DRINK_AUDIO + responses.GLASS_CLINK_AUDIO + responses.OPTIONS;
+                welcomeText = responses.DOOR_OPEN_AUDIO + responses.ROWDY_BAR_AMBIANCE_AUDIO + responses.GREETING_PERSONALIZED_II + responses.POUR_DRINK_AUDIO + "Cheers, my friend!" + responses.GLASS_CLINK_AUDIO + responses.OPTIONS;
             } else if (randomChoice == 3) {
-                welcomeText = responses.DOOR_OPEN_AUDIO + responses.ROWDY_BAR_AMBIANCE_AUDIO + responses.GREETING_PERSONALIZED_III + responses.POUR_DRINK_AUDIO + responses.GLASS_CLINK_AUDIO + responses.OPTIONS;
+                welcomeText = responses.DOOR_OPEN_AUDIO + responses.ROWDY_BAR_AMBIANCE_AUDIO + responses.GREETING_PERSONALIZED_III + responses.POUR_DRINK_AUDIO + "Cheers, my friend!" + responses.GLASS_CLINK_AUDIO + responses.OPTIONS;
             }
         } catch (error) {
             console.log("Something went wrong with randomization welcome message. Error: ", error.message);
@@ -338,13 +338,15 @@ const AnotherDrinkIntentHandler = {
     handle(handlerInput) {
         drinkCount++;
 
-        let speechText = `You got it my friend! Coming right up! ${responses.POUR_DRINK_AUDIO} ${responses.GLASS_CLINK_AUDIO} ${responses.OPTIONS}`;
+        let speechText = `You got it my friend! Coming right up! ${responses.POUR_DRINK_AUDIO} Cheers! ${responses.GLASS_CLINK_AUDIO} ${responses.OPTIONS}`;
 
         if (drinkCount == 1) {
-            speechText = `You got it my friend! Coming right up! ${responses.POUR_DRINK_AUDIO} ${responses.GLASS_CLINK_AUDIO} ${responses.OPTIONS}`;
+            speechText = `You got it my friend! Coming right up! ${responses.POUR_DRINK_AUDIO} Cheers! ${responses.GLASS_CLINK_AUDIO} ${responses.OPTIONS}`;
         } else if (drinkCount == 2) {
-            speechText = `Whoa, another one hahaha. You got it my friend! Coming right up! Although, I want you conscious for our conversation you know. ${responses.POUR_DRINK_AUDIO} ${responses.GLASS_CLINK_AUDIO} ${responses.TOO_MANY_DRINKS_OPTIONS}`;
-        } else if (drinkCount > 2) {
+            speechText = `Here's another round my friend. ${responses.POUR_DRINK_AUDIO} Cheers, to great friends! ${responses.GLASS_CLINK_AUDIO} ${responses.OPTIONS}`;
+        } else if (drinkCount == 3) {
+            speechText = `Whoa, another one? Thirsty, aren't we? You got it my friend! Coming right up! Although, I want you conscious for our conversation you know. ${responses.POUR_DRINK_AUDIO} Cheers, to friends and great battles! ${responses.GLASS_CLINK_AUDIO} ${responses.TOO_MANY_DRINKS_OPTIONS}`;
+        } else if (drinkCount > 3) {
             speechText = `I'm sorry my friend. I cannot in all good conscience allow you to drink that much. ${responses.TOO_MANY_DRINKS_OPTIONS}`;
         }
         
