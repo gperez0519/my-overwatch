@@ -297,6 +297,9 @@ const GetMyStatsIntentHandler = {
                 outputSpeech = `${nickName}. I would love to tell you how your Overwatch progress is going but it seems my analyzer is not functioning at the moment. The error I see here is ${error.message}. Try again later.`;
             }
 
+        } else {
+            // Battle tag and username is null
+            console.log("Battle tag and username was not found for some reason");
         }
 
 
@@ -349,6 +352,8 @@ const HelpIntentHandler = {
     handle(handlerInput) {
         const speechText = '';
 
+        console.log("User asked for help.");
+
         return handlerInput.responseBuilder
             .speak(speechText)
             .reprompt(speechText)
@@ -392,6 +397,8 @@ const CancelAndStopIntentHandler = {
     },
     handle(handlerInput) {
         const speechText = VocalResponses.responses.GOODBYE;
+
+        console.log("User left tavern");
 
         return handlerInput.responseBuilder
             .speak(`<voice name='Emma'>${speechText}</voice>`)

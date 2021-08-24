@@ -12,7 +12,7 @@ const responses = {
     YOU_ARE_WELCOME: "Not a problem at all my friend! How have you been faring?",
     PROGRESSIVE_RESPONSE: "Sure, let me check my data analysis unit. Let's see here.",
     GREETING_RESPONSE: "I'm doing just well. I'm glad that you are here!",
-    NEED_TO_LINK_MESSAGE: 'Before we can continue, you will need to link your account to the My Overwatch skill using the card that I have sent to the Alexa app.',
+    NEED_TO_LINK_MESSAGE: 'Before we can continue, you will need to link your battle.net account to the My Overwatch skill using the card that I have sent to the Alexa app.',
     TOP_MENU: "Great! We can tell you your stats of your Overwatch progress. Say get my stats to hear your stats of your Overwatch profile.",
     OVERWATCH_SERVICE_UNAVAILABLE: "Oh no! The My Overwatch service is not available at the moment. Please try again later.",
     PLEASE_WAIT: "Please wait while we try to retrieve that profile information",
