@@ -244,7 +244,7 @@ const GetMyStatsIntentHandler = {
                     outputSpeech = `${nickName},`;
 
                     // Get the players current level and prestige.
-                    outputSpeech += ` you are currently level ${stats.level} at prestige ${stats.prestige}.`;
+                    outputSpeech += ` you are currently level ${stats.level} ${stats.prestige ? `at prestige ${stats.prestige}` : ``} .`;
 
                     if (stats.prestige != "") {
                         if (stats.prestige > 3) {
@@ -284,6 +284,7 @@ const GetMyStatsIntentHandler = {
                         console.log("Most played data payload: ", JSON.stringify(mostPlayed));
 
                         let quickPlayHero = Object.keys(mostPlayed.quickplay)[0];
+                        let quickPlayHeroWeaponAccuracy = stats.heroStats.quickplay[quickPlayHero].combat.weapon_accuracy;
 
                         // Tell the player about their most played hero in Quick Play.
                         outputSpeech += ` It seems you really enjoy playing ${toTitleCase(quickPlayHero)} in Quickplay. `;
@@ -291,10 +292,14 @@ const GetMyStatsIntentHandler = {
                         // Tell the player about the most played hero's win percentage.
                         outputSpeech += `Your current win percentage with this hero in Quickplay is ${stats.heroStats.quickplay[quickPlayHero].game.win_percentage}.`;
 
+                        // Tell the player about their combat weapon accuracy.
+                        outputSpeech += ` Analysis shows your weapon accuracy in Quickplay with ${toTitleCase(quickPlayHero)} is ${quickPlayHeroWeaponAccuracy}! ${parseInt(quickPlayHeroWeaponAccuracy) > "50%" ? `That is actually really impressive!` : `I think you might want to practice your aim more in training to increase your chances of success.`}`;
+
                         // Check if there are stats for competitive, if there aren't the player doesn't compete
                         if (!!stats.heroStats.competitive) {
                             let mostPlayedCompetitiveHero = Object.keys(mostPlayed.competitive)[0];
                             let statsCompHeroWinPercentage = stats.heroStats.competitive[mostPlayedCompetitiveHero].game.win_percentage;
+                            let statsCompHeroWeaponAccuracy = stats.heroStats.competitive[mostPlayedCompetitiveHero].combat.weapon_accuracy;
 
                             outputSpeech += ` Also, it seems you really enjoy playing ${toTitleCase(mostPlayedCompetitiveHero)} in Competitive. `;
                             outputSpeech += `Your current win percentage with this hero in Competitive is ${statsCompHeroWinPercentage}.`;
@@ -307,6 +312,9 @@ const GetMyStatsIntentHandler = {
                                                 you will have more success with ${toTitleCase(suggestedCompHero.hero)} 
                                                 since your win percentage with that hero in competitive is ${suggestedCompHero.win_percentage}.`;
                             }
+
+                            // Tell the player about their combat weapon accuracy.
+                        outputSpeech += ` Analysis shows your weapon accuracy in competitive with ${toTitleCase(suggestedCompHero.hero)} is ${statsCompHeroWeaponAccuracy}! ${parseInt(statsCompHeroWeaponAccuracy) > "50%" ? `That is actually really impressive!` : `I think you might want to practice your aim more in training to increase your chances of success.`}`;
                         }
                     }
                     
@@ -324,7 +332,11 @@ const GetMyStatsIntentHandler = {
         return handlerInput.responseBuilder
             .speak(`<voice name='Emma'>${outputSpeech}</voice>`)
             .reprompt(`<voice name='Emma'>${rePromptText}</voice>`)
-            //.withStandardCard(appName, card)
+            .withStandardCard(
+                nickName ? ` Profile Analysis` : `Your Profile Analysis`,
+                outputSpeech,
+                stats.iconURL ? stats.iconURL : '',
+                stats.iconURL ? stats.iconURL : '')
             .getResponse();
 
     },
@@ -545,17 +557,17 @@ function getPlayerRank(heroType) {
         if (heroType.sr > 4000) {
             outputSpeech = `you are currently ranked Grandmaster at ${heroType.sr}!`;
         } else if (heroType.sr < 3999 && heroType.sr > 3500) {
-            outputSpeech = `you are currently ranked Master at ${heroType.sr}, ${heroType.sr > 3950 ? 'you are very close to Grandmaster rank. Keep going' : 'you got a ways to go to get to Grandmaster rank. Keep pushing'}!`;
+            outputSpeech = `you are currently ranked Master at ${heroType.sr}, ${heroType.sr > 3950 ? 'you are very close to Grandmaster rank. Amazing! Keep pushing' : 'you got a ways to go to get to Grandmaster rank. Amazing! Keep pushing'}!`;
         } else if (heroType.sr < 3499 && heroType.sr > 3000) {
-            outputSpeech = `you are currently ranked Diamond at ${heroType.sr}, ${heroType.sr > 3450 ? 'you are very close to Master rank. Keep going' : 'you got a ways to go to get to Master rank. Keep pushing'}!`;
+            outputSpeech = `you are currently ranked Diamond at ${heroType.sr}, ${heroType.sr > 3450 ? 'you are very close to Master rank. Almost there my friend, keep going' : 'you got a ways to go to get to Master rank. Almost there my friend, keep going'}!`;
         } else if (heroType.sr < 2999 && heroType.sr > 2500) {
-            outputSpeech = `you are currently ranked Platinum at ${heroType.sr}, ${heroType.sr > 2950 ? 'you are very close to Diamond rank. Keep going' : 'you got a ways to go to get to Diamond rank. Keep pushing'}!`;
+            outputSpeech = `you are currently ranked Platinum at ${heroType.sr}, ${heroType.sr > 2950 ? 'you are very close to Diamond rank. Amazing! Keep pushing' : 'you got a ways to go to get to Diamond rank. Amazing! Keep pushing'}!`;
         } else if (heroType.sr < 2499 && heroType.sr > 2000) {
-            outputSpeech = `you are currently ranked Gold at ${heroType.sr}, ${heroType.sr > 2450 ? 'you are very close to Platinum rank. Keep going' : 'you got a ways to go to get to Platinum rank. Keep pushing'}!`;
+            outputSpeech = `you are currently ranked Gold at ${heroType.sr}, ${heroType.sr > 2450 ? 'you are very close to Platinum rank. Almost there my friend, keep going' : 'you got a ways to go to get to Platinum rank. Almost there my friend, keep going'}!`;
         } else if (heroType.sr < 1999 && heroType.sr > 1500) {
-            outputSpeech = `you are currently ranked Silver at ${heroType.sr}, ${heroType.sr > 1950 ? 'you are very close to Gold rank. Keep going' : 'you got a ways to go to get to Gold rank. Keep pushing'}!`;
+            outputSpeech = `you are currently ranked Silver at ${heroType.sr}, ${heroType.sr > 1950 ? 'you are very close to Gold rank. Amazing! Keep pushing' : 'you got a ways to go to get to Gold rank. Amazing! Keep pushing'}!`;
         } else {
-            outputSpeech = `you are currently ranked Bronze at ${heroType.sr}, ${heroType.sr > 1450 ? 'you are very close to Silver rank. Keep going' : 'you got a ways to go to get to Silver rank. Keep pushing'}!`;
+            outputSpeech = `you are currently ranked Bronze at ${heroType.sr}, ${heroType.sr > 1450 ? 'you are very close to Silver rank. Almost there my friend, keep going' : 'you got a ways to go to get to Silver rank. Almost there my friend, keep going'}!`;
         }
     }
 
