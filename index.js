@@ -1,5 +1,6 @@
 const Alexa = require('ask-sdk-core');
 const axios = require('axios');
+const VocalResponses = require('./vocalResponses');
 
 // Overwatch Stats API by FatChan (Thomas Lynch) - NPM Package URL: https://www.npmjs.com/package/overwatch-stats-api **
 const ow = require('overwatch-stats-api');
@@ -13,36 +14,6 @@ let platforms = [
     "xbl",
     "psn"
 ];
-
-/** OVERWATCH GENERAL RESPONSES **/
-const responses = {
-    GREETING: "Welcome to My Overwatch! We can tell you your stats of your Overwatch progress. Say get my stats to hear your stats of your Overwatch profile.",
-    GREETING_PERSONALIZED: `Welcome ${nickName} to Blizz Tavern! Please, have a seat and take a load off! Here's a round on the house!`,
-    GREETING_PERSONALIZED_II: `<prosody volume="x-loud">Hey you miscreants! You throw another chair and I'll toss you out myself!</prosody> Oh hey there my friend! Welcome to Blizz Tavern! You must be exhausted, drinks are <emphasis level="reduced">on</emphasis> me!`,
-    GREETING_PERSONALIZED_III: `<prosody volume="x-loud">Hey Jack! don't make me come back there!</prosody> Oh hey, sorry about that. Some people get a little <emphasis level="moderate">rowdy</emphasis>, a round here. Welcome to Blizz Tavern! You must be exhausted. Here, drinks are on me!`,
-    OPTIONS: `Now, what can I do for you? Would you like another drink, do you want to see how your Overwatch progress is going, or would you like to leave the tavern?`,
-    TOO_MANY_DRINKS_OPTIONS: `Now. What can I do for you? Would you like to see how your Overwatch progress is going, or are you looking to leave the tavern?`,
-    ALTERNATE_OPTIONS: `Amazing thus far. Now, what can I do for you? Would you like another drink, do you want to check up on your Overwatch progress again, or do you want to leave the tavern?`,
-    YOU_ARE_WELCOME: "Not a problem at all my friend! How have you been faring?",
-    RANK_PERSONALIZED_BEGIN: "Sure, let me check my data analysis unit. Let's see here.",
-    GREETING_RESPONSE: "I'm doing just well. I'm glad that you are here!",
-    NEED_TO_LINK_MESSAGE: 'Before we can continue, you will need to link your account to the My Overwatch skill using the card that I have sent to the Alexa app.',
-    TOP_MENU: "Great! We can tell you your stats of your Overwatch progress. Say get my stats to hear your stats of your Overwatch profile.",
-    OVERWATCH_SERVICE_UNAVAILABLE: "Oh no! The My Overwatch service is not available at the moment. Please try again later.",
-    PLEASE_WAIT: "Please wait while we try to retrieve that profile information",
-    PLACEMENTS_NOT_COMPLETE: "You have not placed yet in this Competitive season. Make sure you do so in order to hear about your ranking info.",
-    GOODBYE: `You are always welcome here my friend! If you have some time, please leave us a rating on the My Overwatch skill in the skill store. We would appreciate it greatly.
-             Stop by Blizz tavern next time and we can catch up again. Good luck in your battles!`,
-    DEFAULT_ERROR_BATTLETAG: "Strange, My data analysis unit is not finding your information. No worries, we can try again later.",
-    DEFAULT_ERROR_PLATFORM: "Sorry, we did not recognize that platform. Please say either Xbox, PC, or Playstation.",
-    PLATFORM_INQUIRY: "Great! Which platform do you want to get your stats for? Xbox, PC or Playstation?",
-    PLEASE_REPEAT: "Sorry, we did not hear from you.",
-    ANYTHING_ELSE: "Is there anything else that you would like to know?",
-    POUR_DRINK_AUDIO: "<audio src='soundbank://soundlibrary/household/water/pour_water_01'/>",
-    DOOR_OPEN_AUDIO: "<audio src='soundbank://soundlibrary/home/amzn_sfx_door_open_01'/>",
-    GLASS_CLINK_AUDIO: "<audio src='soundbank://soundlibrary/glass/clink/glasses_clink_04'/>",
-    ROWDY_BAR_AMBIANCE_AUDIO: "<audio src='soundbank://soundlibrary/ambience/amzn_sfx_crowd_bar_rowdy_01'/>"
-}
 
 /** CUSTOM FUNCTIONS **/
 function isObjectEmpty(obj) {
@@ -85,7 +56,7 @@ const CheckAccountLinkedHandler = {
         return isAccountLinked(handlerInput);
     },
     handle(handlerInput) {
-        const speakOutput = responses.NEED_TO_LINK_MESSAGE;
+        const speakOutput = VocalResponses.responses.NEED_TO_LINK_MESSAGE;
         return handlerInput.responseBuilder
         .speak("<voice name='Emma'>" + speakOutput + "</voice>")
         .withLinkAccountCard()
@@ -101,7 +72,7 @@ const LaunchRequestHandler = {
     handle(handlerInput) {
 
         // welcome message
-        let welcomeText = `${responses.DOOR_OPEN_AUDIO} ${responses.ROWDY_BAR_AMBIANCE_AUDIO} ${responses.GREETING_PERSONALIZED} ${responses.POUR_DRINK_AUDIO} Cheers, my friend! ${responses.GLASS_CLINK_AUDIO} ${responses.OPTIONS}`;
+        let welcomeText = `${VocalResponses.responses.DOOR_OPEN_AUDIO} ${VocalResponses.responses.ROWDY_BAR_AMBIANCE_AUDIO} ${VocalResponses.responses.GREETING_PERSONALIZED} ${VocalResponses.responses.POUR_DRINK_AUDIO} Cheers, my friend! ${VocalResponses.responses.GLASS_CLINK_AUDIO} ${VocalResponses.responses.OPTIONS}`;
 
         // Get a random number between 1 and 3
         let randomChoice = getRndInteger(1,4);
@@ -109,21 +80,21 @@ const LaunchRequestHandler = {
         // return a random welcome message to ensure human like interaction.
         try {
             if (randomChoice == 1){
-                welcomeText = responses.DOOR_OPEN_AUDIO + responses.ROWDY_BAR_AMBIANCE_AUDIO + responses.GREETING_PERSONALIZED + responses.POUR_DRINK_AUDIO + "Cheers, my friend!" + responses.GLASS_CLINK_AUDIO + responses.OPTIONS;
+                welcomeText = VocalResponses.responses.DOOR_OPEN_AUDIO + VocalResponses.responses.ROWDY_BAR_AMBIANCE_AUDIO + VocalResponses.responses.GREETING_PERSONALIZED + VocalResponses.responses.POUR_DRINK_AUDIO + "Cheers, my friend!" + VocalResponses.responses.GLASS_CLINK_AUDIO + VocalResponses.responses.OPTIONS;
             } else if (randomChoice == 2) {
-                welcomeText = responses.DOOR_OPEN_AUDIO + responses.ROWDY_BAR_AMBIANCE_AUDIO + responses.GREETING_PERSONALIZED_II + responses.POUR_DRINK_AUDIO + "Cheers, my friend!" + responses.GLASS_CLINK_AUDIO + responses.OPTIONS;
+                welcomeText = VocalResponses.responses.DOOR_OPEN_AUDIO + VocalResponses.responses.ROWDY_BAR_AMBIANCE_AUDIO + VocalResponses.responses.GREETING_PERSONALIZED_II + VocalResponses.responses.POUR_DRINK_AUDIO + "Cheers, my friend!" + VocalResponses.responses.GLASS_CLINK_AUDIO + VocalResponses.responses.OPTIONS;
             } else if (randomChoice == 3) {
-                welcomeText = responses.DOOR_OPEN_AUDIO + responses.ROWDY_BAR_AMBIANCE_AUDIO + responses.GREETING_PERSONALIZED_III + responses.POUR_DRINK_AUDIO + "Cheers, my friend!" + responses.GLASS_CLINK_AUDIO + responses.OPTIONS;
+                welcomeText = VocalResponses.responses.DOOR_OPEN_AUDIO + VocalResponses.responses.ROWDY_BAR_AMBIANCE_AUDIO + VocalResponses.responses.GREETING_PERSONALIZED_III + VocalResponses.responses.POUR_DRINK_AUDIO + "Cheers, my friend!" + VocalResponses.responses.GLASS_CLINK_AUDIO + VocalResponses.responses.OPTIONS;
             }
         } catch (error) {
             console.log("Something went wrong with randomization welcome message. Error: ", error.message);
         }
         
 
-        let rePromptText = `Are you going to stare at me or do you want to choose? ${responses.OPTIONS}`;
+        let rePromptText = `Are you going to stare at me or do you want to choose? ${VocalResponses.responses.OPTIONS}`;
 
         // welcome screen message
-        let displayText = responses.GREETING_PERSONALIZED;
+        let displayText = VocalResponses.responses.GREETING_PERSONALIZED;
 
         return handlerInput.responseBuilder
             .speak("<voice name='Emma'>" + welcomeText + "</voice>")
@@ -139,7 +110,7 @@ const GetMyStatsIntentHandler = {
             && handlerInput.requestEnvelope.request.intent.name === 'GetMyStatsIntent');
     },
     async handle(handlerInput) {
-        outputSpeech = responses.DEFAULT_ERROR_BATTLETAG;
+        outputSpeech = VocalResponses.responses.DEFAULT_ERROR_BATTLETAG;
         //let intent = handlerInput.requestEnvelope.request.intent;
 
         //let platformVal = intent.slots.platform.value;
@@ -152,7 +123,7 @@ const GetMyStatsIntentHandler = {
         if (accessToken == undefined){
             // The request did not include a token, so tell the user to link
             // accounts and return a LinkAccount card
-            var speechText = responses.NEED_TO_LINK_MESSAGE;
+            var speechText = VocalResponses.responses.NEED_TO_LINK_MESSAGE;
 
             return handlerInput.responseBuilder
                 .speak(`<voice name='Emma'>${speechText}</voice>`)
@@ -185,7 +156,7 @@ const GetMyStatsIntentHandler = {
             battletag_number = userInfo.data.battletag.split("#")[1];
         }
 
-        let rePromptText = `Well, I guess you don't find that to be very exciting but in any case I will leave you to it. Let me know if you need anything else. ${drinkCount > 3 ? responses.TOO_MANY_DRINKS_OPTIONS : responses.OPTIONS}`;
+        let rePromptText = `Well, I guess you don't find that to be very exciting but in any case I will leave you to it. Let me know if you need anything else. ${drinkCount > 3 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.OPTIONS}`;
 
         console.log("Captured Battletag username: " + battletag_username);
         console.log("Captured Battletag number: " + battletag_number);
@@ -238,7 +209,7 @@ const GetMyStatsIntentHandler = {
 
                 // Check if stats are retrieved for the player
                 if (isObjectEmpty(stats)) {
-                    outputSpeech = " " + responses.OVERWATCH_SERVICE_UNAVAILABLE;
+                    outputSpeech = " " + VocalResponses.responses.OVERWATCH_SERVICE_UNAVAILABLE;
                 } else {
 
                     outputSpeech = `${nickName},`;
@@ -273,12 +244,12 @@ const GetMyStatsIntentHandler = {
                         }
                         
                     } else {
-                        outputSpeech = " " + responses.PLACEMENTS_NOT_COMPLETE;
+                        outputSpeech = " " + VocalResponses.responses.PLACEMENTS_NOT_COMPLETE;
                     }
 
                     // Check if we retrieved data for the most played heroes
                     if (isObjectEmpty(mostPlayed)) {
-                        outputSpeech = responses.OVERWATCH_SERVICE_UNAVAILABLE;
+                        outputSpeech = VocalResponses.responses.OVERWATCH_SERVICE_UNAVAILABLE;
                     } else {
                         console.log("All stats data payload: ", JSON.stringify(stats));
                         console.log("Most played data payload: ", JSON.stringify(mostPlayed));
@@ -319,7 +290,7 @@ const GetMyStatsIntentHandler = {
                     }
                     
                     // Once all stats are retrieved and appended lets append the options again for the user to choose what they want to do thereafter.
-                    outputSpeech += drinkCount > 2 ? " " + responses.TOO_MANY_DRINKS_OPTIONS : " " + responses.ALTERNATE_OPTIONS;
+                    outputSpeech += drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS;
                 }
 
             } catch (error) {
@@ -350,16 +321,16 @@ const AnotherDrinkIntentHandler = {
     handle(handlerInput) {
         drinkCount++;
 
-        let speechText = `You got it my friend! Coming right up! ${responses.POUR_DRINK_AUDIO} Cheers! ${responses.GLASS_CLINK_AUDIO} ${responses.OPTIONS}`;
+        let speechText = `You got it my friend! Coming right up! ${VocalResponses.responses.POUR_DRINK_AUDIO} Cheers! ${VocalResponses.responses.GLASS_CLINK_AUDIO} ${VocalResponses.responses.OPTIONS}`;
 
         if (drinkCount == 1) {
-            speechText = `You got it my friend! Coming right up! ${responses.POUR_DRINK_AUDIO} Cheers! ${responses.GLASS_CLINK_AUDIO} ${responses.OPTIONS}`;
+            speechText = `You got it my friend! Coming right up! ${VocalResponses.responses.POUR_DRINK_AUDIO} Cheers! ${VocalResponses.responses.GLASS_CLINK_AUDIO} ${VocalResponses.responses.OPTIONS}`;
         } else if (drinkCount == 2) {
-            speechText = `Here's another round my friend. ${responses.POUR_DRINK_AUDIO} Cheers, to great friends! ${responses.GLASS_CLINK_AUDIO} ${responses.OPTIONS}`;
+            speechText = `Here's another round my friend. ${VocalResponses.responses.POUR_DRINK_AUDIO} Cheers, to great friends! ${VocalResponses.responses.GLASS_CLINK_AUDIO} ${VocalResponses.responses.OPTIONS}`;
         } else if (drinkCount == 3) {
-            speechText = `Whoa, another one? Thirsty, aren't we? You got it my friend! Coming right up! Although, I want you conscious for our conversation you know. ${responses.POUR_DRINK_AUDIO} Cheers, to friends and great battles! ${responses.GLASS_CLINK_AUDIO} ${responses.TOO_MANY_DRINKS_OPTIONS}`;
+            speechText = `Whoa, another one? Thirsty, aren't we? You got it my friend! Coming right up! Although, I want you conscious for our conversation you know. ${VocalResponses.responses.POUR_DRINK_AUDIO} Cheers, to friends and great battles! ${VocalResponses.responses.GLASS_CLINK_AUDIO} ${VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS}`;
         } else if (drinkCount > 3) {
-            speechText = `I'm sorry my friend. I cannot in all good conscience allow you to drink that much. ${responses.TOO_MANY_DRINKS_OPTIONS}`;
+            speechText = `I'm sorry my friend. I cannot in all good conscience allow you to drink that much. ${VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS}`;
         }
         
 
@@ -393,8 +364,8 @@ const YesIntentHandler = {
     handle(handlerInput) {
 
         return handlerInput.responseBuilder
-            .speak(`<voice name='Emma'>${responses.TOP_MENU}</voice>`)
-            .reprompt(`<voice name='Emma'>${responses.PLEASE_REPEAT} ${responses.ANYTHING_ELSE}</voice>`)
+            .speak(`<voice name='Emma'>${VocalResponses.responses.TOP_MENU}</voice>`)
+            .reprompt(`<voice name='Emma'>${VocalResponses.responses.PLEASE_REPEAT} ${VocalResponses.responses.ANYTHING_ELSE}</voice>`)
             .getResponse();
     },
 };
@@ -407,8 +378,8 @@ const NoIntentHandler = {
     handle(handlerInput) {
 
         return handlerInput.responseBuilder
-            .speak(`<voice name='Emma'>${responses.GOODBYE}</voice>`)
-            .reprompt(`<voice name='Emma'>${responses.PLEASE_REPEAT} ${responses.ANYTHING_ELSE}</voice>`)
+            .speak(`<voice name='Emma'>${VocalResponses.responses.GOODBYE}</voice>`)
+            .reprompt(`<voice name='Emma'>${VocalResponses.responses.PLEASE_REPEAT} ${VocalResponses.responses.ANYTHING_ELSE}</voice>`)
             .getResponse();
     },
 };
@@ -420,7 +391,7 @@ const CancelAndStopIntentHandler = {
                 || handlerInput.requestEnvelope.request.intent.name === 'AMAZON.StopIntent');
     },
     handle(handlerInput) {
-        const speechText = responses.GOODBYE;
+        const speechText = VocalResponses.responses.GOODBYE;
 
         return handlerInput.responseBuilder
             .speak(`<voice name='Emma'>${speechText}</voice>`)
@@ -455,6 +426,7 @@ const ErrorHandler = {
 
 /** BUILT-IN FUNCTIONS **/
 function callDirectiveService(handlerInput) {
+    
     // Call Alexa Directive Service.
     const requestEnvelope = handlerInput.requestEnvelope;
     const directiveServiceClient = handlerInput.serviceClientFactory.getDirectiveServiceClient();
@@ -470,7 +442,7 @@ function callDirectiveService(handlerInput) {
         },
         directive: {
             type: 'VoicePlayer.Speak',
-            speech: `<voice name='Emma'>${responses.RANK_PERSONALIZED_BEGIN}</voice>`,
+            speech: `<voice name='Emma'>${VocalResponses.responses.PROGRESSIVE_RESPONSE}</voice>`,
         },
     };
 
