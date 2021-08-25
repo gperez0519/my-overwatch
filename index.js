@@ -245,6 +245,7 @@ const GetMyStatsIntentHandler = {
                         
                     } else {
                         outputSpeech = " " + VocalResponses.responses.PLACEMENTS_NOT_COMPLETE;
+                        console.log("Player has not placed in rank yet.");
                     }
 
                     // Check if we retrieved data for the most played heroes
@@ -255,7 +256,6 @@ const GetMyStatsIntentHandler = {
                         console.log("Most played data payload: ", JSON.stringify(mostPlayed));
 
                         let quickPlayHero = Object.keys(mostPlayed.quickplay)[0];
-                        let quickPlayHeroWeaponAccuracy = stats.heroStats.quickplay[quickPlayHero].combat.weapon_accuracy;
 
                         // Tell the player about their most played hero in Quick Play.
                         outputSpeech += ` It seems you really enjoy playing ${toTitleCase(quickPlayHero)} in Quickplay. `;
@@ -263,15 +263,18 @@ const GetMyStatsIntentHandler = {
                         // Tell the player about the most played hero's win percentage.
                         outputSpeech += `Your current win percentage with this hero in Quickplay is ${stats.heroStats.quickplay[quickPlayHero].game.win_percentage}.`;
 
-                        // Tell the player about their combat weapon accuracy.
-                        outputSpeech += ` Analysis shows your weapon accuracy in Quickplay with ${toTitleCase(quickPlayHero)} is ${quickPlayHeroWeaponAccuracy}! ${parseInt(quickPlayHeroWeaponAccuracy) > "50%" ? `That is actually really impressive!` : `I think you might want to practice your aim more in training to increase your chances of success.`}`;
+                        // Tell the player about their combat weapon accuracy for competitive if it exists
+                        if (stats.heroStats.quickplay[quickPlayHero].combat.weapon_accuracy) {
+                            let quickPlayHeroWeaponAccuracy = stats.heroStats.quickplay[quickPlayHero].combat.weapon_accuracy
+
+                            outputSpeech += ` Analysis shows your weapon accuracy in Quickplay with ${toTitleCase(quickPlayHero)} is ${quickPlayHeroWeaponAccuracy}! ${parseInt(quickPlayHeroWeaponAccuracy) > "50%" ? `That is actually really impressive!` : `I think you might want to practice your aim more in training to increase your chances of success.`}`;
+                        }
 
                         // Check if there are stats for competitive, if there aren't the player doesn't compete
-                        if (!!stats.heroStats.competitive) {
+                        if (!isObjectEmpty(stats.heroStats.competitive)) {
                             let mostPlayedCompetitiveHero = Object.keys(mostPlayed.competitive)[0];
                             let statsCompHeroWinPercentage = stats.heroStats.competitive[mostPlayedCompetitiveHero].game.win_percentage;
-                            let statsCompHeroWeaponAccuracy = stats.heroStats.competitive[mostPlayedCompetitiveHero].combat.weapon_accuracy;
-
+                            
                             outputSpeech += ` Also, it seems you really enjoy playing ${toTitleCase(mostPlayedCompetitiveHero)} in Competitive. `;
                             outputSpeech += `Your current win percentage with this hero in Competitive is ${statsCompHeroWinPercentage}.`;
 
@@ -284,8 +287,13 @@ const GetMyStatsIntentHandler = {
                                                 since your win percentage with that hero in competitive is ${suggestedCompHero.win_percentage}.`;
                             }
 
-                            // Tell the player about their combat weapon accuracy.
-                        outputSpeech += ` Analysis shows your weapon accuracy in competitive with ${toTitleCase(suggestedCompHero.hero)} is ${statsCompHeroWeaponAccuracy}! ${parseInt(statsCompHeroWeaponAccuracy) > "50%" ? `That is actually really impressive!` : `I think you might want to practice your aim more in training to increase your chances of success.`}`;
+                            // Tell the player about their combat weapon accuracy for competitive if it exists.
+                            if (stats.heroStats.competitive[mostPlayedCompetitiveHero].combat.weapon_accuracy) {
+                                let statsCompHeroWeaponAccuracy = stats.heroStats.competitive[mostPlayedCompetitiveHero].combat.weapon_accuracy;
+
+                                outputSpeech += ` Analysis shows your weapon accuracy in competitive with ${toTitleCase(suggestedCompHero.hero)} is ${statsCompHeroWeaponAccuracy}! ${parseInt(statsCompHeroWeaponAccuracy) > "50%" ? `That is actually really impressive!` : `I think you might want to practice your aim more in training to increase your chances of success.`}`;
+                            }
+                            
                         }
                     }
                     
@@ -482,34 +490,34 @@ function getBestHeroForComp(mostPlayedHero, mostPlayedWinPercentage, compHeroes)
     
     	// Bypass first key as it is not hero specific.
     	if (iter == 0) {
-      	iter++;
-      	continue;
-      }
-      
-      // Check if current hero has games won and use them to check win percentage.
-      if (!!compHeroes[hero].game.games_won) {
-      	if (compHeroes[hero].game.games_won > 0){
-            
-            // if current hero in context is most played we can skip this since we are need alt hero with better win percentage if found.
-            if (hero == mostPlayedHero){
-                continue;
-            }
-
-            // Check if last win percentage captured is better than current win percentage in context and if so capture hero and win percentage.
-            if (parseInt(bestWinPercentage) < parseInt(compHeroes[hero].game.win_percentage)){
-                bestWinPercentage = compHeroes[hero].game.win_percentage;
-                bestHero = hero;
-            }
-
-            // console.log(JSON.stringify(compHeroes[hero].game.win_percentage));
-            // console.log(JSON.stringify(hero));
-
-            // console.log("Best win percentage: ", bestWinPercentage);
-            // console.log("Best hero with that win percentage: ", bestHero);
-            // console.log("Current iter win count: ", compHeroes[hero].game.games_won);
-            // console.log("Current iter loss count: ", compHeroes[hero].game.games_lost);
+            iter++;
+            continue;
         }
-      }
+      
+        // Check if current hero has games won and use them to check win percentage.
+        if (!!compHeroes[hero].game.games_won) {
+            if (compHeroes[hero].game.games_won > 0){
+                
+                // if current hero in context is most played we can skip this since we are need alt hero with better win percentage if found.
+                if (hero == mostPlayedHero){
+                    continue;
+                }
+
+                // Check if last win percentage captured is better than current win percentage in context and if so capture hero and win percentage.
+                if (parseInt(bestWinPercentage) < parseInt(compHeroes[hero].game.win_percentage)){
+                    bestWinPercentage = compHeroes[hero].game.win_percentage;
+                    bestHero = hero;
+                }
+
+                // console.log(JSON.stringify(compHeroes[hero].game.win_percentage));
+                // console.log(JSON.stringify(hero));
+
+                // console.log("Best win percentage: ", bestWinPercentage);
+                // console.log("Best hero with that win percentage: ", bestHero);
+                // console.log("Current iter win count: ", compHeroes[hero].game.games_won);
+                // console.log("Current iter loss count: ", compHeroes[hero].game.games_lost);
+            }
+        }
     	
     }
 
