@@ -2,6 +2,7 @@ const Alexa = require('ask-sdk-core');
 const axios = require('axios');
 const VocalResponses = require('./vocalResponses');
 const moment = require('moment');
+const momentTZ = require('moment-timezone');
 
 // Overwatch Stats API by FatChan (Thomas Lynch) - NPM Package URL: https://www.npmjs.com/package/overwatch-stats-api **
 const ow = require('overwatch-stats-api');
@@ -331,6 +332,21 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
             && handlerInput.requestEnvelope.request.intent.name === 'OverwatchLeagueUpcomingMatchesIntent';
     },
     async handle(handlerInput) {
+
+        const serviceClientFactory = handlerInput.serviceClientFactory;
+        const deviceId = handlerInput.requestEnvelope.context.System.device.deviceId;
+        
+        // Get the user's time zone to ensure the right time of the overwatch matches
+        let userTimeZone;
+        try {
+            const upsServiceClient = serviceClientFactory.getUpsServiceClient();
+            userTimeZone = await upsServiceClient.getSystemTimeZone(deviceId);   
+        } catch (error) {
+            if (error.name !== 'ServiceError') {
+                return handlerInput.responseBuilder.speak("There was a problem connecting to the service.").getResponse();
+            }
+            console.log('error', error.message);
+        }
         
         outputSpeech = VocalResponses.responses.OVERWATCH_LEAGUE_SERVICE_UNAVAILABLE;
         
@@ -363,7 +379,7 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
 
                         // Ensure the upcoming date and time is available
                         if (element.date.startDate) {
-                            var eventStartDate = moment(element.date.startDate);
+                            var eventStartDate = momentTZ.utc(element.date.startDate).tz(userTimeZone);
                             const eventStartDateFormatted = eventStartDate.format("LL [at] LT");
 
                             // Ensure the competitors object array is available.
@@ -436,6 +452,36 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
                 .speak(`<voice name='Emma'>${outputSpeech}</voice>`)
                 .reprompt(`<voice name='Emma'>${outputSpeech}</voice>`)
                 .getResponse();
+    },
+};
+
+const SpecialTestIntentHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && handlerInput.requestEnvelope.request.intent.name === 'SpecialTestIntent';
+    },
+    async handle(handlerInput) {
+        var speechText = "Something went wrong.";
+        
+        const serviceClientFactory = handlerInput.serviceClientFactory;
+        const deviceId = handlerInput.requestEnvelope.context.System.device.deviceId;
+
+        let userTimeZone;
+        try {
+            const upsServiceClient = serviceClientFactory.getUpsServiceClient();
+            userTimeZone = await upsServiceClient.getSystemTimeZone(deviceId);   
+            speechText = `The timezone we detected is: ${userTimeZone}`;
+        } catch (error) {
+            if (error.name !== 'ServiceError') {
+                return handlerInput.responseBuilder.speak("There was a problem connecting to the service.").getResponse();
+            }
+            console.log('error', error.message);
+        }
+
+        return handlerInput.responseBuilder
+            .speak(`<voice name='Emma'>${speechText}</voice>`)
+            .reprompt(`<voice name='Emma'>${speechText}</voice>`)
+            .getResponse();
     },
 };
 
@@ -701,6 +747,7 @@ exports.handler = skillBuilder
         LaunchRequestHandler,
         GetMyStatsIntentHandler,
         OverwatchLeagueUpcomingMatchesIntentHandler,
+        SpecialTestIntentHandler,
         AnotherDrinkIntentHandler,
         HelpIntentHandler,
         YesIntentHandler,

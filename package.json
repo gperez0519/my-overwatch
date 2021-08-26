@@ -9,6 +9,7 @@
     "axios": "^0.21.1",
     "fs": "0.0.1-security",
     "moment": "^2.29.1",
+    "moment-timezone": "^0.5.33",
     "overwatch-stats-api": "^2.0.6",
     "x-ray": "^2.3.4"
   },
