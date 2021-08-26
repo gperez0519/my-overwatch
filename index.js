@@ -1,6 +1,7 @@
 const Alexa = require('ask-sdk-core');
 const axios = require('axios');
 const VocalResponses = require('./vocalResponses');
+const moment = require('moment');
 
 // Overwatch Stats API by FatChan (Thomas Lynch) - NPM Package URL: https://www.npmjs.com/package/overwatch-stats-api **
 const ow = require('overwatch-stats-api');
@@ -324,6 +325,120 @@ const GetMyStatsIntentHandler = {
     },
 };
 
+const OverwatchLeagueUpcomingMatchesIntentHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && handlerInput.requestEnvelope.request.intent.name === 'OverwatchLeagueUpcomingMatchesIntent';
+    },
+    async handle(handlerInput) {
+        
+        outputSpeech = VocalResponses.responses.OVERWATCH_LEAGUE_SERVICE_UNAVAILABLE;
+        
+        // X-ray Web Scraper by Matt Mueller - NPM Package URL: https://www.npmjs.com/package/x-ray **
+        const xray = require("x-ray");
+        const x = xray();
+
+        // Retrieve the JSON Overwatch League Data by method of web scraping using x-ray npm package (https://www.npmjs.com/package/x-ray)
+        await x('https://www.overwatchleague.com/', '#__NEXT_DATA__')
+        .then(overwatchLeagueData => JSON.parse(overwatchLeagueData)) // parse the overwatch data as JSON
+        .then(overwatchLeagueData => {
+
+            if (overwatchLeagueData.props.pageProps.blocks[0].owlHeader.scoreStripList.scoreStrip.matches) {
+
+                // save the upcoming matches object array
+                var matches = overwatchLeagueData.props.pageProps.blocks[0].owlHeader.scoreStripList.scoreStrip.matches;
+
+                // configure the date parameters
+                const options = {
+                    month: "long", 
+                    day: "numeric"
+                };
+
+                var matchIterationCount = 1;
+                
+                // Loop through each match and indicate the upcoming matches to the user.
+                for (const match in matches) {
+                    if (Object.hasOwnProperty.call(matches, match)) {
+                        const element = matches[match];
+
+                        // Ensure the upcoming date and time is available
+                        if (element.date.startDate) {
+                            var eventStartDate = moment(element.date.startDate);
+                            const eventStartDateFormatted = eventStartDate.format("LL [at] LT");
+
+                            // Ensure the competitors object array is available.
+                            if (element.competitors) {
+                                var oneTeamTBD = false;
+                                var leftTeamTBD = false;
+                                var rightTeamTBD = false;
+
+                                // Check to see if one of the teams is TBD if so change response.
+                                if (element.competitors[0].longName == "TBD") {
+                                    oneTeamTBD = true;
+                                    leftTeamTBD = true;
+                                } else if (element.competitors[1].longName == "TBD") {
+                                    oneTeamTBD = true;
+                                    rightTeamTBD = true;
+                                }
+
+                                // Ensure the status of the match is available.
+                                if (element.status){
+
+                                    if (element.statusText == "Online Play"){
+                                        if (element.status == "PENDING") {
+
+                                            if (matchIterationCount == 1) {
+                                                outputSpeech = `I have the breakdown of the upcoming Overwatch League matches.`;
+                                            }
+
+                                            outputSpeech += ` On ${eventStartDateFormatted}, `;
+                                            if (oneTeamTBD) {
+                                                if (leftTeamTBD) {
+                                                    outputSpeech += `the ${element.competitors[1].longName} will face the team that is yet to be determined.`;
+                                                } else if (rightTeamTBD) {
+                                                    outputSpeech += `the ${element.competitors[0].longName} will face the team that is yet to be determined.`;
+                                                }
+                                                
+                                            } else {
+                                                outputSpeech += `the ${element.competitors[0].longName} will face the ${element.competitors[1].longName}.`;
+                                            }
+                                        } else {
+                                            outputSpeech += `There is a match in progress that started on ${eventStartDateFormatted}, `;
+                                            outputSpeech += `the teams that are playing are the ${element.competitors[0].longName} facing against the ${element.competitors[1].longName}.`;
+                                        }
+                                        
+                                        
+                                    }
+                                    
+                                }
+                                
+                            }
+                            
+                        }
+                        
+                    }
+                    ++matchIterationCount;
+                }
+            } else {
+                outputSpeech = "I'm not seeing any upcoming matches yet for the current season.";
+            }
+
+
+
+        })
+        .catch(err => {
+            outputSpeech = VocalResponses.responses.OVERWATCH_LEAGUE_SERVICE_UNAVAILABLE;
+
+            console.log(err.message);
+        });
+
+        return handlerInput.responseBuilder
+                .speak(`<voice name='Emma'>${outputSpeech}</voice>`)
+                .reprompt(`<voice name='Emma'>${outputSpeech}</voice>`)
+                .getResponse();
+    },
+};
+
 const AnotherDrinkIntentHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'IntentRequest'
@@ -584,8 +699,9 @@ exports.handler = skillBuilder
     .addRequestHandlers(
         CheckAccountLinkedHandler,
         LaunchRequestHandler,
-        AnotherDrinkIntentHandler,
         GetMyStatsIntentHandler,
+        OverwatchLeagueUpcomingMatchesIntentHandler,
+        AnotherDrinkIntentHandler,
         HelpIntentHandler,
         YesIntentHandler,
         NoIntentHandler,
