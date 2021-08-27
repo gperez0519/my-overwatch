@@ -1,8 +1,10 @@
 const Alexa = require('ask-sdk-core');
 const axios = require('axios');
 const VocalResponses = require('./vocalResponses');
-const moment = require('moment');
 const momentTZ = require('moment-timezone');
+
+// Get an instance of the persistence adapter
+var persistenceAdapter = getPersistenceAdapter();
 
 // Overwatch Stats API by FatChan (Thomas Lynch) - NPM Package URL: https://www.npmjs.com/package/overwatch-stats-api **
 const ow = require('overwatch-stats-api');
@@ -26,13 +28,6 @@ function isObjectEmpty(obj) {
     return true;
 }
 
-/** COOL OVERWATCH SOUND EFFECTS **/
-const hero_sound = {
-    SOLDIER76: "",
-    HANZO: "https://my-overwatch.s3.amazonaws.com/Hanzo.mp3"
-}
-
-
 //let card = 'Something went wrong. Please try again.';
 let outputSpeech = 'Something went wrong. Please try again.';
 
@@ -43,6 +38,70 @@ function isAccountLinked(handlerInput) {
     // if there is an access token, then assumed linked
     return (handlerInput.requestEnvelope.session.user.accessToken === undefined);
 }
+
+function getPersistenceAdapter(tableName) {
+    // This function is an indirect way to detect if this is part of an Alexa-Hosted skill
+    function isAlexaHosted() {
+        return process.env.S3_PERSISTENCE_BUCKET;
+    }
+    if (isAlexaHosted()) {
+        const {S3PersistenceAdapter} = require('ask-sdk-s3-persistence-adapter');
+        return new S3PersistenceAdapter({
+            bucketName: process.env.S3_PERSISTENCE_BUCKET
+        });
+    } else {
+        // IMPORTANT: don't forget to give DynamoDB access to the role you're using to run this lambda (via IAM policy)
+        const {DynamoDbPersistenceAdapter} = require('ask-sdk-dynamodb-persistence-adapter');
+        return new DynamoDbPersistenceAdapter({
+            tableName: tableName || 'my_overwatch',
+            createTable: true
+        });
+    }
+}
+
+const LoadAttributesRequestInterceptor = {
+    async process(handlerInput) {
+        const {attributesManager, requestEnvelope} = handlerInput;
+        if (Alexa.isNewSession(requestEnvelope)){ //is this a new session? this check is not enough if using auto-delegate (more on next module)
+            const persistentAttributes = await attributesManager.getPersistentAttributes() || {};
+            console.log('Loading from persistent storage: ' + JSON.stringify(persistentAttributes));
+            //copy persistent attribute to session attributes
+            attributesManager.setSessionAttributes(persistentAttributes); // ALL persistent attributtes are now session attributes
+        }
+    }
+};
+
+// If you disable the skill and reenable it the userId might change and you loose the persistent attributes saved below as userId is the primary key
+const SaveAttributesResponseInterceptor = {
+    async process(handlerInput, response) {
+        if (!response) return; // avoid intercepting calls that have no outgoing response due to errors
+        const {attributesManager, requestEnvelope} = handlerInput;
+        const sessionAttributes = attributesManager.getSessionAttributes();
+        const shouldEndSession = (typeof response.shouldEndSession === "undefined" ? true : response.shouldEndSession); //is this a session end?
+        if (shouldEndSession || Alexa.getRequestType(requestEnvelope) === 'SessionEndedRequest') { // skill was stopped or timed out
+            // we increment a persistent session counter here
+            sessionAttributes['sessionCounter'] = sessionAttributes['sessionCounter'] ? sessionAttributes['sessionCounter'] + 1 : 1;
+            // we make ALL session attributes persistent
+            console.log('Saving to persistent storage:' + JSON.stringify(sessionAttributes));
+            attributesManager.setPersistentAttributes(sessionAttributes);
+            await attributesManager.savePersistentAttributes();
+        }
+    }
+};
+
+// This request interceptor will log all incoming requests to this lambda
+const LoggingRequestInterceptor = {
+    process(handlerInput) {
+        console.log(`Incoming request: ${JSON.stringify(handlerInput.requestEnvelope)}`);
+    }
+};
+
+// This response interceptor will log all outgoing responses of this lambda
+const LoggingResponseInterceptor = {
+    process(handlerInput, response) {
+        console.log(`Outgoing response: ${JSON.stringify(response)}`);
+    }
+};
     
 // CheckAccountLinkedHandler: This handler is always run first,
 // based on the order defined in the skillBuilder.
@@ -72,9 +131,32 @@ const LaunchRequestHandler = {
         return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
     },
     handle(handlerInput) {
+        const {attributesManager} = handlerInput;
+
+        // the attributes manager allows us to access session attributes
+        const sessionAttributes = attributesManager.getSessionAttributes();
+
+        let GREETING_PERSONALIZED = VocalResponses.responses.GREETING_PERSONALIZED;
+        let GREETING_PERSONALIZED_II = VocalResponses.responses.GREETING_PERSONALIZED_II;
+        let GREETING_PERSONALIZED_III = VocalResponses.responses.GREETING_PERSONALIZED_III;
+
+        // if this isn't the first time the user is using the skill add their saved nick name to personalization.
+        if (sessionAttributes['nickName']) {
+            nickName = sessionAttributes['nickName'];
+
+            // replace the words my friend with the person's name for more personalization if this isn't the first time they are using the skill.
+            GREETING_PERSONALIZED = GREETING_PERSONALIZED_II.replace("my friend", nickName);
+            GREETING_PERSONALIZED_II = GREETING_PERSONALIZED_II.replace("my friend", nickName);
+            GREETING_PERSONALIZED_III = GREETING_PERSONALIZED_III.replace("my friend", nickName);
+
+            // replace the words welcome with welcome back for more personalization if this isn't the first time they are using the skill.
+            GREETING_PERSONALIZED = GREETING_PERSONALIZED_II.replace("Welcome", "Welcome back");
+            GREETING_PERSONALIZED_II = GREETING_PERSONALIZED_II.replace("Welcome", "Welcome back");
+            GREETING_PERSONALIZED_III = GREETING_PERSONALIZED_III.replace("Welcome", "Welcome back");
+        }
 
         // welcome message
-        let welcomeText = `${VocalResponses.responses.DOOR_OPEN_AUDIO} ${VocalResponses.responses.ROWDY_BAR_AMBIANCE_AUDIO} ${VocalResponses.responses.GREETING_PERSONALIZED} ${VocalResponses.responses.POUR_DRINK_AUDIO} Cheers, my friend! ${VocalResponses.responses.GLASS_CLINK_AUDIO} ${VocalResponses.responses.OPTIONS}`;
+        let welcomeText = `${VocalResponses.responses.DOOR_OPEN_AUDIO} ${VocalResponses.responses.ROWDY_BAR_AMBIANCE_AUDIO} ${GREETING_PERSONALIZED} ${VocalResponses.responses.POUR_DRINK_AUDIO} Cheers, my friend! ${VocalResponses.responses.GLASS_CLINK_AUDIO} ${VocalResponses.responses.OPTIONS}`;
 
         // Get a random number between 1 and 3
         let randomChoice = getRndInteger(1,4);
@@ -82,11 +164,11 @@ const LaunchRequestHandler = {
         // return a random welcome message to ensure human like interaction.
         try {
             if (randomChoice == 1){
-                welcomeText = VocalResponses.responses.DOOR_OPEN_AUDIO + VocalResponses.responses.ROWDY_BAR_AMBIANCE_AUDIO + VocalResponses.responses.GREETING_PERSONALIZED + VocalResponses.responses.POUR_DRINK_AUDIO + "Cheers, my friend!" + VocalResponses.responses.GLASS_CLINK_AUDIO + VocalResponses.responses.OPTIONS;
+                welcomeText = VocalResponses.responses.DOOR_OPEN_AUDIO + VocalResponses.responses.ROWDY_BAR_AMBIANCE_AUDIO + GREETING_PERSONALIZED + VocalResponses.responses.POUR_DRINK_AUDIO + "Cheers, my friend!" + VocalResponses.responses.GLASS_CLINK_AUDIO + VocalResponses.responses.OPTIONS;
             } else if (randomChoice == 2) {
-                welcomeText = VocalResponses.responses.DOOR_OPEN_AUDIO + VocalResponses.responses.ROWDY_BAR_AMBIANCE_AUDIO + VocalResponses.responses.GREETING_PERSONALIZED_II + VocalResponses.responses.POUR_DRINK_AUDIO + "Cheers, my friend!" + VocalResponses.responses.GLASS_CLINK_AUDIO + VocalResponses.responses.OPTIONS;
+                welcomeText = VocalResponses.responses.DOOR_OPEN_AUDIO + VocalResponses.responses.ROWDY_BAR_AMBIANCE_AUDIO + GREETING_PERSONALIZED_II + VocalResponses.responses.POUR_DRINK_AUDIO + "Cheers, my friend!" + VocalResponses.responses.GLASS_CLINK_AUDIO + VocalResponses.responses.OPTIONS;
             } else if (randomChoice == 3) {
-                welcomeText = VocalResponses.responses.DOOR_OPEN_AUDIO + VocalResponses.responses.ROWDY_BAR_AMBIANCE_AUDIO + VocalResponses.responses.GREETING_PERSONALIZED_III + VocalResponses.responses.POUR_DRINK_AUDIO + "Cheers, my friend!" + VocalResponses.responses.GLASS_CLINK_AUDIO + VocalResponses.responses.OPTIONS;
+                welcomeText = VocalResponses.responses.DOOR_OPEN_AUDIO + VocalResponses.responses.ROWDY_BAR_AMBIANCE_AUDIO + GREETING_PERSONALIZED_III + VocalResponses.responses.POUR_DRINK_AUDIO + "Cheers, my friend!" + VocalResponses.responses.GLASS_CLINK_AUDIO + VocalResponses.responses.OPTIONS;
             }
         } catch (error) {
             console.log("Something went wrong with randomization welcome message. Error: ", error.message);
@@ -113,11 +195,7 @@ const GetMyStatsIntentHandler = {
     },
     async handle(handlerInput) {
         outputSpeech = VocalResponses.responses.DEFAULT_ERROR_BATTLETAG;
-        //let intent = handlerInput.requestEnvelope.request.intent;
-
-        //let platformVal = intent.slots.platform.value;
-        //let battletag_username = intent.slots.battletag_username.value;
-        //let battletag_number = intent.slots.battletag_number.value;
+        const { attributesManager } = handlerInput;
 
         var accessToken = handlerInput.requestEnvelope.context.System.user.accessToken;
         var userInfo = null;
@@ -182,7 +260,13 @@ const GetMyStatsIntentHandler = {
             console.log("Full translated battletag: " + battletag);
             // console.log("Platform recognized: " + platform);
 
-            nickName = battletag_username;
+            // the attributes manager allows us to access session attributes
+            const sessionAttributes = attributesManager.getSessionAttributes();
+
+            if (!sessionAttributes['nickName']) {
+                sessionAttributes['nickName'] = battletag_username;
+                nickName = sessionAttributes['nickName'];
+            }
 
             var stats = null;
             var mostPlayed = null;
@@ -443,14 +527,14 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
 
         })
         .catch(err => {
-            outputSpeech = VocalResponses.responses.OVERWATCH_LEAGUE_SERVICE_UNAVAILABLE;
+            outputSpeech = VocalResponses.responses.OVERWATCH_LEAGUE_SERVICE_UNAVAILABLE + drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS;
 
             console.log(err.message);
         });
 
         return handlerInput.responseBuilder
-                .speak(`<voice name='Emma'>${outputSpeech}</voice>`)
-                .reprompt(`<voice name='Emma'>${outputSpeech}</voice>`)
+                .speak(`<voice name='Emma'>${outputSpeech} ${drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
+                .reprompt(`<voice name='Emma'>${VocalResponses.responses.PLEASE_REPEAT} ${drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
                 .getResponse();
     },
 };
@@ -500,7 +584,7 @@ const AnotherDrinkIntentHandler = {
         } else if (drinkCount == 2) {
             speechText = `Here's another round my friend. ${VocalResponses.responses.POUR_DRINK_AUDIO} Cheers, to great friends! ${VocalResponses.responses.GLASS_CLINK_AUDIO} ${VocalResponses.responses.OPTIONS}`;
         } else if (drinkCount == 3) {
-            speechText = `Whoa, another one? Thirsty, aren't we? You got it my friend! Coming right up! Although, I want you conscious for our conversation you know. ${VocalResponses.responses.POUR_DRINK_AUDIO} Cheers, to friends and great battles! ${VocalResponses.responses.GLASS_CLINK_AUDIO} ${VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS}`;
+            speechText = `Whoa, another one? Thirsty aren't we. You got it my friend! Coming right up! Although, I want you conscious for our conversation you know. ${VocalResponses.responses.POUR_DRINK_AUDIO} Cheers, to friends and great battles! ${VocalResponses.responses.GLASS_CLINK_AUDIO} ${VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS}`;
         } else if (drinkCount > 3) {
             speechText = `I'm sorry my friend. I cannot in all good conscience allow you to drink that much. ${VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS}`;
         }
@@ -508,7 +592,7 @@ const AnotherDrinkIntentHandler = {
 
         return handlerInput.responseBuilder
             .speak(`<voice name='Emma'>${speechText}</voice>`)
-            .reprompt(`<voice name='Emma'>${speechText}</voice>`)
+            .reprompt(`<voice name='Emma'>${VocalResponses.responses.PLEASE_REPEAT} ${speechText}</voice>`)
             .getResponse();
     },
 };
@@ -524,8 +608,8 @@ const HelpIntentHandler = {
         console.log("User asked for help.");
 
         return handlerInput.responseBuilder
-            .speak(speechText)
-            .reprompt(speechText)
+            .speak('Sure. ' + drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS)
+            .reprompt(VocalResponses.responses.PLEASE_REPEAT + drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS)
             .getResponse();
     },
 };
@@ -756,5 +840,12 @@ exports.handler = skillBuilder
         SessionEndedRequestHandler
     )
     .addErrorHandlers(ErrorHandler)
+    .addRequestInterceptors(
+        LoggingRequestInterceptor,
+        LoadAttributesRequestInterceptor)
+    .addResponseInterceptors(
+        LoggingResponseInterceptor,
+        SaveAttributesResponseInterceptor)
+    .withPersistenceAdapter(persistenceAdapter)
     .withApiClient(new Alexa.DefaultApiClient())
     .lambda();

@@ -1,15 +1,16 @@
 /** OVERWATCH GENERAL RESPONSES **/
+
 let nickName = "my friend";
 
 const responses = {
     GREETING: "Welcome to My Overwatch! We can tell you your stats of your Overwatch progress. Say get my stats to hear your stats of your Overwatch profile.",
     GREETING_PERSONALIZED: `Welcome ${nickName} to Blizz Tavern! Please, have a seat and take a load off! Here's a round on the house!`,
-    GREETING_PERSONALIZED_II: `<prosody volume="x-loud">Hey you miscreants! You throw another chair and I'll toss you out myself!</prosody> Oh hey there my friend! Welcome to Blizz Tavern! You must be exhausted, drinks are <emphasis level="reduced">on</emphasis> me!`,
-    GREETING_PERSONALIZED_III: `<prosody volume="x-loud">Hey Jack! don't make me come back there!</prosody> Oh hey, sorry about that. Some people get a little <emphasis level="moderate">rowdy</emphasis>, a round here. Welcome to Blizz Tavern! You must be exhausted. Here, drinks are on me!`,
+    GREETING_PERSONALIZED_II: `<prosody volume="x-loud">Hey you miscreants! You throw another chair and I'll toss you out myself!</prosody> Oh hey there ${nickName}! Welcome to Blizz Tavern! You must be exhausted, drinks are <emphasis level="reduced">on</emphasis> me!`,
+    GREETING_PERSONALIZED_III: `<prosody volume="x-loud">Hey Jack! don't make me come back there!</prosody> Oh hey ${nickName}, sorry about that. Some people get a little <emphasis level="moderate">rowdy</emphasis>, a round here. Welcome to Blizz Tavern! You must be exhausted. Here, drinks are on me!`,
     OPTIONS: `Now, what can I do for you? Would you like another drink, do you want to check on your Overwatch progress, would you like to hear about upcoming Overwatch League matches, or would you like to leave the tavern?`,
     TOO_MANY_DRINKS_OPTIONS: `Now. What can I do for you? Would you like to check on your Overwatch progress, would you like to hear about upcoming Overwatch League matches, or are you looking to leave the tavern?`,
-    ALTERNATE_OPTIONS: `Amazing thus far. Now, what can I do for you? Would you like another drink, do you want to check on your Overwatch progress again, would you like to hear about upcoming Overwatch League matches, or do you want to leave the tavern?`,
-    YOU_ARE_WELCOME: "Not a problem at all my friend! How have you been faring?",
+    ALTERNATE_OPTIONS: `Wonderful. Now, what can I do for you? Would you like another drink, do you want to check on your Overwatch progress, would you like to hear about upcoming Overwatch League matches, or do you want to leave the tavern?`,
+    YOU_ARE_WELCOME: `Not a problem at all ${nickName}! How have you been faring?`,
     PROGRESSIVE_RESPONSE: "Sure, let me check my data analysis unit. Let's see here.",
     GREETING_RESPONSE: "I'm doing just well. I'm glad that you are here!",
     NEED_TO_LINK_MESSAGE: 'Before we can continue, you will need to link your battle.net account to the My Overwatch skill using the card that I have sent to the Alexa app.',
@@ -18,7 +19,7 @@ const responses = {
     OVERWATCH_LEAGUE_SERVICE_UNAVAILABLE: "Oh no! The My Overwatch service is not available at the moment. Please try again later.",
     PLEASE_WAIT: "Please wait while we try to retrieve that profile information",
     PLACEMENTS_NOT_COMPLETE: "You have not placed yet in this Competitive season. Make sure you do so in order to hear about your ranking info.",
-    GOODBYE: `You are always welcome here my friend! If you have some time, please leave us a rating on the My Overwatch skill in the skill store. We would appreciate it greatly.
+    GOODBYE: `You are always welcome here ${nickName}! If you have some time, please leave us a rating on the My Overwatch skill in the skill store. We would appreciate it greatly.
              Stop by Blizz tavern next time and we can catch up again. Good luck in your battles!`,
     DEFAULT_ERROR_BATTLETAG: "Strange, My data analysis unit is not finding your information. No worries, we can try again later.",
     DEFAULT_ERROR_PLATFORM: "Sorry, we did not recognize that platform. Please say either Xbox, PC, or Playstation.",
