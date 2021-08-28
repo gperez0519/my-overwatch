@@ -416,9 +416,6 @@ const OverwatchLeagueTeamInfoIntentIntentHandler = {
             && handlerInput.requestEnvelope.request.intent.name === 'OverwatchLeagueTeamInfoIntent';
     },
     async handle(handlerInput) {
-
-        const serviceClientFactory = handlerInput.serviceClientFactory;
-        const deviceId = handlerInput.requestEnvelope.context.System.device.deviceId;
         
         let teamName = handlerInput.requestEnvelope.request.intent.slots.teamName.value;
 
@@ -426,94 +423,55 @@ const OverwatchLeagueTeamInfoIntentIntentHandler = {
         const xray = require("x-ray");
         const x = xray();
 
-        // Get the user's time zone to ensure the right time of the overwatch matches
-        let userTimeZone;
-        try {
-            const upsServiceClient = serviceClientFactory.getUpsServiceClient();
-            userTimeZone = await upsServiceClient.getSystemTimeZone(deviceId);   
-        } catch (error) {
-            if (error.name !== 'ServiceError') {
-                return handlerInput.responseBuilder.speak("<voice name='Emma'>There was a problem connecting to the service.</voice>").getResponse();
-            }
-            console.log('error', error.message);
-        }
-
         try {
             if (teamName){
                 let teamNameLowerCase = teamName.toLowerCase();
     
                 const Teams = require('./TeamListData.json');
-                var teamSiteURL = '';
-    
-                // Based on the user's response of the team name, get the team site URL.
-                for (const team in Teams.teamList) {
-                    if (Object.hasOwnProperty.call(Teams.teamList, team)) {
-                        const element = Teams.teamList[team];
-                        let elementTeamName = element.name.toLowerCase();
-                        
-                        if (elementTeamName.includes(teamNameLowerCase)) {
-                            teamSiteURL = element.teamPage;
-                            console.log(`Team site URL is: ${teamSiteURL}`);
-                            break;
-                        }
-                    }
-                }
+                var standingsURL = 'https://www.overwatchleague.com/en-us/standings/';
 
-
-                if (teamSiteURL) {
-                    if (teamSiteURL.indexOf("overwatchleague") >= 0){
+                if (standingsURL) {
+                    if (standingsURL.includes("overwatchleague")){
                         // Retrieve the JSON Overwatch League Data by method of web scraping using x-ray npm package (https://www.npmjs.com/package/x-ray)
-                        await x(teamSiteURL + "/en-us/schedule", '#__NEXT_DATA__')
+                        await x(standingsURL, '#__NEXT_DATA__')
                         .then(overwatchLeagueTeamData => JSON.parse(overwatchLeagueTeamData)) // parse the overwatch data as JSON
                         .then(overwatchLeagueTeamData => {
         
                             if (overwatchLeagueTeamData.props.pageProps.blocks[1]) {
         
-                                // save the upcoming matches object array
-                                var teamSchedules = overwatchLeagueTeamData.props.pageProps.blocks[1].schedule.tableData.weeks;
-    
-                                // Loop through each match and indicate the upcoming matches to the user.
-                                for (const schedule in teamSchedules) {
-                                    if (Object.hasOwnProperty.call(teamSchedules, schedule)) {
-                                        const week = teamSchedules[schedule];
-    
-                                        if (week.startDate){
-                                            let weekStartDate = momentTZ.utc(week.startDate).tz(userTimeZone);
-                                            let currentDate = momentTZ.utc().tz(userTimeZone);
-        
-                                            if (weekStartDate >= currentDate) {
-                                                
-                                                // Ensure the upcoming date and time is available
-                                                if (week.events){
-                                                    let eventStartDate = week.events[0].matches[0].startDate;
-                                                    eventStartDate = momentTZ.utc(eventStartDate).tz(userTimeZone);
-                                                    eventStartDate = eventStartDate.format("LL [at] LT")
-    
-                                                    if (week.events[0].matches[0].status == "PENDING"){
-                                                        // Ensure the competitors object array is available.
-                                                        if (week.events[0].matches[0].competitors) {
-    
-                                                            let teamOneName = week.events[0].matches[0].competitors[0].name;
-                                                            teamOneNameLowerCase = teamOneName.toLowerCase();
-                                                            outputSpeech = `The next match for the ${teamName} is on ${eventStartDate}. `;
-    
-                                                            if (teamOneNameLowerCase.includes(teamNameLowerCase)) {
-                                                                outputSpeech += `The ${week.events[0].matches[0].competitors[0].name} will face the ${week.events[0].matches[0].competitors[1].name}.`;
-                                                            } else {
-                                                                outputSpeech += `The ${week.events[0].matches[0].competitors[1].name} will face the ${week.events[0].matches[0].competitors[0].name}.`;
-                                                            }
-                                                            
-                                                        }
-                                                    } else {
-                                                        outputSpeech += `There is a match in progress that started on ${eventStartDate}, `;
-                                                        outputSpeech += `the teams that are playing are the ${week.events[0].matches[0].competitors[0].name} facing against the ${week.events[0].matches[0].competitors[1].name}.`;
+                                var divisions = overwatchLeagueTeamData.props.pageProps.blocks[1].standings.tabs[0].tables;
+                                var standingsForTeamFound = false;
+                                
+                                for (const division in divisions) {
+                                    if (Object.hasOwnProperty.call(divisions, division)) {
+                                        const team = divisions[division];
+
+                                        for (const currentTeam in team.teams) {
+                                            if (Object.hasOwnProperty.call(team.teams, currentTeam)) {
+                                                const curTeam = team.teams[currentTeam];
+                                                if (curTeam.hasOwnProperty('teamName')){
+                                                    var curteamNameLowerCase = curTeam.teamName.toLowerCase();
+
+                                                    if (curteamNameLowerCase.includes(teamNameLowerCase)){
+                                                        standingsForTeamFound = true;
+                                                        teamName = curTeam.teamName;
+                                                        outputSpeech = `The ${curTeam.teamName} currently has a record of ${curTeam.w} wins and ${curTeam.l} losses.`;
+                                                        break;
                                                     }
-                                                    break;
+                                                    
                                                 }
+                                                
                                             }
-                                        }                                    
-                                        
+                                        }
+
+                                        if (standingsForTeamFound){
+                                            break;
+                                        }
                                     }
+                                }
+
+                                if (standingsForTeamFound == false){
+                                    outputSpeech = `${teamName} has not yet had a match this season.`;
                                 }
                             } else {
                                 outputSpeech = "I'm not seeing any upcoming matches yet for the current season.";
