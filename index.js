@@ -410,6 +410,142 @@ const GetMyStatsIntentHandler = {
     },
 };
 
+const OverwatchLeagueTeamInfoIntentIntentHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && handlerInput.requestEnvelope.request.intent.name === 'OverwatchLeagueTeamInfoIntent';
+    },
+    async handle(handlerInput) {
+
+        const serviceClientFactory = handlerInput.serviceClientFactory;
+        const deviceId = handlerInput.requestEnvelope.context.System.device.deviceId;
+        
+        let teamName = handlerInput.requestEnvelope.request.intent.slots.teamName.value;
+
+        // X-ray Web Scraper by Matt Mueller - NPM Package URL: https://www.npmjs.com/package/x-ray **
+        const xray = require("x-ray");
+        const x = xray();
+
+        // Get the user's time zone to ensure the right time of the overwatch matches
+        let userTimeZone;
+        try {
+            const upsServiceClient = serviceClientFactory.getUpsServiceClient();
+            userTimeZone = await upsServiceClient.getSystemTimeZone(deviceId);   
+        } catch (error) {
+            if (error.name !== 'ServiceError') {
+                return handlerInput.responseBuilder.speak("<voice name='Emma'>There was a problem connecting to the service.</voice>").getResponse();
+            }
+            console.log('error', error.message);
+        }
+
+        try {
+            if (teamName){
+                let teamNameLowerCase = teamName.toLowerCase();
+    
+                const Teams = require('./TeamListData.json');
+                var teamSiteURL = '';
+    
+                // Based on the user's response of the team name, get the team site URL.
+                for (const team in Teams.teamList) {
+                    if (Object.hasOwnProperty.call(Teams.teamList, team)) {
+                        const element = Teams.teamList[team];
+                        let elementTeamName = element.name.toLowerCase();
+                        
+                        if (elementTeamName.includes(teamNameLowerCase)) {
+                            teamSiteURL = element.teamPage;
+                            console.log(`Team site URL is: ${teamSiteURL}`);
+                            break;
+                        }
+                    }
+                }
+
+
+                if (teamSiteURL) {
+                    if (teamSiteURL.indexOf("overwatchleague") >= 0){
+                        // Retrieve the JSON Overwatch League Data by method of web scraping using x-ray npm package (https://www.npmjs.com/package/x-ray)
+                        await x(teamSiteURL + "/en-us/schedule", '#__NEXT_DATA__')
+                        .then(overwatchLeagueTeamData => JSON.parse(overwatchLeagueTeamData)) // parse the overwatch data as JSON
+                        .then(overwatchLeagueTeamData => {
+        
+                            if (overwatchLeagueTeamData.props.pageProps.blocks[1]) {
+        
+                                // save the upcoming matches object array
+                                var teamSchedules = overwatchLeagueTeamData.props.pageProps.blocks[1].schedule.tableData.weeks;
+    
+                                // Loop through each match and indicate the upcoming matches to the user.
+                                for (const schedule in teamSchedules) {
+                                    if (Object.hasOwnProperty.call(teamSchedules, schedule)) {
+                                        const week = teamSchedules[schedule];
+    
+                                        if (week.startDate){
+                                            let weekStartDate = momentTZ.utc(week.startDate).tz(userTimeZone);
+                                            let currentDate = momentTZ.utc().tz(userTimeZone);
+        
+                                            if (weekStartDate >= currentDate) {
+                                                
+                                                // Ensure the upcoming date and time is available
+                                                if (week.events){
+                                                    let eventStartDate = week.events[0].matches[0].startDate;
+                                                    eventStartDate = momentTZ.utc(eventStartDate).tz(userTimeZone);
+                                                    eventStartDate = eventStartDate.format("LL [at] LT")
+    
+                                                    if (week.events[0].matches[0].status == "PENDING"){
+                                                        // Ensure the competitors object array is available.
+                                                        if (week.events[0].matches[0].competitors) {
+    
+                                                            let teamOneName = week.events[0].matches[0].competitors[0].name;
+                                                            teamOneNameLowerCase = teamOneName.toLowerCase();
+                                                            outputSpeech = `The next match for the ${teamName} is on ${eventStartDate}. `;
+    
+                                                            if (teamOneNameLowerCase.includes(teamNameLowerCase)) {
+                                                                outputSpeech += `The ${week.events[0].matches[0].competitors[0].name} will face the ${week.events[0].matches[0].competitors[1].name}.`;
+                                                            } else {
+                                                                outputSpeech += `The ${week.events[0].matches[0].competitors[1].name} will face the ${week.events[0].matches[0].competitors[0].name}.`;
+                                                            }
+                                                            
+                                                        }
+                                                    } else {
+                                                        outputSpeech += `There is a match in progress that started on ${eventStartDate}, `;
+                                                        outputSpeech += `the teams that are playing are the ${week.events[0].matches[0].competitors[0].name} facing against the ${week.events[0].matches[0].competitors[1].name}.`;
+                                                    }
+                                                    break;
+                                                }
+                                            }
+                                        }                                    
+                                        
+                                    }
+                                }
+                            } else {
+                                outputSpeech = "I'm not seeing any upcoming matches yet for the current season.";
+                            }
+    
+                        })
+                        .catch(err => {
+                            outputSpeech = `${VocalResponses.responses.OVERWATCH_LEAGUE_TEAM_SERVICE_UNAVAILABLE}`;
+        
+                            console.log(err.message);
+                        });
+                    }
+                }
+
+
+            }
+        } catch (error) {
+            console.log(`Error occurred: ${error.message}`);
+
+            return handlerInput.responseBuilder
+                .speak(`<voice name='Emma'>${VocalResponses.responses.OVERWATCH_LEAGUE_TEAM_SERVICE_UNAVAILABLE}</voice>`)
+                .reprompt(`<voice name='Emma'>${VocalResponses.responses.OVERWATCH_LEAGUE_TEAM_SERVICE_UNAVAILABLE}</voice>`)
+                .getResponse();
+        }
+
+        return handlerInput.responseBuilder
+                .speak(`<voice name='Emma'>${outputSpeech} ${drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
+                .reprompt(`<voice name='Emma'>${VocalResponses.responses.PLEASE_REPEAT} ${drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
+                .getResponse();
+    },
+};
+
 const OverwatchLeagueUpcomingMatchesIntentHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'IntentRequest'
@@ -622,7 +758,7 @@ const YesIntentHandler = {
     handle(handlerInput) {
 
         return handlerInput.responseBuilder
-            .speak(`<voice name='Emma'>${VocalResponses.responses.TOP_MENU}</voice>`)
+            .speak(`<voice name='Emma'>${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " "} ${VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
             .reprompt(`<voice name='Emma'>${VocalResponses.responses.PLEASE_REPEAT} ${VocalResponses.responses.ANYTHING_ELSE}</voice>`)
             .getResponse();
     },
@@ -636,7 +772,7 @@ const NoIntentHandler = {
     handle(handlerInput) {
 
         return handlerInput.responseBuilder
-            .speak(`<voice name='Emma'>${VocalResponses.responses.GOODBYE}</voice>`)
+            .speak(`<voice name='Emma'>${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " "} ${VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
             .reprompt(`<voice name='Emma'>${VocalResponses.responses.PLEASE_REPEAT} ${VocalResponses.responses.ANYTHING_ELSE}</voice>`)
             .getResponse();
     },
@@ -650,6 +786,19 @@ const CancelAndStopIntentHandler = {
     },
     handle(handlerInput) {
         const speechText = VocalResponses.responses.GOODBYE;
+
+        const {attributesManager} = handlerInput;
+
+        // the attributes manager allows us to access session attributes
+        const sessionAttributes = attributesManager.getSessionAttributes();
+
+        // if this isn't the first time the user is using the skill add their saved nick name to personalization.
+        if (sessionAttributes['nickName']) {
+            nickName = sessionAttributes['nickName'];
+
+            // replace the words my friend with the person's name for more personalization if this isn't the first time they are using the skill.
+            speechText = speechText.replace("my friend", nickName);
+        }
 
         console.log("User left tavern");
 
@@ -831,6 +980,7 @@ exports.handler = skillBuilder
         LaunchRequestHandler,
         GetMyStatsIntentHandler,
         OverwatchLeagueUpcomingMatchesIntentHandler,
+        OverwatchLeagueTeamInfoIntentIntentHandler,
         SpecialTestIntentHandler,
         AnotherDrinkIntentHandler,
         HelpIntentHandler,

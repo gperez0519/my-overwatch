@@ -1,0 +1,104 @@
+{
+"teamList": [
+    {
+      "name": "Boston Uprising",
+      "logoUrl": "https://images.blz-contentstack.com/v3/assets/blt321317473c90505c/blt49858008dd3151b3/5cdf123e2117e4700663313b/43UINMGMA83X1513383982827.png?auto=webp",
+      "teamPage": "https://uprising.overwatchleague.com"
+    },
+    {
+      "name": "Atlanta Reign",
+      "logoUrl": "https://images.blz-contentstack.com/v3/assets/blt321317473c90505c/blt60c5c50019793c32/5cdf27a18339428f06fdac6c/32MTX0PLEDY31542673991836.png?auto=webp",
+      "teamPage": "https://reign.overwatchleague.com"
+    },
+    {
+      "name": "London Spitfire",
+      "logoUrl": "https://images.blz-contentstack.com/v3/assets/blt321317473c90505c/bltc2a9ed2f45bb4663/5cdf0fb4131ceb41113d05c9/NW461AQIYQMK1508792363133.png?auto=webp",
+      "teamPage": "https://spitfire.overwatchleague.com"
+    },
+    {
+      "name": "Houston Outlaws",
+      "logoUrl": "https://images.blz-contentstack.com/v3/assets/blt321317473c90505c/blt6c5db8c1aeabc56c/5cdf1b652117e47006633189/2YF5VLIMGZVA1546557680222.png?auto=webp",
+      "teamPage": "https://outlaws.overwatchleague.com"
+    },
+    {
+      "name": "Florida Mayhem",
+      "logoUrl": "https://images.blz-contentstack.com/v3/assets/blt321317473c90505c/bltb7feafc778fcdd31/5e1370d2a94b7a59b710ff88/OWL_FloridaMayhem_Icon_2020.png?auto=webp",
+      "teamPage": "https://mayhem.overwatchleague.com"
+    },
+    {
+      "name": "Hangzhou Spark",
+      "logoUrl": "https://images.blz-contentstack.com/v3/assets/blt321317473c90505c/blt43925778b63b11dd/5cdf28a38339428f06fdac8a/QQ8MNSYYJGDK1544640571357.png?auto=webp",
+      "teamPage": "https://spark.overwatchleague.cn"
+    },
+    {
+      "name": "Los Angeles Gladiators",
+      "logoUrl": "https://images.blz-contentstack.com/v3/assets/blt321317473c90505c/blt9bb3173cd8e7281e/5cde0aa3a3d61d8906c1398f/3AEMOZZL76PF1508792362892.png?auto=webp",
+      "teamPage": "https://gladiators.overwatchleague.com"
+    },
+    {
+      "name": "Guangzhou Charge",
+      "logoUrl": "https://images.blz-contentstack.com/v3/assets/blt321317473c90505c/blt0fc0d59e6d2d2a60/5cdf252a8339428f06fdac48/SZQVDGE3F1TE1542674048320.png?auto=webp",
+      "teamPage": "https://charge.overwatchleague.cn"
+    },
+    {
+      "name": "Dallas Fuel",
+      "logoUrl": "https://images.blz-contentstack.com/v3/assets/blt321317473c90505c/bltaa8a4d3ffe61b648/5cdf14cea3d61d8906c13a8b/NO44N7DDJAPF1508792362936.png?auto=webp",
+      "teamPage": "https://fuel.overwatchleague.com"
+    },
+    {
+      "name": "Chengdu Hunters",
+      "logoUrl": "https://images.blz-contentstack.com/v3/assets/blt321317473c90505c/bltc9d1cb01c2b6b22c/5cdf2ce4a408243c113cc9b6/STKSER89UHKO1542674031469.png?auto=webp",
+      "teamPage": "https://hunters.overwatchleague.cn"
+    },
+    {
+      "name": "Paris Eternal",
+      "logoUrl": "https://images.blz-contentstack.com/v3/assets/blt321317473c90505c/blt54ca986c2cbb9554/5cdf2a1da3d61d8906c13bc9/QM7JE0THABVT1542674071412.png?auto=webp",
+      "teamPage": "https://eternal.overwatchleague.com"
+    },
+    {
+      "name": "Philadelphia Fusion",
+      "logoUrl": "https://images.blz-contentstack.com/v3/assets/blt321317473c90505c/blt9f4636679723ead2/5cdf19d8131ceb41113d0623/3JZTLCPH37QD1508792362853.png?auto=webp",
+      "teamPage": "https://fusion.overwatchleague.com"
+    },
+    {
+      "name": "Los Angeles Valiant",
+      "logoUrl": "https://images.blz-contentstack.com/v3/assets/blt321317473c90505c/blta03a226e8c5d90d5/5e14d2882a6ac40d0b660935/OWL_LAValiant_Icon_2020_PNG.png?auto=webp",
+      "teamPage": "https://valiant.overwatchleague.com"
+    },
+    {
+      "name": "Vancouver Titans",
+      "logoUrl": "https://images.blz-contentstack.com/v3/assets/blt321317473c90505c/blt98cd03df5834fa52/5cdf263f2117e4700663320d/F1WE9LBKIGHD1543976752064.png?auto=webp",
+      "teamPage": "https://titans.overwatchleague.com"
+    },
+    {
+      "name": "San Francisco Shock",
+      "logoUrl": "https://images.blz-contentstack.com/v3/assets/blt321317473c90505c/blte679a761205b5d5f/5e1763e38691147ecf07e0f6/OWL_SFShock_Icon_1C_SILVER-01.png?auto=webp",
+      "teamPage": "https://shock.overwatchleague.com"
+    },
+    {
+      "name": "Washington Justice",
+      "logoUrl": "https://images.blz-contentstack.com/v3/assets/blt321317473c90505c/bltc9c0a6af36323292/5cdf2c088339428f06fdaca6/95UE5OJKSFQF1543968718489.png?auto=webp",
+      "teamPage": "https://justice.overwatchleague.com"
+    },
+    {
+      "name": "New York Excelsior",
+      "logoUrl": "https://images.blz-contentstack.com/v3/assets/blt321317473c90505c/bltbb86c863354ddfc6/5cdf1752131ceb41113d05ff/3BJYLE1WK82R1517250447968.png?auto=webp",
+      "teamPage": "https://excelsior.overwatchleague.com"
+    },
+    {
+      "name": "Shanghai Dragons",
+      "logoUrl": "https://images.blz-contentstack.com/v3/assets/blt321317473c90505c/blt6f7197aaac306a85/5cdf15bb2117e47006633147/B0R64QSNCDLX1508792362793.png?auto=webp",
+      "teamPage": "https://dragons.overwatchleague.cn"
+    },
+    {
+      "name": "Toronto Defiant",
+      "logoUrl": "https://images.blz-contentstack.com/v3/assets/blt321317473c90505c/blt8ff755cb063c2815/5cdf2afc1e7d285a1128f47c/G05QL2P5A92E1542674081932.png?auto=webp",
+      "teamPage": "https://defiant.overwatchleague.com"
+    },
+    {
+      "name": "Seoul Dynasty",
+      "logoUrl": "https://images.blz-contentstack.com/v3/assets/blt321317473c90505c/blt3d57c2f3d64f8953/5cdf1110a408243c113cc84c/LHRSIW3NWH211508792362796.png?auto=webp",
+      "teamPage": "https://dynasty.overwatchleague.com"
+    }
+  ]
+}
