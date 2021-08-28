@@ -2,6 +2,8 @@ const Alexa = require('ask-sdk-core');
 const axios = require('axios');
 const VocalResponses = require('./vocalResponses');
 const momentTZ = require('moment-timezone');
+const teamInfo = require('./TeamListData.json');
+const heroes = require('./OverwatchHeroes.json');
 
 // Get an instance of the persistence adapter
 var persistenceAdapter = getPersistenceAdapter();
@@ -130,29 +132,87 @@ const LaunchRequestHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
     },
-    handle(handlerInput) {
-        const {attributesManager} = handlerInput;
+    async handle(handlerInput) {
+        const { attributesManager } = handlerInput;
+
+        var accessToken = handlerInput.requestEnvelope.context.System.user.accessToken;
+        var userInfo = null;
+
+        if (accessToken == undefined){
+            // The request did not include a token, so tell the user to link
+            // accounts and return a LinkAccount card
+            var speechText = VocalResponses.responses.NEED_TO_LINK_MESSAGE;
+
+            return handlerInput.responseBuilder
+                .speak(`<voice name='Emma'>${speechText}</voice>`)
+                .withLinkAccountCard()
+                .getResponse();
+        }
+
+        /* use the access token to query the user info
+        *  Endpoint: https://us.battle.net/oauth/userinfo
+        *  Params:
+        *  :region us
+        *  access_token {token}
+        * 
+        */
+
+        try {
+            userInfo = await axios.get(`https://us.battle.net/oauth/userinfo?:region=us&access_token=${accessToken}`);
+                console.log("Blizzard user info: ",userInfo.data);
+                console.log("Blizzard user battle tag: ",userInfo.data.battletag);
+
+        } catch(error) {
+            console.log("Error occurred getting user info: ", error);
+        }
+
+        let battletag_username = "";
+
+        if (userInfo) {
+            battletag_username = userInfo.data.battletag.split("#")[0];
+        }
 
         // the attributes manager allows us to access session attributes
         const sessionAttributes = attributesManager.getSessionAttributes();
+
+        if (!sessionAttributes['nickName']) {
+            sessionAttributes['nickName'] = battletag_username;
+        }
 
         let GREETING_PERSONALIZED = VocalResponses.responses.GREETING_PERSONALIZED;
         let GREETING_PERSONALIZED_II = VocalResponses.responses.GREETING_PERSONALIZED_II;
         let GREETING_PERSONALIZED_III = VocalResponses.responses.GREETING_PERSONALIZED_III;
 
+        let GREETING_PERSONALIZED_DISPLAY = VocalResponses.responses.GREETING_PERSONALIZED_DISPLAY;
+        let GREETING_PERSONALIZED_II_DISPLAY = VocalResponses.responses.GREETING_PERSONALIZED_II_DISPLAY;
+        let GREETING_PERSONALIZED_III_DISPLAY = VocalResponses.responses.GREETING_PERSONALIZED_III_DISPLAY;
+
         // if this isn't the first time the user is using the skill add their saved nick name to personalization.
         if (sessionAttributes['nickName']) {
-            nickName = sessionAttributes['nickName'];
+            if (sessionAttributes['sessionCounter'] >= 1) {
+                nickName = sessionAttributes['nickName'];
 
-            // replace the words my friend with the person's name for more personalization if this isn't the first time they are using the skill.
-            GREETING_PERSONALIZED = GREETING_PERSONALIZED_II.replace("my friend", nickName);
-            GREETING_PERSONALIZED_II = GREETING_PERSONALIZED_II.replace("my friend", nickName);
-            GREETING_PERSONALIZED_III = GREETING_PERSONALIZED_III.replace("my friend", nickName);
+                // replace the words my friend with the person's name for more personalization if this isn't the first time they are using the skill.
+                GREETING_PERSONALIZED = GREETING_PERSONALIZED.replace("my friend", nickName);
+                GREETING_PERSONALIZED_II = GREETING_PERSONALIZED_II.replace("my friend", nickName);
+                GREETING_PERSONALIZED_III = GREETING_PERSONALIZED_III.replace("my friend", nickName);
+    
+                // replace the words welcome with welcome back for more personalization if this isn't the first time they are using the skill.
+                GREETING_PERSONALIZED = GREETING_PERSONALIZED.replace("Welcome", "Welcome back");
+                GREETING_PERSONALIZED_II = GREETING_PERSONALIZED_II.replace("Welcome", "Welcome back");
+                GREETING_PERSONALIZED_III = GREETING_PERSONALIZED_III.replace("Welcome", "Welcome back");
 
-            // replace the words welcome with welcome back for more personalization if this isn't the first time they are using the skill.
-            GREETING_PERSONALIZED = GREETING_PERSONALIZED_II.replace("Welcome", "Welcome back");
-            GREETING_PERSONALIZED_II = GREETING_PERSONALIZED_II.replace("Welcome", "Welcome back");
-            GREETING_PERSONALIZED_III = GREETING_PERSONALIZED_III.replace("Welcome", "Welcome back");
+                // replace the words my friend with the person's name for more personalization if this isn't the first time they are using the skill.
+                GREETING_PERSONALIZED_DISPLAY = GREETING_PERSONALIZED_DISPLAY.replace("my friend", nickName);
+                GREETING_PERSONALIZED_II_DISPLAY = GREETING_PERSONALIZED_II_DISPLAY.replace("my friend", nickName);
+                GREETING_PERSONALIZED_III_DISPLAY = GREETING_PERSONALIZED_III_DISPLAY.replace("my friend", nickName);
+    
+                // replace the words welcome with welcome back for more personalization if this isn't the first time they are using the skill.
+                GREETING_PERSONALIZED_DISPLAY = GREETING_PERSONALIZED_DISPLAY.replace("Welcome", "Welcome back");
+                GREETING_PERSONALIZED_II_DISPLAY  = GREETING_PERSONALIZED_II_DISPLAY.replace("Welcome", "Welcome back");
+                GREETING_PERSONALIZED_III_DISPLAY  = GREETING_PERSONALIZED_III_DISPLAY.replace("Welcome", "Welcome back");
+            }
+            
         }
 
         // welcome message
@@ -165,10 +225,13 @@ const LaunchRequestHandler = {
         try {
             if (randomChoice == 1){
                 welcomeText = VocalResponses.responses.DOOR_OPEN_AUDIO + VocalResponses.responses.ROWDY_BAR_AMBIANCE_AUDIO + GREETING_PERSONALIZED + VocalResponses.responses.POUR_DRINK_AUDIO + "Cheers, my friend!" + VocalResponses.responses.GLASS_CLINK_AUDIO + VocalResponses.responses.OPTIONS;
+                displayText = GREETING_PERSONALIZED_DISPLAY + VocalResponses.responses.OPTIONS;
             } else if (randomChoice == 2) {
                 welcomeText = VocalResponses.responses.DOOR_OPEN_AUDIO + VocalResponses.responses.ROWDY_BAR_AMBIANCE_AUDIO + GREETING_PERSONALIZED_II + VocalResponses.responses.POUR_DRINK_AUDIO + "Cheers, my friend!" + VocalResponses.responses.GLASS_CLINK_AUDIO + VocalResponses.responses.OPTIONS;
+                displayText = GREETING_PERSONALIZED_II_DISPLAY + VocalResponses.responses.OPTIONS;
             } else if (randomChoice == 3) {
                 welcomeText = VocalResponses.responses.DOOR_OPEN_AUDIO + VocalResponses.responses.ROWDY_BAR_AMBIANCE_AUDIO + GREETING_PERSONALIZED_III + VocalResponses.responses.POUR_DRINK_AUDIO + "Cheers, my friend!" + VocalResponses.responses.GLASS_CLINK_AUDIO + VocalResponses.responses.OPTIONS;
+                displayText = GREETING_PERSONALIZED_III_DISPLAY + VocalResponses.responses.OPTIONS;
             }
         } catch (error) {
             console.log("Something went wrong with randomization welcome message. Error: ", error.message);
@@ -176,9 +239,6 @@ const LaunchRequestHandler = {
         
 
         let rePromptText = `Are you going to stare at me or do you want to choose? ${VocalResponses.responses.OPTIONS}`;
-
-        // welcome screen message
-        let displayText = VocalResponses.responses.GREETING_PERSONALIZED;
 
         return handlerInput.responseBuilder
             .speak("<voice name='Emma'>" + welcomeText + "</voice>")
@@ -418,6 +478,7 @@ const OverwatchLeagueTeamInfoIntentIntentHandler = {
     async handle(handlerInput) {
         
         let teamName = handlerInput.requestEnvelope.request.intent.slots.teamName.value;
+        let teamLogoURL = "";
 
         // X-ray Web Scraper by Matt Mueller - NPM Package URL: https://www.npmjs.com/package/x-ray **
         const xray = require("x-ray");
@@ -426,8 +487,6 @@ const OverwatchLeagueTeamInfoIntentIntentHandler = {
         try {
             if (teamName){
                 let teamNameLowerCase = teamName.toLowerCase();
-    
-                const Teams = require('./TeamListData.json');
                 var standingsURL = 'https://www.overwatchleague.com/en-us/standings/';
 
                 if (standingsURL) {
@@ -455,7 +514,23 @@ const OverwatchLeagueTeamInfoIntentIntentHandler = {
                                                     if (curteamNameLowerCase.includes(teamNameLowerCase)){
                                                         standingsForTeamFound = true;
                                                         teamName = curTeam.teamName;
-                                                        outputSpeech = `The ${curTeam.teamName} currently has a record of ${curTeam.w} wins and ${curTeam.l} losses.`;
+                                                        
+                                                        for (const teamList in teamInfo.teamList) {
+                                                            if (Object.hasOwnProperty.call(teamInfo.teamList, teamList)) {
+                                                                const team = teamInfo.teamList[teamList];
+                                                                if (team.name.toLowerCase().includes(teamNameLowerCase)){
+                                                                    teamLogoURL = team.logoUrl;
+                                                                }
+                                                            }
+                                                        }
+
+                                                        let howTeamIsFaringThisSeason = '';
+                                                        if (parseInt(curTeam.w) > parseInt(curTeam.l)) {
+                                                            howTeamIsFaringThisSeason = 'They are doing pretty good so far.';
+                                                        } else {
+                                                            howTeamIsFaringThisSeason = "Oh no! They are not doing so great this season.";
+                                                        }
+                                                        outputSpeech = `The ${curTeam.teamName} currently has a record of ${curTeam.w} wins and ${curTeam.l} losses. ${howTeamIsFaringThisSeason}`;
                                                         break;
                                                     }
                                                     
@@ -471,10 +546,10 @@ const OverwatchLeagueTeamInfoIntentIntentHandler = {
                                 }
 
                                 if (standingsForTeamFound == false){
-                                    outputSpeech = `${teamName} has not yet had a match this season.`;
+                                    outputSpeech = `I could not find that team. Please repeat the name or try the team name without the city.`;
                                 }
                             } else {
-                                outputSpeech = "I'm not seeing any upcoming matches yet for the current season.";
+                                outputSpeech = "I'm not seeing any information yet for this season. Please try again later.";
                             }
     
                         })
@@ -500,6 +575,11 @@ const OverwatchLeagueTeamInfoIntentIntentHandler = {
         return handlerInput.responseBuilder
                 .speak(`<voice name='Emma'>${outputSpeech} ${drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
                 .reprompt(`<voice name='Emma'>${VocalResponses.responses.PLEASE_REPEAT} ${drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
+                .withStandardCard(
+                    teamName ? `${teamName} OWL Record This Season` : `OWL Record This Season`,
+                    outputSpeech,
+                    teamLogoURL ? teamLogoURL : '',
+                    teamLogoURL ? teamLogoURL : '')
                 .getResponse();
     },
 };
@@ -633,6 +713,58 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
     },
 };
 
+const RandomRoleHeroGeneratorIntentHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && handlerInput.requestEnvelope.request.intent.name === 'RandomRoleHeroGeneratorIntent';
+    },
+    handle(handlerInput) {
+        
+        let role = handlerInput.requestEnvelope.request.intent.slots.role.value;
+
+        try {
+            for (const roleHeroes in heroes) {
+                if (Object.hasOwnProperty.call(heroes, roleHeroes)) {
+                    const heroesInRole = heroes[roleHeroes];
+                    var randomChoice = -1;
+            
+                    if (role.toLowerCase().includes("tank")){
+                        randomChoice = getRndInteger(0, (heroesInRole[0].tank.length));
+            
+                        outputSpeech = `The tank hero you should play is ${heroesInRole[0].tank[randomChoice].name}. Good luck!`;
+                        break;
+                    } else if (role.toLowerCase().includes("damage") || role.toLowerCase().includes("dps")) {
+                        randomChoice = getRndInteger(0, (heroesInRole[0].damage.length));
+            
+                        outputSpeech = `The damage hero you should play is ${heroesInRole[0].damage[randomChoice].name}. Good luck!`;
+                        break;
+                    } else if (role.toLowerCase().includes("healer")) {
+                        randomChoice = getRndInteger(0, (heroesInRole[0].healer.length));
+            
+                        outputSpeech = `The healer hero you should play is ${heroesInRole[0].healer[randomChoice].name}. Good luck!`;
+                        break;
+                    }
+                    
+                }
+            }
+        } catch (error) {
+            outputSpeech = VocalResponses.responses.OVERWATCH_SERVICE_UNAVAILABLE + drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS;
+            console.log(err.message);
+            return handlerInput.responseBuilder
+                .speak(`<voice name='Emma'>${outputSpeech}`)
+                .reprompt(`<voice name='Emma'>${outputSpeech}`)
+                .getResponse();
+            
+        }
+        
+
+        return handlerInput.responseBuilder
+            .speak(`<voice name='Emma'>${outputSpeech} ${drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
+            .reprompt(`<voice name='Emma'>${VocalResponses.responses.PLEASE_REPEAT} ${drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
+            .getResponse();
+    },
+};
+
 const SpecialTestIntentHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'IntentRequest'
@@ -697,7 +829,6 @@ const HelpIntentHandler = {
             && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
     },
     handle(handlerInput) {
-        const speechText = '';
 
         console.log("User asked for help.");
 
@@ -939,6 +1070,7 @@ exports.handler = skillBuilder
         GetMyStatsIntentHandler,
         OverwatchLeagueUpcomingMatchesIntentHandler,
         OverwatchLeagueTeamInfoIntentIntentHandler,
+        RandomRoleHeroGeneratorIntentHandler,
         SpecialTestIntentHandler,
         AnotherDrinkIntentHandler,
         HelpIntentHandler,

@@ -1,0 +1,109 @@
+{
+    "role": [
+        {
+            "tank": [
+                {
+                    "name": "Dva"
+                },
+                {
+                    "name": "Orisa"
+                },
+                {
+                    "name": "Reinhardt"
+                },
+                {
+                    "name": "Roadhog"
+                },
+                {
+                    "name": "Sigma"
+                },
+                {
+                    "name": "Winston"
+                },
+                {
+                    "name": "Wrecking Ball"
+                },
+                {
+                    "name": "Zarya"
+                }
+            ],
+            "damage": [
+                {
+                    "name": "Ashe"
+                },
+                {
+                    "name": "Bastion"
+                },
+                {
+                    "name": "Doomfist"
+                },
+                {
+                    "name": "Echo"
+                },
+                {
+                    "name": "Genji"
+                },
+                {
+                    "name": "Hanzo"
+                },
+                {
+                    "name": "Junkrat"
+                },
+                {
+                    "name": "Mccree"
+                },
+                {
+                    "name": "Mei"
+                },
+                {
+                    "name": "Pharah"
+                },
+                {
+                    "name": "Reaper"
+                },
+                {
+                    "name": "Soldier 76"
+                },
+                {
+                    "name": "Sombra"
+                },
+                {
+                    "name": "Symmetra"
+                },
+                {
+                    "name": "Torbjörn"
+                },
+                {
+                    "name": "Tracer"
+                },
+                {
+                    "name": "Widowmaker"
+                }
+            ],
+            "healer": [
+                {
+                    "name": "Ana"
+                },
+                {
+                    "name": "Baptiste"
+                },
+                {
+                    "name": "Brigette"
+                },
+                {
+                    "name": "Lucio"
+                },
+                {
+                    "name": "Mercy"
+                },
+                {
+                    "name": "Moira"
+                },
+                {
+                    "name": "Zenyatta"
+                }
+            ]
+        }
+        
+    ]  
+}
