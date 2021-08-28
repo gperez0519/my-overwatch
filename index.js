@@ -874,7 +874,7 @@ const CancelAndStopIntentHandler = {
                 || handlerInput.requestEnvelope.request.intent.name === 'AMAZON.StopIntent');
     },
     handle(handlerInput) {
-        const speechText = VocalResponses.responses.GOODBYE;
+        let speechText = VocalResponses.responses.GOODBYE;
 
         const {attributesManager} = handlerInput;
 
