@@ -1064,6 +1064,7 @@ const getRemoteData = function (url) {
 const skillBuilder = Alexa.SkillBuilders.custom();
 
 exports.handler = skillBuilder
+    .withSkillId("amzn1.ask.skill.9956ae31-282b-4ab3-b675-080acd9b0bed")
     .addRequestHandlers(
         CheckAccountLinkedHandler,
         LaunchRequestHandler,
