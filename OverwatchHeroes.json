@@ -3,104 +3,801 @@
         {
             "tank": [
                 {
-                    "name": "Dva"
+                    "name": "D.Va",
+                    "heroDescription": "D.Va's mech is nimble and powerful—its twin Fusion Cannons blast away with autofire at short range, and she can use its Boosters to barrel over enemies and obstacles, or deflect attacks with her projectile-dismantling Defense Matrix.",
+                    "abilities": [
+                        {
+                            "name": "Fusion Cannons",
+                            "description": "D.Va's mech is equipped with twin short-range rotating cannons. They lay down continuous, high-damage fire without needing to reload, but slow D.Va’s movement while they’re active."
+                        },
+                        {
+                            "name": "Light Gun",
+                            "description": "While outside of her mech, D.Va can continue the fight with a mid-range automatic blaster."
+                        },
+                        {
+                            "name": "Boosters",
+                            "description": "D.Va’s mech launches into the air, her momentum carrying her forward. She can turn and change directions or barrel through her enemies, knocking them back."
+                        },
+                        {
+                            "name": "Defense Matrix",
+                            "description": "D.Va can maintain this forward-facing targeting array for a short period of time; while active, it'll stop incoming projectiles."
+                        },
+                        {
+                            "name": "Micro Missiles",
+                            "description": "D.Va can maintain this forward-facing targeting array for a short period of time; while active, it'll stop incoming projectiles."
+                        },
+                        {
+                            "name": "Self-Destruct",
+                            "description": "D.Va ejects from her mech and sets its reactor to explode, dealing massive damage to nearby opponents."
+                        },
+                        {
+                            "name": "Call Mech",
+                            "description": "If her armored battle suit is destroyed, D.Va can call down a fresh mech and return to the fray."
+                        }
+                    ]
                 },
                 {
-                    "name": "Orisa"
+                    "name": "Orisa",
+                    "heroDescription": "Orisa serves as the central anchor of her team, and defends her teammates from the frontline with a protective barrier. She can attack from long range, fortify her own defenses, launch graviton charges to slow and move enemies, and deploy a Supercharger to boost the damage output of multiple allies at once.",
+                    "abilities": [
+                        {
+                            "name": "Fusion Driver",
+                            "description": "Orisa’s automatic projectile cannon delivers sustained damage, but slows her movement while she fires it."
+                        },
+                        {
+                            "name": "Fortify",
+                            "description": "Orisa temporarily reduces damage she takes, and cannot be affected by action-impairing effects."
+                        },
+                        {
+                            "name": "Halt!",
+                            "description": "Orisa launches a graviton charge which she can detonate, slowing nearby enemies and pulling them towards the explosion."
+                        },
+                        {
+                            "name": "Protective Barrier",
+                            "description": "Orisa throws out a stationary barrier that can protect her and her allies from enemy fire."
+                        },
+                        {
+                            "name": "Supercharger",
+                            "description": "Orisa deploys a device to increase damage inflicted by allies within her line of sight."
+                        }
+                    ]
                 },
                 {
-                    "name": "Reinhardt"
+                    "name": "Reinhardt",
+                    "heroDescription": "Clad in powered armor and swinging his hammer, Reinhardt leads a rocket-propelled charge across the battleground and defends his squadmates with a massive energy barrier.",
+                    "abilities": [
+                        {
+                            "name": "Rocket Hammer",
+                            "description": "Reinhardt’s Rocket Hammer is an exemplary melee weapon, able to deal punishing damage in a wide arc with every swing."
+                        },
+                        {
+                            "name": "Barrier Field",
+                            "description": "Reinhardt projects a broad, forward-facing energy barrier, which can absorb substantial damage before it is destroyed. Though Reinhardt can protect himself and his companions behind the barrier, he cannot attack while sustaining it."
+                        },
+                        {
+                            "name": "Charge",
+                            "description": "Reinhardt charges forth in a straight line, pinning the first enemy in his path and knocking others aside. If he collides with a wall, the foe he’s carrying suffers extreme damage."
+                        },
+                        {
+                            "name": "Fire Strike",
+                            "description": "By whipping his Rocket Hammer forward, Reinhardt slings a flaming projectile which pierces and damages any enemies it touches."
+                        },
+                        {
+                            "name": "Earthshatter",
+                            "description": "Reinhardt forcefully slams his Rocket Hammer into the ground, knocking down and damaging all enemies in front of him."
+                        }
+                    ]
                 },
                 {
-                    "name": "Roadhog"
+                    "name": "Roadhog",
+                    "heroDescription": "Roadhog uses his signature Chain Hook to pull his enemies close before shredding them with blasts from his Scrap Gun. He’s hardy enough to withstand tremendous damage, and can recover his health with a short breather.",
+                    "abilities": [
+                        {
+                            "name": "Scrap Gun",
+                            "description": "Roadhog's Scrap Gun fires short-range blasts of shrapnel with a wide spread. Alternatively, it can launch a shrapnel ball that detonates farther away, scattering metal fragments from the point of impact."
+                        },
+                        {
+                            "name": "Take A Breather",
+                            "description": "Roadhog restores a chunk of his health over a brief period of time."
+                        },
+                        {
+                            "name": "Chain Hook",
+                            "description": "Roadhog hurls his chain at a target; if it catches, he yanks them into close range."
+                        },
+                        {
+                            "name": "Whole Hog",
+                            "description": "After cramming a top-loader onto his Scrap Gun, Roadhog pours in ammo. For a short time, he can crank out a stream of shrapnel that knocks back enemies."
+                        }
+                    ]
                 },
                 {
-                    "name": "Sigma"
+                    "name": "Sigma",
+                    "heroDescription": "Sigma is an eccentric astrophysicist and volatile tank who gained the power to control gravity in an orbital experiment gone wrong. Manipulated by Talon and deployed as a living weapon, Sigma’s presence on the battlefield cannot be ignored.",
+                    "abilities": [
+                        {
+                            "name": "Hyperspheres",
+                            "description": "Sigma launches two gravitic charges, which bounce off walls and implode after a short duration, damaging enemies within a sizable radius."
+                        },
+                        {
+                            "name": "Experimental Barrier",
+                            "description": "Sigma propels a floating barrier to a location of his choosing. He can dismiss the barrier at any time."
+                        },
+                        {
+                            "name": "Kinetic Grasp",
+                            "description": "Sigma freezes incoming projectiles in midair, converting them into shields."
+                        },
+                        {
+                            "name": "Accretion",
+                            "description": "Sigma gathers a mass of debris and flings it at an enemy to knock them down."
+                        },
+                        {
+                            "name": "Unleashing his full powers, Sigma takes flight, lifts enemies in a targeted area, and launches them into the sky before slamming them back down.",
+                            "description": "Unleashing his full powers, Sigma takes flight, lifts enemies in a targeted area, and launches them into the sky before slamming them back down."
+                        }
+                    ]
                 },
                 {
-                    "name": "Winston"
+                    "name": "Winston",
+                    "heroDescription": "Winston wields impressive inventions—a jump pack, electricity-blasting Tesla Cannon, portable shield projector and more—with literal gorilla strength.",
+                    "abilities": [
+                        {
+                            "name": "Tesla Cannon",
+                            "description": "Winston’s weapon fires a short-range electric barrage for as long as he holds down the trigger."
+                        },
+                        {
+                            "name": "Jump Pack",
+                            "description": "Assisted by his energy pack, Winston lunges through the air, dealing significant damage and staggering nearby enemies when he lands."
+                        },
+                        {
+                            "name": "Barrier Projector",
+                            "description": "Winston’s barrier projector extends a bubble-shaped field that absorbs damage until it's destroyed. Allies protected by the barrier can return fire from within it."
+                        },
+                        {
+                            "name": "Primal Rage",
+                            "description": "Winston embraces his animal nature, significantly boosting his health and making him very difficult to kill, strengthening his melee attack, and allowing him to use his Jump Pack ability more frequently. While raging, Winston can only make melee and Jump Pack attacks."
+                        }
+                    ]
                 },
                 {
-                    "name": "Wrecking Ball"
+                    "name": "Wrecking Ball",
+                    "heroDescription": "Wrecking Ball rolls across the battlefield, using his arsenal of weapons and his mech’s powerful body to crush his enemies.",
+                    "abilities": [
+                        {
+                            "name": "Quad Cannons",
+                            "description": "Wrecking Ball’s automatic assault cannons tear apart threats at medium range."
+                        },
+                        {
+                            "name": "Roll",
+                            "description": "Wrecking Ball transforms into a ball, increasing his maximum movement speed."
+                        },
+                        {
+                            "name": "Grappling Claw",
+                            "description": "Wrecking Ball launches a grappling claw, enabling him to anchor to an area and swing from it. If he strikes an enemy with a powered-up swing, they’re damaged and knocked back."
+                        },
+                        {
+                            "name": "Adaptive Shield",
+                            "description": "Wrecking Ball’s temporary personal shields absorb damage, providing stronger defenses if more opponents are nearby."
+                        },
+                        {
+                            "name": "Piledriver",
+                            "description": "Wrecking Ball slams onto the ground below, damaging enemies and launching them upward."
+                        },
+                        {
+                            "name": "Minefield",
+                            "description": "Wrecking Ball deploys a field of long-lasting proximity mines which explode on contact with enemies."
+                        }
+
+                    ]
                 },
                 {
-                    "name": "Zarya"
+                    "name": "Zarya",
+                    "heroDescription": "Deploying powerful personal barriers that convert incoming damage into energy for her massive Particle Cannon, Zarya is an invaluable asset on the front lines of any battle.",
+                    "abilities": [
+                        {
+                            "name": "Particle Cannon",
+                            "description": "Zarya’s mighty Particle Cannon unleashes a short-range beam of destructive energy. Alternatively, Zarya can lob an explosive charge to strike multiple opponents."
+                        },
+                        {
+                            "name": "Particle Barrier",
+                            "description": "The Particle Cannon can emit a personal barrier that shields Zarya against incoming attacks, redirecting their energy to enhance her weapon’s damage and the width of its beam."
+                        },
+                        {
+                            "name": "Projected Barrier",
+                            "description": "Zarya surrounds one of her teammates with an energy barrier that simultaneously absorbs fire and boosts the power of her Particle Cannon."
+                        },
+                        {
+                            "name": "Graviton Surge",
+                            "description": "Zarya launches a gravity bomb that draws in enemy combatants and deals damage while they’re trapped."
+                        }
+                    ]
                 }
             ],
             "damage": [
                 {
-                    "name": "Ashe"
+                    "name": "Ashe",
+                    "heroDescription": "Ashe quickly fires her rifle from the hip or uses her weapon’s aim-down sights to line up a high damage shot. She blasts enemies by throwing dynamite, and her coach gun packs enough punch to put some distance between her and her foes. And Ashe is not alone, as she can call on her omnic ally Bob, to join the fray when the need arises.",
+                    "abilities": [
+                        {
+                            "name": "The Viper",
+                            "description": "Ashe's semi-automatic rifle fires quick shots, or she can use her aim-down sights for a more damaging, precise shot."
+                        },
+                        {
+                            "name": "Dynamite",
+                            "description": "Ashe throws an explosive that detonates after a short delay or immediately when shot. The explosion from Dynamite also lights enemies on fire, dealing damage over time."
+                        },
+                        {
+                            "name": "Coach Gun",
+                            "description": "Ashe blasts enemies in front of her, knocking them away and propelling herself backward for added mobility."
+                        },
+                        {
+                            "name": "B.O.B.",
+                            "description": "Ashe summons her trusted omnic sidekick, Bob, who charges forward and knocks enemies into the air, then lays down suppressing fire with his arm cannons."
+                        }
+                    ]
                 },
                 {
-                    "name": "Bastion"
+                    "name": "Bastion",
+                    "heroDescription": "Repair protocols and the ability to transform between stationary Assault, mobile Recon and devastating Tank configurations provide Bastion with a high probability of victory.",
+                    "abilities": [
+                        {
+                            "name": "Configuration: Recon",
+                            "description": "In Recon mode, Bastion is fully mobile, outfitted with a submachine gun that fires steady bursts of bullets at medium range."
+                        },
+                        {
+                            "name": "Configuration: Sentry",
+                            "description": "In Sentry mode, Bastion is a stationary powerhouse equipped with a gatling gun capable of unleashing a hail of bullets. The gun's aim can be \"walked\" across multiple targets, dealing devastating damage at short to medium range."
+                        },
+                        {
+                            "name": "Reconfigure",
+                            "description": "Bastion transforms between its two primary combat modes to adapt to battlefield conditions."
+                        },
+                        {
+                            "name": "Self-Repair",
+                            "description": "Bastion restores its health; it cannot fire weapons while the repair process is in effect."
+                        },
+                        {
+                            "name": "Configuration: Tank",
+                            "description": "In Tank mode, Bastion extends wheeled treads and a powerful long-range cannon. The cannon’s explosive shells demolish targets in a wide blast radius, but Bastion can only remain in this mode for a limited time."
+                        }
+                    ]
                 },
                 {
-                    "name": "Doomfist"
+                    "name": "Doomfist",
+                    "heroDescription": "Doomfist’s cybernetics make him a highly-mobile, powerful frontline fighter. In addition to dealing ranged damage with his Hand Cannon, Doomfist can slam the ground, knock enemies into the air and off balance, or charge into the fray with his Rocket Punch. When facing a tightly packed group, Doomfist leaps out of view, then crashes down to earth with a spectacular Meteor Strike.",
+                    "abilities": [
+                        {
+                            "name": "Hand Cannon",
+                            "description": "Doomfist fires a short-range burst from the knuckles of his fist. Its ammunition is automatically regenerated over a short time."
+                        },
+                        {
+                            "name": "Seismic Slam",
+                            "description": "Doomfist leaps forward and smashes into the ground, knocking nearby enemies toward him."
+                        },
+                        {
+                            "name": "Rising Uppercut",
+                            "description": "Doomfist uppercuts enemies in front of him into the air."
+                        },
+                        {
+                            "name": "Rocket Punch",
+                            "description": "After charging up, Doomfist lunges forward and knocks an enemy back, dealing additional damage if they impact a wall."
+                        },
+                        {
+                            "name": "Meteor Strike",
+                            "description": "Doomfist leaps into the sky, then crashes to the ground, dealing significant damage."
+                        }
+                    ]
                 },
                 {
-                    "name": "Echo"
+                    "name": "Echo",
+                    "heroDescription": "Echo is an evolutionary robot programmed with a rapidly adapting artificial intelligence, versatile enough to fill multiple battlefield combat roles.",
+                    "abilities": [
+                        {
+                            "name": "Tri-Shot",
+                            "description": "Echo fires 3 shots at once, in a triangle pattern."
+                        },
+                        {
+                            "name": "Sticky Bombs",
+                            "description": "Echo fires a volley of sticky bombs that detonates after a delay."
+                        },
+                        {
+                            "name": "Flight",
+                            "description": "Echo surges forward quickly, then can fly freely."
+                        },
+                        {
+                            "name": "Focusing Beam",
+                            "description": "Echo channels a beam for a few seconds, dealing very high damage to targets with less than half health."
+                        },
+                        {
+                            "name": "Glide",
+                            "description": "Echo can glide while falling."
+                        },
+                        {
+                            "name": "Duplicate",
+                            "description": "Echo duplicates a targeted enemy hero and gains use of their abilities."
+                        }
+                    ]
                 },
                 {
-                    "name": "Genji"
+                    "name": "Genji",
+                    "heroDescription": "Genji flings precise and deadly Shuriken at his targets, and uses his technologically-advanced katana to deflect projectiles or deliver a Swift Strike that cuts down enemies.",
+                    "abilities": [
+                        {
+                            "name": "Shuriken",
+                            "description": "Genji looses three deadly throwing stars in quick succession. Alternatively, he can throw three shuriken in a wider spread."
+                        },
+                        {
+                            "name": "Deflect",
+                            "description": "With lightning-quick swipes of his sword, Genji reflects an oncoming projectile and sends it rebounding towards his opponent."
+                        },
+                        {
+                            "name": "Swift Strike",
+                            "description": "Genji darts forward, slashing with his katana and passing through foes in his path. If Genji eliminates a target, he can instantly use this ability again."
+                        },
+                        {
+                            "name": "Dragonblade",
+                            "description": "Genji brandishes his katana for a brief period of time. Until he sheathes his sword, Genji can deliver killing strikes to any targets within his reach."
+                        }
+                    ]
                 },
                 {
-                    "name": "Hanzo"
+                    "name": "Hanzo",
+                    "heroDescription": "Hanzo’s versatile arrows can reveal his enemies or fragment to strike multiple targets. He can scale walls to fire his bow from on high, or summon a titanic spirit dragon.",
+                    "abilities": [
+                        {
+                            "name": "Storm Bow",
+                            "description": "Hanzo nocks and fires an arrow at his target."
+                        },
+                        {
+                            "name": "Sonic Arrow",
+                            "description": "Hanzo launches an arrow that contains a sonar tracking device. Any enemy within its detection radius is visibly marked, making them easier for Hanzo and his allies to hunt down."
+                        },
+                        {
+                            "name": "Storm Arrows",
+                            "description": "Hanzo’s next several arrows fire instantly, but at reduced damage."
+                        },
+                        {
+                            "name": "Lunge",
+                            "description": "Hanzo can double jump, allowing him to change direction mid-jump."
+                        },
+                        {
+                            "name": "Dragonstrike",
+                            "description": "Hanzo summons a Spirit Dragon which travels through the air in a line. It passes through walls in its way, devouring any enemies it encounters."
+                        }
+                    ]
                 },
                 {
-                    "name": "Junkrat"
+                    "name": "Junkrat",
+                    "heroDescription": "Junkrat’s area-denying armaments include a Frag Launcher that lobs bouncing grenades, Concussion Mines that send enemies flying, and Steel Traps that stop foes dead in their tracks.",
+                    "abilities": [
+                        {
+                            "name": "Frag Launcher",
+                            "description": "Junkrat's Frag Launcher lobs grenades a significant distance. They bounce to reach their destination, and blow up when they strike an enemy."
+                        },
+                        {
+                            "name": "Concussion Mine",
+                            "description": "After placing one of his homemade Concussion Mines, Junkrat can trigger it to damage enemies and send them flying... or propel himself through the air."
+                        },
+                        {
+                            "name": "Steel Trap",
+                            "description": "Junkrat tosses out a giant, metal-toothed trap. Should an enemy wander too close to the trap, it clamps on, injuring and immobilizing them."
+                        },
+                        {
+                            "name": "Total Mayhem",
+                            "description": "Junkrat's deranged sense of humor persists past his death. If killed, he drops several live grenades."
+                        },
+                        {
+                            "name": "Rip-Tire",
+                            "description": "Junkrat revs up a motorized tire bomb and sends it rolling across the battlefield, climbing over walls and obstacles. He can remotely detonate the RIP-Tire to deal serious damage to enemies caught in the blast, or just wait for it to explode on its own."
+                        }
+                    ]
                 },
                 {
-                    "name": "Mccree"
+                    "name": "Mccree",
+                    "heroDescription": "Armed with his Peacekeeper revolver, McCree takes out targets with deadeye precision and dives out of danger with eagle-like speed.",
+                    "abilities": [
+                        {
+                            "name": "Peacekeeper",
+                            "description": "McCree fires off a round from his trusty six-shooter. He can fan the Peacekeeper’s hammer to swiftly unload the entire cylinder."
+                        },
+                        {
+                            "name": "Combat Roll",
+                            "description": "McCree dives in the direction he’s moving, effortlessly reloading his Peacekeeper in the process."
+                        },
+                        {
+                            "name": "Flashbang",
+                            "description": "McCree heaves a blinding grenade that explodes shortly after it leaves his hand. The blast staggers enemies in a small radius."
+                        },
+                        {
+                            "name": "Deadeye",
+                            "description": "Focus. Mark. Draw. McCree takes a few precious moments to aim; when he’s ready to fire, he shoots every enemy in his line of sight. The weaker his targets are, the faster he’ll line up a killshot."
+                        }
+                    ]
                 },
                 {
-                    "name": "Mei"
+                    "name": "Mei",
+                    "heroDescription": "Mei’s weather-altering devices slow opponents and protect locations. Her Endothermic Blaster unleashes damaging icicles and frost streams, and she can Cryo-Freeze herself to guard against counterattacks, or obstruct the opposing team's movements with an Ice Wall.",
+                    "abilities": [
+                        {
+                            "name": "Endothermic Blaster",
+                            "description": "Mei’s blaster unleashes a concentrated, short-range stream of frost that damages, slows, and ultimately freezes enemies in place. Mei can also use her blaster to shoot icicle-like projectiles at medium range."
+                        },
+                        {
+                            "name": "Cryo-Freeze",
+                            "description": "Mei instantly surrounds herself with a block of thick ice. She heals and ignores damage while encased, but cannot move or use abilities."
+                        },
+                        {
+                            "name": "Ice Wall",
+                            "description": "Mei generates an enormous ice wall that obstructs lines of sight, stops movement, and blocks attacks."
+                        },
+                        {
+                            "name": "Blizzard",
+                            "description": "Mei deploys a weather-modification drone that emits gusts of wind and snow in a wide area. Enemies caught in the blizzard are slowed and take damage; those who linger too long are frozen solid."
+                        }
+                    ]
                 },
                 {
-                    "name": "Pharah"
+                    "name": "Pharah",
+                    "heroDescription": "Soaring through the air in her combat armor, and armed with a launcher that lays down high-explosive rockets, Pharah is a force to be reckoned with.",
+                    "abilities": [
+                        {
+                            "name": "Rocket Launcher",
+                            "description": "Pharah’s primary weapon launches rockets that deal significant damage in a wide blast radius."
+                        },
+                        {
+                            "name": "Jump Jet",
+                            "description": "Propelled by her suit’s thrusters, Pharah soars high into the air."
+                        },
+                        {
+                            "name": "Concussive Blast",
+                            "description": "Pharah looses a wrist rocket that knocks back any enemies it strikes."
+                        },
+                        {
+                            "name": "Barrage",
+                            "description": "Pharah directs a continuous salvo of mini-rockets to destroy groups of enemies."
+                        }
+                    ]
                 },
                 {
-                    "name": "Reaper"
+                    "name": "Reaper",
+                    "heroDescription": "Hellfire Shotguns, the ghostly ability to become immune to damage, and the power to step between shadows make Reaper one of the deadliest beings on Earth.",
+                    "abilities": [
+                        {
+                            "name": "Hellfire Shotguns",
+                            "description": "Reaper tears enemies apart with twin shotguns."
+                        },
+                        {
+                            "name": "Wraith Form",
+                            "description": "Reaper becomes a shadow for a short period of time. While in this form, he takes no damage and is able to pass through enemies, but cannot fire his weapons or use other abilities."
+                        },
+                        {
+                            "name": "Shadow Step",
+                            "description": "After marking a destination, Reaper disappears and reappears at that location."
+                        },
+                        {
+                            "name": "Death Blossom",
+                            "description": "In a blur of motion, Reaper empties both Hellfire Shotguns at breakneck speed, dealing massive damage to all nearby enemies."
+                        }
+                    ]
                 },
                 {
-                    "name": "Soldier 76"
+                    "name": "Soldier 76",
+                    "heroDescription": "Armed with cutting-edge weaponry, including an experimental pulse rifle that’s capable of firing spirals of high-powered Helix Rockets, Soldier: 76 has the speed and support know-how of a highly trained warrior.",
+                    "abilities": [
+                        {
+                            "name": "Heavy Pulse Rifle",
+                            "description": "Soldier: 76’s rifle remains particularly steady while unloading fully-automatic pulse fire."
+                        },
+                        {
+                            "name": "Helix Rockets",
+                            "description": "Tiny rockets spiral out of Soldier: 76’s Pulse Rifle in a single burst. The rockets’ explosion damages enemies in a small radius."
+                        },
+                        {
+                            "name": "Sprint",
+                            "description": "Whether he needs to evade a firefight or get back into one, Soldier: 76 can rush ahead in a burst of speed. His sprint ends if he takes an action other than charging forward."
+                        },
+                        {
+                            "name": "Biotic Field",
+                            "description": "Soldier: 76 plants a biotic emitter on the ground. Its energy projection restores health to 76 and any of his squadmates within the field."
+                        },
+                        {
+                            "name": "Tactical Visor",
+                            "description": "Soldier: 76’s pinpoint targeting visor “locks” his aim on the threat closest to his crosshairs. If an enemy leaves his line of sight, Soldier: 76 can quickly switch to another target."
+                        }
+                    ]
                 },
                 {
-                    "name": "Sombra"
+                    "name": "Sombra",
+                    "heroDescription": "Stealth and debilitating attacks make Sombra a powerful infiltrator. Her hacking can disrupt her enemies, ensuring they're easier to take out, while her EMP provides the upper hand against multiple foes at once. Sombra’s ability to Translocate and camouflage herself makes her a hard target to pin down.",
+                    "abilities": [
+                        {
+                            "name": "Machine Pistol",
+                            "description": "Sombra’s fully-automatic machine pistol fires in a short-range spread."
+                        },
+                        {
+                            "name": "Hack",
+                            "description": "Sombra hacks enemies to temporarily stop them from using their abilities, or hacks first aid kits to make them useless to her opponents."
+                        },
+                        {
+                            "name": "Stealth",
+                            "description": "Sombra becomes invisible, during which her speed is boosted considerably. Attacking, using offensive abilities, or taking damage disables her camouflage. Sombra cannot capture objectives while invisible."
+                        },
+                        {
+                            "name": "Translocator",
+                            "description": "Sombra tosses out a translocator beacon. She can instantly return to the beacon’s location while it is active (including when it’s in mid-flight)."
+                        },
+                        {
+                            "name": "E.M.P.",
+                            "description": "Sombra discharges electromagnetic energy in a wide radius, destroying enemy barriers and shields and hacking all opponents caught in the blast."
+                        }
+                    ]
                 },
                 {
-                    "name": "Symmetra"
+                    "name": "Symmetra",
+                    "heroDescription": "Symmetra utilizes her Photon Projector to dispatch adversaries, shield her associates, construct teleportation pads and deploy particle-blasting Sentry Turrets.",
+                    "abilities": [
+                        {
+                            "name": "Photon Projector",
+                            "description": "Symmetra’s weapon emits a ranged beam. It deals continuous damage that increases the longer it is connected. The projector can also release an explosive energy ball that deals high damage on contact."
+                        },
+                        {
+                            "name": "Sentry Turret",
+                            "description": "Symmetra launches a small turret that automatically fires speed-reducing blasts at the nearest enemy within range. Up to three turrets can be built on the battlefield at once."
+                        },
+                        {
+                            "name": "Teleporter",
+                            "description": "Symmetra places a temporary teleporter exit pad at a distance and connects it to a teleporter entry pad at her current location. Allies (and some of their abilities, such as Junkrat’s RIP-Tire) can travel from the entry pad to the exit pad instantly."
+                        },
+                        {
+                            "name": "Photon Barrier",
+                            "description": "Symmetra deploys a massive energy barrier which prevents ranged attacks and is big enough to cut through the entire map."
+                        }
+                    ]
                 },
                 {
-                    "name": "Torbjörn"
+                    "name": "Torbjörn",
+                    "heroDescription": "Torbjörn’s extensive arsenal includes a rivet gun, hammer, and a personal forge that he can use to build turrets.",
+                    "abilities": [
+                        {
+                            "name": "Rivet Gun",
+                            "description": "Torbjörn fires rivets at long range or ejects molten metal from his gun in a short, close-range burst."
+                        },
+                        {
+                            "name": "Forge Hammer",
+                            "description": "This multipurpose hammer repairs turrets and, in a pinch, can also be used as a weapon."
+                        },
+                        {
+                            "name": "Deploy Turret",
+                            "description": "Torbjörn deploys a self-building turret which automatically tracks and attacks enemies."
+                        },
+                        {
+                            "name": "Overload",
+                            "description": "Torbjörn gains additional armor as well as improved attack, movement, and reload speed for a brief period."
+                        },
+                        {
+                            "name": "Molten Core",
+                            "description": "Torbjörn creates pools of molten slag that deal massive, sustained damage (plus bonus damage to armor), and can prevent enemies from moving through key locations."
+                        }
+                    ]
                 },
                 {
-                    "name": "Tracer"
+                    "name": "Tracer",
+                    "heroDescription": "Toting twin pulse pistols, energy-based time bombs, and rapid-fire banter, Tracer is able to \"blink\" through space and rewind her personal timeline as she battles to right wrongs the world over.",
+                    "abilities": [
+                        {
+                            "name": "Pulse Pistols",
+                            "description": "Tracer rapid-fires both of her pistols."
+                        },
+                        {
+                            "name": "Blink",
+                            "description": "Tracer zips horizontally through space in the direction she’s moving, and reappears several yards away. She stores up to three charges of the blink ability and generates more every few seconds."
+                        },
+                        {
+                            "name": "Recall",
+                            "description": "Tracer bounds backward in time, returning her health, ammo and position on the map to precisely where they were a few seconds before."
+                        },
+                        {
+                            "name": "Pulse Bomb",
+                            "description": "Tracer lobs a large bomb that adheres to any surface or unfortunate opponent it lands on. After a brief delay, the bomb explodes, dealing high damage to all enemies within its blast radius."
+                        }
+                    ]
                 },
                 {
-                    "name": "Widowmaker"
+                    "name": "Widowmaker",
+                    "heroDescription": "Widowmaker equips herself with whatever it takes to eliminate her targets, including mines that dispense poisonous gas, a visor that grants her squad infra-sight, and a powerful sniper rifle that can fire in fully-automatic mode",
+                    "abilities": [
+                        {
+                            "name": "Widow's Kiss",
+                            "description": "Widowmaker’s versatile sniper rifle is ideal for scope-aimed shots at distant targets. Should targets close to medium range, the rifle can also be fired in fully-automatic mode."
+                        },
+                        {
+                            "name": "Grappling Hook",
+                            "description": "Widowmaker launches a grappling hook towards the location she’s aiming at – when the hook connects with a scalable surface, she’s quickly drawn towards it, allowing her to expand her view of the battlefield and evade or flank targets."
+                        },
+                        {
+                            "name": "Venom Mine",
+                            "description": "Widowmaker adheres a swiftly-arming venom mine to nearly any surface. When a target wanders within range of the mine’s motion trigger, it explodes, delivering poison gas to any enemies in the vicinity."
+                        },
+                        {
+                            "name": "Infra-sight",
+                            "description": "Widowmaker’s recon visor allows her to see the heat signatures of her targets through walls and objects for a moderate amount of time. This enhanced vision is shared with her allies."
+                        }
+                    ]
                 }
             ],
             "healer": [
                 {
-                    "name": "Ana"
+                    "name": "Ana",
+                    "heroDescription": "Ana’s versatile arsenal allows her to affect heroes all over the battlefield. Her Biotic Rifle rounds and Biotic Grenades heal allies and damage or impair enemies; her sidearm tranquilizes key targets, and Nano Boost gives one of her comrades a considerable increase in power.",
+                    "abilities": [
+                        {
+                            "name": "Biotic Rifle",
+                            "description": "Ana’s rifle shoots darts that can restore health to her allies or deal ongoing damage to her enemies. She can use the rifle’s scope to zoom in on targets and make highly accurate shots."
+                        },
+                        {
+                            "name": "Sleep Dart",
+                            "description": "Ana fires a dart from her sidearm, rendering an enemy unconscious (though any damage will rouse them)."
+                        },
+                        {
+                            "name": "Biotic Grenade",
+                            "description": "Ana tosses a biotic bomb that deals damage to enemies and heals allies in a small area of effect. Affected allies briefly receive increased healing from all sources, while enemies caught in the blast cannot be healed for a few moments."
+                        },
+                        {
+                            "name": "Nano Boost",
+                            "description": "After Ana hits one of her allies with a combat boost, they deal more damage, and take less damage from enemies’ attacks."
+                        }
+                    ]
                 },
                 {
-                    "name": "Baptiste"
+                    "name": "Baptiste",
+                    "heroDescription": "Baptiste wields an assortment of experimental devices and weaponry to keep allies alive and eliminate threats under fierce conditions. A battle-hardened combat medic, he is just as capable of saving lives as he is taking out the enemy.",
+                    "abilities": [
+                        {
+                            "name": "Biotic Launcher",
+                            "description": "Baptiste’s three-round-burst Biotic Launcher rewards accuracy and recoil control with significant damage output. It also doubles as a healing device, lobbing projectiles that heal allies near the point of impact."
+                        },
+                        {
+                            "name": "Regenerative Burst",
+                            "description": "Baptiste activates an intense regenerative burst that heals himself and nearby allies over time."
+                        },
+                        {
+                            "name": "Immortality Field",
+                            "description": "Baptiste uses a device to create a field that prevents allies from dying. The generator can be destroyed."
+                        },
+                        {
+                            "name": "Exo Boots",
+                            "description": "By first crouching, Baptiste can jump higher."
+                        },
+                        {
+                            "name": "Amplification Matrix",
+                            "description": "Baptiste creates a matrix that doubles the damage and healing effects of friendly projectiles that pass through it."
+                        }
+                    ]
                 },
                 {
-                    "name": "Brigette"
+                    "name": "Brigitte",
+                    "heroDescription": "Brigitte specializes in armor. She can throw Repair Packs to heal teammates, or automatically heal nearby allies when she damages foes with her Flail. Her Flail is capable of a wide swing to strike multiple targets, or a Whip Shot that stuns an enemy at range. When entering the fray, Barrier Shield provides personal defense while she attacks enemies with Shield Bash. Brigitte’s ultimate ability, Rally, gives her a substantial short-term boost of speed and provides long-lasting armor to all her nearby allies.",
+                    "abilities": [
+                        {
+                            "name": "Rocket Flail",
+                            "description": "Brigitte's melee weapon has an extended range, enabling her to strike multiple enemies with a single swing."
+                        },
+                        {
+                            "name": "Repair Pack",
+                            "description": "Heals an ally for a short duration."
+                        },
+                        {
+                            "name": "Whip Shot",
+                            "description": "Brigitte throws her flail a long distance, dealing damage and knocking an enemy away from her."
+                        },
+                        {
+                            "name": "Barrier Shield",
+                            "description": "Brigitte deploys a frontal energy barrier to absorb a limited amount of damage."
+                        },
+                        {
+                            "name": "Shield Bash",
+                            "description": "Once her Barrier Shield is deployed, Brigitte can dash forward to stun an enemy."
+                        },
+                        {
+                            "name": "Rally",
+                            "description": "Brigitte moves faster and provides all nearby allies with armor that lasts until it’s removed by damage."
+                        }
+                    ]
                 },
                 {
-                    "name": "Lucio"
+                    "name": "Lucio",
+                    "heroDescription": "On the battlefield, Lúcio’s cutting-edge Sonic Amplifier buffets enemies with projectiles and knocks foes back with blasts of sound. His songs can both heal his team or boost their movement speed, and he can switch between tracks on the fly.",
+                    "abilities": [
+                        {
+                            "name": "Sonic Amplifier",
+                            "description": "Lúcio can hit his enemies with sonic projectiles or knock them back with a blast of sound."
+                        },
+                        {
+                            "name": "Crossfade",
+                            "description": "Lúcio continuously energizes himself—and nearby teammates—with music. He can switch between two songs: one amplifies movement speed, while the other regenerates health."
+                        },
+                        {
+                            "name": "Amp It Up",
+                            "description": "Lúcio increases the volume on his speakers, boosting the effects of his songs."
+                        },
+                        {
+                            "name": "Sound Barrier",
+                            "description": "Protective waves radiate out from Lúcio’s Sonic Amplifier, briefly providing him and nearby allies with personal shields."
+                        }
+                    ]
                 },
                 {
-                    "name": "Mercy"
+                    "name": "Mercy",
+                    "heroDescription": "Mercy’s Valkyrie Suit helps keep her close to teammates like a guardian angel; healing, resurrecting or strengthening them with the beams emanating from her Caduceus Staff.",
+                    "abilities": [
+                        {
+                            "name": "Caduceus Staff",
+                            "description": "Mercy engages one of two beams that connect to an ally. By maintaining the beams, she can either restore that ally’s health or increase the amount of damage they deal."
+                        },
+                        {
+                            "name": "Caduceus Blaster",
+                            "description": "Mercy shoots a round from her sidearm."
+                        },
+                        {
+                            "name": "Guardian Angel",
+                            "description": "Mercy flies towards a targeted ally, allowing her to reach them quickly and provide assistance in crucial moments."
+                        },
+                        {
+                            "name": "Resurrect",
+                            "description": "Mercy brings a dead ally back into the fight with full health."
+                        },
+                        {
+                            "name": "Angelic Descent",
+                            "description": "Propelled by her Valkyrie suit, Mercy slows the speed of her descent from great heights."
+                        },
+                        {
+                            "name": "Valkyrie",
+                            "description": "Gain the ability to fly. Mercy’s abilities are enhanced."
+                        }
+                    ]
                 },
                 {
-                    "name": "Moira"
+                    "name": "Moira",
+                    "heroDescription": "Moira’s biotic abilities enable her to contribute healing or damage in any crisis. While Biotic Grasp gives Moira short-range options, her Biotic Orbs contribute longer-range, hands-off damage and healing; she can also Fade to escape groups or remain close to allies in need of support. Once she’s charged Coalescence, Moira can save multiple allies from elimination at once or finish off weakened enemies.",
+                    "abilities": [
+                        {
+                            "name": "Biotic Grasp",
+                            "description": "Using her left hand, Moira expends biotic energy to heal allies in front of her. Her right hand fires a long-range beam weapon that saps enemies’ health, healing Moira and replenishing her biotic energy."
+                        },
+                        {
+                            "name": "Biotic Orb",
+                            "description": "Moira launches a rebounding biotic sphere; she can choose between a regeneration effect that heals the allies it passes through, or a decay effect that deals damage to enemies."
+                        },
+                        {
+                            "name": "Fade",
+                            "description": "Moira quickly teleports a short distance."
+                        },
+                        {
+                            "name": "Coalescence",
+                            "description": "Moira channels a long-range beam that both heals allies and bypasses barriers to damage her enemies."
+                        }
+                    ]
                 },
                 {
-                    "name": "Zenyatta"
+                    "name": "Zenyatta",
+                    "heroDescription": "Zenyatta calls upon orbs of harmony and discord to heal his teammates and weaken his opponents, all while pursuing a transcendent state of immunity to damage.",
+                    "abilities": [
+                        {
+                            "name": "Orb of Destruction",
+                            "description": "Zenyatta projects his destructive energy orbs either individually, or in a rapid-fire volley after a few seconds spent gathering power."
+                        },
+                        {
+                            "name": "Orb of Harmony",
+                            "description": "Zenyatta casts an orb over the shoulder of a targeted ally. So long as Zenyatta maintains line of sight, the orb slowly restores health to his ally. Only one ally can receive the orb's benefit at a time."
+                        },
+                        {
+                            "name": "Orb of Discord",
+                            "description": "Attaching the orb of discord to an opponent amplifies the amount of damage they receive for as long as Zenyatta maintains line of sight. Only one opponent can suffer the orb's effects at a time."
+                        },
+                        {
+                            "name": "Transcendence",
+                            "description": "Zenyatta enters a state of heightened existence for a short period of time. While transcendent, Zenyatta cannot use abilities or weapons, but is immune to damage and automatically restores his health and that of nearby allies."
+                        }
+                    ]
                 }
             ]
         }

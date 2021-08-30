@@ -730,18 +730,72 @@ const RandomRoleHeroGeneratorIntentHandler = {
             
                     if (role.toLowerCase().includes("tank")){
                         randomChoice = getRndInteger(0, (heroesInRole[0].tank.length));
+                        let abilitiesLength = Object.keys(heroesInRole[0].tank[randomChoice].abilities).length;
+                        let heroDescription = heroesInRole[0].tank[randomChoice].heroDescription;
+                        let heroName = heroesInRole[0].tank[randomChoice].name;
+                        let heroAbilities = heroesInRole[0].tank[randomChoice].abilities;
             
-                        outputSpeech = `The tank hero you should play is ${heroesInRole[0].tank[randomChoice].name}. Good luck!`;
+                        // Suggested random hero.
+                        outputSpeech = `The tank hero you should play is ${heroName}.`;
+
+                        // Tell user about the hero.
+                        outputSpeech += ` ${heroDescription}`;
+
+                        // Tell user about the heroes abilities
+                        outputSpeech += ` ${heroName} has over ${abilitiesLength} abilities. `;
+                        heroAbilities.map((ability, index) => {
+                            if (index == (abilitiesLength - 1)) {
+                                outputSpeech += `And finally the ultimate ability, `;
+                            }
+                            outputSpeech += `${ability.name}. ${ability.description} `;
+                        });
+
                         break;
                     } else if (role.toLowerCase().includes("damage") || role.toLowerCase().includes("dps")) {
                         randomChoice = getRndInteger(0, (heroesInRole[0].damage.length));
+                        let abilitiesLength = Object.keys(heroesInRole[0].damage[randomChoice].abilities).length;
+                        let heroDescription = heroesInRole[0].damage[randomChoice].heroDescription;
+                        let heroName = heroesInRole[0].damage[randomChoice].name;
+                        let heroAbilities = heroesInRole[0].damage[randomChoice].abilities;
             
-                        outputSpeech = `The damage hero you should play is ${heroesInRole[0].damage[randomChoice].name}. Good luck!`;
+                        // Suggested random hero.
+                        outputSpeech = `The damage hero you should play is ${heroName}.`;
+
+                        // Tell user about the hero.
+                        outputSpeech += ` ${heroDescription}`;
+
+                        // Tell user about the heroes abilities
+                        outputSpeech += ` ${heroName} has over ${abilitiesLength} abilities. `;
+                        heroAbilities.map((ability, index) => {
+                            if (index == (abilitiesLength - 1)) {
+                                outputSpeech += `And finally the ultimate ability, `;
+                            }
+                            outputSpeech += `${ability.name}. ${ability.description} `;
+                        });
+
                         break;
                     } else if (role.toLowerCase().includes("healer")) {
                         randomChoice = getRndInteger(0, (heroesInRole[0].healer.length));
+                        let abilitiesLength = Object.keys(heroesInRole[0].healer[randomChoice].abilities).length;
+                        let heroDescription = heroesInRole[0].healer[randomChoice].heroDescription;
+                        let heroName = heroesInRole[0].healer[randomChoice].name;
+                        let heroAbilities = heroesInRole[0].healer[randomChoice].abilities;
             
-                        outputSpeech = `The healer hero you should play is ${heroesInRole[0].healer[randomChoice].name}. Good luck!`;
+                        // Suggested random hero.
+                        outputSpeech = `The healer hero you should play is ${heroName}.`;
+
+                        // Tell user about the hero.
+                        outputSpeech += ` ${heroDescription}`;
+
+                        // Tell user about the heroes abilities
+                        outputSpeech += ` ${heroName} has over ${abilitiesLength} abilities. `;
+                        heroAbilities.map((ability, index) => {
+                            if (index == (abilitiesLength - 1)) {
+                                outputSpeech += `And finally the ultimate ability, `;
+                            }
+                            outputSpeech += `${ability.name}. ${ability.description} `;
+                        });
+
                         break;
                     }
                     
