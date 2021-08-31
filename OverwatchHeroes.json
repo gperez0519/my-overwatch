@@ -24,15 +24,15 @@
                         },
                         {
                             "name": "Micro Missiles",
-                            "description": "D.Va can maintain this forward-facing targeting array for a short period of time; while active, it'll stop incoming projectiles."
-                        },
-                        {
-                            "name": "Self-Destruct",
-                            "description": "D.Va ejects from her mech and sets its reactor to explode, dealing massive damage to nearby opponents."
+                            "description": "D.Va launches a volley of explosive rockets."
                         },
                         {
                             "name": "Call Mech",
                             "description": "If her armored battle suit is destroyed, D.Va can call down a fresh mech and return to the fray."
+                        },
+                        {
+                            "name": "Self-Destruct",
+                            "description": "D.Va ejects from her mech and sets its reactor to explode, dealing massive damage to nearby opponents."
                         }
                     ]
                 },
@@ -131,7 +131,7 @@
                             "description": "Sigma gathers a mass of debris and flings it at an enemy to knock them down."
                         },
                         {
-                            "name": "Unleashing his full powers, Sigma takes flight, lifts enemies in a targeted area, and launches them into the sky before slamming them back down.",
+                            "name": "Gravitic Flux",
                             "description": "Unleashing his full powers, Sigma takes flight, lifts enemies in a targeted area, and launches them into the sky before slamming them back down."
                         }
                     ]
