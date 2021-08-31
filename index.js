@@ -913,7 +913,6 @@ const NoIntentHandler = {
             && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.NoIntent';
     },
     handle(handlerInput) {
-        const {attributesManager} = handlerInput;
 
         // // the attributes manager allows us to access session attributes
         // const sessionAttributes = attributesManager.getSessionAttributes();
