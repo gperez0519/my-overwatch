@@ -22,6 +22,7 @@ const responses = {
     OVERWATCH_SERVICE_UNAVAILABLE: "Oh no! The My Overwatch service is not available at the moment. Please try again later. If this continues to occur send us an email at ultriumdev@gmail.com",
     OVERWATCH_LEAGUE_SERVICE_UNAVAILABLE: "Oh no! The Overwatch League service is not available at the moment. Please try again later. If this continues to occur send us an email at ultriumdev@gmail.com",
     OVERWATCH_LEAGUE_TEAM_SERVICE_UNAVAILABLE: "Oh no! The Overwatch Team service is not available at the moment. Please try again later. If this continues to occur send us an email at ultriumdev@gmail.com",
+    OVERWATCH_HERO_SERVICE_UNAVAILABLE: "Oh no! The Overwatch Hero service is not available at the moment. Please try again later. If this continues to occur send us an email at ultriumdev@gmail.com",
     PLEASE_WAIT: "Please wait while we try to retrieve that profile information",
     PLACEMENTS_NOT_COMPLETE: "You have not placed yet in this Competitive season. Make sure you do so in order to hear about your ranking info.",
     GOODBYE: `You are always welcome here ${nickName}! If you have some time, please leave us a rating on the My Overwatch skill in the skill store. We would appreciate it greatly.

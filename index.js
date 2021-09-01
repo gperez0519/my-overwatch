@@ -730,6 +730,8 @@ const RandomRoleHeroGeneratorIntentHandler = {
     handle(handlerInput) {
         
         let role = handlerInput.requestEnvelope.request.intent.slots.role.value;
+        let heroPicURL = "";
+        outputSpeech = VocalResponses.responses.OVERWATCH_HERO_SERVICE_UNAVAILABLE + drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS;
 
         const {attributesManager} = handlerInput;
 
@@ -737,66 +739,25 @@ const RandomRoleHeroGeneratorIntentHandler = {
         const sessionAttributes = attributesManager.getSessionAttributes();
 
         try {
-            for (const roleHeroes in heroes) {
-                if (Object.hasOwnProperty.call(heroes, roleHeroes)) {
-                    const heroesInRole = heroes[roleHeroes];
-                    var randomChoice = -1;
-            
-                    if (role.toLowerCase().includes("tank")){
-                        randomChoice = getRndInteger(0, (heroesInRole[0].tank.length));
-                        let heroName = heroesInRole[0].tank[randomChoice].name;
-            
-                        // Suggested random hero.
-                        outputSpeech = `The tank hero you should play is ${heroName}.`;
+            // Generate random choice
+            randomChoice = getRndInteger(0, (heroes.role[0][role].length));
 
-                        sessionAttributes['hero-info'] = true;
-                        sessionAttributes['hero-role'] = "tank";
-                        sessionAttributes['hero-name'] = heroName;
+            // Get the hero name from random choice
+            let heroName = heroes.role[0][role][randomChoice].name;
 
-                        // // Tell user about the hero.
-                        // outputSpeech += ` ${heroDescription}`;
+            // Get the hero portrait url from random choice
+            heroPicURL = heroes.role[0][role][randomChoice].portraitURL;
 
-                        // // Tell user about the heroes abilities
-                        // outputSpeech += ` ${heroName} has over ${abilitiesLength} abilities. `;
-                        // heroAbilities.map((ability, index) => {
-                        //     if (index == (abilitiesLength - 1)) {
-                        //         outputSpeech += `And finally the ultimate ability, `;
-                        //     }
-                        //     outputSpeech += `${ability.name}. ${ability.description} `;
-                        // });
+            // Suggested random hero.
+            outputSpeech = `The ${role} hero you should play is ${heroName}.`;
 
-                        break;
-                    } else if (role.toLowerCase().includes("damage") || role.toLowerCase().includes("dps")) {
-                        randomChoice = getRndInteger(0, (heroesInRole[0].damage.length));
-                        let heroName = heroesInRole[0].damage[randomChoice].name;
+            sessionAttributes['hero-info'] = true;
+            sessionAttributes['hero-role'] = role;
+            sessionAttributes['hero-name'] = heroName;
 
-                        // Suggested random hero.
-                        outputSpeech = `The damage hero you should play is ${heroName}.`;
-
-                        sessionAttributes['hero-info'] = true;
-                        sessionAttributes['hero-role'] = "damage";
-                        sessionAttributes['hero-name'] = heroName;
-
-                        break;
-                    } else if (role.toLowerCase().includes("healer")) {
-                        randomChoice = getRndInteger(0, (heroesInRole[0].healer.length));
-                        let heroName = heroesInRole[0].healer[randomChoice].name;
-            
-                        // Suggested random hero.
-                        outputSpeech = `The healer hero you should play is ${heroName}.`;
-
-                        sessionAttributes['hero-info'] = true;
-                        sessionAttributes['hero-role'] = "healer";
-                        sessionAttributes['hero-name'] = heroName;
-
-                        break;
-                    }
-                    
-                }
-            }
         } catch (error) {
-            outputSpeech = VocalResponses.responses.OVERWATCH_SERVICE_UNAVAILABLE + drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS;
-            console.log(err.message);
+            outputSpeech = VocalResponses.responses.OVERWATCH_HERO_SERVICE_UNAVAILABLE + drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS;
+            console.log(error.message);
             return handlerInput.responseBuilder
                 .speak(`<voice name='Emma'>${outputSpeech}</voice>`)
                 .reprompt(`<voice name='Emma'>${outputSpeech}</voice>`)
@@ -807,6 +768,11 @@ const RandomRoleHeroGeneratorIntentHandler = {
         return handlerInput.responseBuilder
             .speak(`<voice name='Emma'>${outputSpeech} ${VocalResponses.responses.HERO_MORE_INFO_PROMPT}</voice>`)
             .reprompt(`<voice name='Emma'>${VocalResponses.responses.PLEASE_REPEAT} ${VocalResponses.responses.HERO_MORE_INFO_PROMPT}</voice>`)
+            .withStandardCard(
+                sessionAttributes['hero-name'] ? `Random Hero: ${sessionAttributes['hero-name']}` : `Random Hero`,
+                outputSpeech,
+                heroPicURL ? heroPicURL : '',
+                heroPicURL ? heroPicURL : '')
             .getResponse();
     },
 };
@@ -836,6 +802,11 @@ const AnotherDrinkIntentHandler = {
         return handlerInput.responseBuilder
             .speak(`<voice name='Emma'>${speechText}</voice>`)
             .reprompt(`<voice name='Emma'>${VocalResponses.responses.PLEASE_REPEAT} ${speechText}</voice>`)
+            .withStandardCard(
+                `Cheers!`,
+                outputSpeech,
+                '',
+                '')
             .getResponse();
     },
 };
@@ -1081,7 +1052,7 @@ function getHeroInfo(heroName, heroRole) {
 
         // if an error occurs in the process respond back with the default error indication to the user.
         outputSpeech = VocalResponses.responses.OVERWATCH_SERVICE_UNAVAILABLE + drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS;
-        console.log(err.message);
+        console.log(error.message);
         return outputSpeech;
         
     }
