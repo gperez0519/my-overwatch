@@ -21,6 +21,12 @@ let platforms = [
     "psn"
 ];
 
+let outputSpeech = 'Something went wrong. Please try again.';
+
+// OVERWATCH API STATS REQUIRED PARAMETERS
+let battletag = '';
+
+
 /** CUSTOM FUNCTIONS **/
 function isObjectEmpty(obj) {
     for (var key in obj) {
@@ -29,12 +35,6 @@ function isObjectEmpty(obj) {
     }
     return true;
 }
-
-//let card = 'Something went wrong. Please try again.';
-let outputSpeech = 'Something went wrong. Please try again.';
-
-// OVERWATCH API STATS REQUIRED PARAMETERS
-let battletag = '';
 
 function isAccountLinked(handlerInput) {
     // if there is an access token, then assumed linked
@@ -134,9 +134,21 @@ const LaunchRequestHandler = {
     },
     async handle(handlerInput) {
         const { attributesManager } = handlerInput;
+        
+        // the attributes manager allows us to access session attributes
+        const sessionAttributes = attributesManager.getSessionAttributes();
 
+        // retrieve the battle net access token to check if it is still valid and to retrieve user info.
         var accessToken = handlerInput.requestEnvelope.context.System.user.accessToken;
         var userInfo = null;
+        
+        let GREETING_PERSONALIZED = VocalResponses.responses.GREETING_PERSONALIZED;
+        let GREETING_PERSONALIZED_II = VocalResponses.responses.GREETING_PERSONALIZED_II;
+        let GREETING_PERSONALIZED_III = VocalResponses.responses.GREETING_PERSONALIZED_III;
+
+        let GREETING_PERSONALIZED_DISPLAY = VocalResponses.responses.GREETING_PERSONALIZED_DISPLAY;
+        let GREETING_PERSONALIZED_II_DISPLAY = VocalResponses.responses.GREETING_PERSONALIZED_II_DISPLAY;
+        let GREETING_PERSONALIZED_III_DISPLAY = VocalResponses.responses.GREETING_PERSONALIZED_III_DISPLAY;
 
         if (accessToken == undefined){
             // The request did not include a token, so tell the user to link
@@ -157,70 +169,59 @@ const LaunchRequestHandler = {
         * 
         */
 
-        try {
-            userInfo = await axios.get(`https://us.battle.net/oauth/userinfo?:region=us&access_token=${accessToken}`);
-                console.log("Blizzard user info: ",userInfo.data);
-                console.log("Blizzard user battle tag: ",userInfo.data.battletag);
+        // if this isn't the first time the user is using the skill add their saved nick name to personalization.
+        if (sessionAttributes['nickName']) {
+            if (sessionAttributes['sessionCounter'] >= 1) {
+                nickName = sessionAttributes['nickName'];
+            }
+            
+        } else {
+            // retrieve the user's battletag
+            try {
+                
+                userInfo = await axios.get(`https://us.battle.net/oauth/userinfo?:region=us&access_token=${accessToken}`);
+                    console.log("Blizzard user info: ",userInfo.data);
+                    console.log("Blizzard user battle tag: ",userInfo.data.battletag);
 
-        } catch(error) {
-            console.log("Error occurred getting user info: ", error);
+                if (userInfo) {
+                    // capture the username portion of the battletag if the session attribute for nickname does not exist.
+                    nickName = userInfo.data.battletag.split("#")[0];
+                    sessionAttributes['nickName'] = nickName;
+                }
+
+            } catch(error) {
+                console.log("Error occurred getting user info: ", error);
+            }
         }
-
-        let battletag_username = "";
-
-        if (userInfo) {
-            battletag_username = userInfo.data.battletag.split("#")[0];
-        }
-
-        // the attributes manager allows us to access session attributes
-        const sessionAttributes = attributesManager.getSessionAttributes();
 
         // Reset particular session attributes
         sessionAttributes['hero-info'] = false;
         sessionAttributes['hero-role'] = "";
         sessionAttributes['hero-name'] = "";
 
-        if (!sessionAttributes['nickName']) {
-            sessionAttributes['nickName'] = battletag_username;
+        if (nickName != "my friend" && sessionAttributes['sessionCounter'] >= 1){
+            // replace the words my friend with the person's name for more personalization if this isn't the first time they are using the skill.
+            GREETING_PERSONALIZED = GREETING_PERSONALIZED.replace("my friend", nickName);
+            GREETING_PERSONALIZED_II = GREETING_PERSONALIZED_II.replace("my friend", nickName);
+            GREETING_PERSONALIZED_III = GREETING_PERSONALIZED_III.replace("my friend", nickName);
+
+            // replace the words welcome with welcome back for more personalization if this isn't the first time they are using the skill.
+            GREETING_PERSONALIZED = GREETING_PERSONALIZED.replace("Welcome", "Welcome back");
+            GREETING_PERSONALIZED_II = GREETING_PERSONALIZED_II.replace("Welcome", "Welcome back");
+            GREETING_PERSONALIZED_III = GREETING_PERSONALIZED_III.replace("Welcome", "Welcome back");
+
+            // replace the words my friend with the person's name for more personalization if this isn't the first time they are using the skill.
+            GREETING_PERSONALIZED_DISPLAY = GREETING_PERSONALIZED_DISPLAY.replace("my friend", nickName);
+            GREETING_PERSONALIZED_II_DISPLAY = GREETING_PERSONALIZED_II_DISPLAY.replace("my friend", nickName);
+            GREETING_PERSONALIZED_III_DISPLAY = GREETING_PERSONALIZED_III_DISPLAY.replace("my friend", nickName);
+
+            // replace the words welcome with welcome back for more personalization if this isn't the first time they are using the skill.
+            GREETING_PERSONALIZED_DISPLAY = GREETING_PERSONALIZED_DISPLAY.replace("Welcome", "Welcome back");
+            GREETING_PERSONALIZED_II_DISPLAY  = GREETING_PERSONALIZED_II_DISPLAY.replace("Welcome", "Welcome back");
+            GREETING_PERSONALIZED_III_DISPLAY  = GREETING_PERSONALIZED_III_DISPLAY.replace("Welcome", "Welcome back");
         }
 
-        let GREETING_PERSONALIZED = VocalResponses.responses.GREETING_PERSONALIZED;
-        let GREETING_PERSONALIZED_II = VocalResponses.responses.GREETING_PERSONALIZED_II;
-        let GREETING_PERSONALIZED_III = VocalResponses.responses.GREETING_PERSONALIZED_III;
-
-        let GREETING_PERSONALIZED_DISPLAY = VocalResponses.responses.GREETING_PERSONALIZED_DISPLAY;
-        let GREETING_PERSONALIZED_II_DISPLAY = VocalResponses.responses.GREETING_PERSONALIZED_II_DISPLAY;
-        let GREETING_PERSONALIZED_III_DISPLAY = VocalResponses.responses.GREETING_PERSONALIZED_III_DISPLAY;
-
-        // if this isn't the first time the user is using the skill add their saved nick name to personalization.
-        if (sessionAttributes['nickName']) {
-            if (sessionAttributes['sessionCounter'] >= 1) {
-                nickName = sessionAttributes['nickName'];
-
-                // replace the words my friend with the person's name for more personalization if this isn't the first time they are using the skill.
-                GREETING_PERSONALIZED = GREETING_PERSONALIZED.replace("my friend", nickName);
-                GREETING_PERSONALIZED_II = GREETING_PERSONALIZED_II.replace("my friend", nickName);
-                GREETING_PERSONALIZED_III = GREETING_PERSONALIZED_III.replace("my friend", nickName);
-    
-                // replace the words welcome with welcome back for more personalization if this isn't the first time they are using the skill.
-                GREETING_PERSONALIZED = GREETING_PERSONALIZED.replace("Welcome", "Welcome back");
-                GREETING_PERSONALIZED_II = GREETING_PERSONALIZED_II.replace("Welcome", "Welcome back");
-                GREETING_PERSONALIZED_III = GREETING_PERSONALIZED_III.replace("Welcome", "Welcome back");
-
-                // replace the words my friend with the person's name for more personalization if this isn't the first time they are using the skill.
-                GREETING_PERSONALIZED_DISPLAY = GREETING_PERSONALIZED_DISPLAY.replace("my friend", nickName);
-                GREETING_PERSONALIZED_II_DISPLAY = GREETING_PERSONALIZED_II_DISPLAY.replace("my friend", nickName);
-                GREETING_PERSONALIZED_III_DISPLAY = GREETING_PERSONALIZED_III_DISPLAY.replace("my friend", nickName);
-    
-                // replace the words welcome with welcome back for more personalization if this isn't the first time they are using the skill.
-                GREETING_PERSONALIZED_DISPLAY = GREETING_PERSONALIZED_DISPLAY.replace("Welcome", "Welcome back");
-                GREETING_PERSONALIZED_II_DISPLAY  = GREETING_PERSONALIZED_II_DISPLAY.replace("Welcome", "Welcome back");
-                GREETING_PERSONALIZED_III_DISPLAY  = GREETING_PERSONALIZED_III_DISPLAY.replace("Welcome", "Welcome back");
-            }
-            
-        }
-
-        // welcome message
+        // default welcome message
         let welcomeText = `${VocalResponses.responses.DOOR_OPEN_AUDIO} ${VocalResponses.responses.ROWDY_BAR_AMBIANCE_AUDIO} ${GREETING_PERSONALIZED} ${VocalResponses.responses.POUR_DRINK_AUDIO} Cheers, my friend! ${VocalResponses.responses.GLASS_CLINK_AUDIO} ${VocalResponses.responses.OPTIONS}`;
 
         // Get a random number between 1 and 3
@@ -242,7 +243,6 @@ const LaunchRequestHandler = {
             console.log("Something went wrong with randomization welcome message. Error: ", error.message);
         }
         
-
         let rePromptText = `Are you going to stare at me or do you want to choose? ${VocalResponses.responses.OPTIONS}`;
 
         return handlerInput.responseBuilder
@@ -284,6 +284,7 @@ const GetMyStatsIntentHandler = {
         * 
         */
 
+        // retrieve the user's battletag
         try {
             userInfo = await axios.get(`https://us.battle.net/oauth/userinfo?:region=us&access_token=${accessToken}`);
                 console.log("Blizzard user info: ",userInfo.data);
@@ -496,6 +497,7 @@ const OverwatchLeagueTeamInfoIntentIntentHandler = {
 
                 if (standingsURL) {
                     if (standingsURL.includes("overwatchleague")){
+
                         // Retrieve the JSON Overwatch League Data by method of web scraping using x-ray npm package (https://www.npmjs.com/package/x-ray)
                         await x(standingsURL, '#__NEXT_DATA__')
                         .then(overwatchLeagueTeamData => JSON.parse(overwatchLeagueTeamData)) // parse the overwatch data as JSON
@@ -503,9 +505,11 @@ const OverwatchLeagueTeamInfoIntentIntentHandler = {
         
                             if (overwatchLeagueTeamData.props.pageProps.blocks[1]) {
         
+                                // get the divisions west and east objects
                                 var divisions = overwatchLeagueTeamData.props.pageProps.blocks[1].standings.tabs[0].tables;
                                 var standingsForTeamFound = false;
                                 
+                                // for each division, check and filter the team in context and get the wins and losses
                                 for (const division in divisions) {
                                     if (Object.hasOwnProperty.call(divisions, division)) {
                                         const team = divisions[division];
@@ -817,6 +821,7 @@ const AnotherDrinkIntentHandler = {
 
         let speechText = `You got it my friend! Coming right up! ${VocalResponses.responses.POUR_DRINK_AUDIO} Cheers! ${VocalResponses.responses.GLASS_CLINK_AUDIO} ${VocalResponses.responses.OPTIONS}`;
 
+        // serve up the drinks but limit them based on the amount of drinks they've had already.
         if (drinkCount == 1) {
             speechText = `You got it my friend! Coming right up! ${VocalResponses.responses.POUR_DRINK_AUDIO} Cheers! ${VocalResponses.responses.GLASS_CLINK_AUDIO} ${VocalResponses.responses.OPTIONS}`;
         } else if (drinkCount == 2) {
@@ -862,9 +867,12 @@ const YesIntentHandler = {
         // the attributes manager allows us to access session attributes
         const sessionAttributes = attributesManager.getSessionAttributes();
 
+        // default response
         outputSpeech = `I'm not sure what you are saying yes to but let's start with an option. ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " "} ${VocalResponses.responses.ALTERNATE_OPTIONS}`;
 
+        // check to see if session attributes object exists.
         if (sessionAttributes) {
+            // if they are responding yes to retrieving more information about the hero in context then retrieve that info and respond back.
             if (sessionAttributes['hero-info'] && sessionAttributes['hero-role'] && sessionAttributes['hero-name']) {
                 outputSpeech = `${getHeroInfo(sessionAttributes['hero-name'], sessionAttributes['hero-role'])} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " "} ${VocalResponses.responses.ALTERNATE_OPTIONS}`;
             }
@@ -999,11 +1007,15 @@ function getHeroInfo(heroName, heroRole) {
         let heroDescription = "";
         let heroAbilities = null;
 
+        // check if the hero role passed is a tank role and filter information based on role and hero in context.
         if (heroRole.toLowerCase().includes("tank")) {
+
+            // filter for the hero object based on the given hero name within the tank role.
             filteredArray = heroes.role[0].tank.filter(function(itm){
                 return itm.name == heroName;
             });
 
+            // if the filtered array has data respond back with the hero description and abilities.
             if (filteredArray) {
                 heroDescription = filteredArray[0].heroDescription;
                 heroAbilities = filteredArray[0].abilities;
@@ -1018,13 +1030,15 @@ function getHeroInfo(heroName, heroRole) {
                     outputSpeech += `${ability.name}. ${ability.description} `;
                 });
             }
-
+        // check if the hero role passed is a damage role and filter information based on role and hero in context.
         } else if ((heroRole.toLowerCase().includes("damage") || heroRole.toLowerCase().includes("dps"))) {
 
+            // filter for the hero object based on the given hero name within the damage role.
             filteredArray = heroes.role[0].damage.filter(function(itm){
                 return itm.name == heroName;
             });
 
+            // if the filtered array has data respond back with the hero description and abilities.
             if (filteredArray) {
                 heroDescription = filteredArray[0].heroDescription;
                 heroAbilities = filteredArray[0].abilities;
@@ -1039,12 +1053,15 @@ function getHeroInfo(heroName, heroRole) {
                     outputSpeech += `${ability.name}. ${ability.description} `;
                 });
             }
+        // check if the hero role passed is a healer role and filter information based on role and hero in context.
         } else if (heroRole.toLowerCase().includes("healer")) {
 
+            // filter for the hero object based on the given hero name within the healer role.
             filteredArray = heroes.role[0].healer.filter(function(itm){
                 return itm.name == heroName;
             });
 
+            // if the filtered array has data respond back with the hero description and abilities.
             if (filteredArray) {
                 heroDescription = filteredArray[0].heroDescription;
                 heroAbilities = filteredArray[0].abilities;
@@ -1061,6 +1078,8 @@ function getHeroInfo(heroName, heroRole) {
             }
         }
     } catch (error) {
+
+        // if an error occurs in the process respond back with the default error indication to the user.
         outputSpeech = VocalResponses.responses.OVERWATCH_SERVICE_UNAVAILABLE + drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS;
         console.log(err.message);
         return outputSpeech;
@@ -1098,14 +1117,6 @@ function getBestHeroForComp(mostPlayedHero, mostPlayedWinPercentage, compHeroes)
                     bestWinPercentage = compHeroes[hero].game.win_percentage;
                     bestHero = hero;
                 }
-
-                // console.log(JSON.stringify(compHeroes[hero].game.win_percentage));
-                // console.log(JSON.stringify(hero));
-
-                // console.log("Best win percentage: ", bestWinPercentage);
-                // console.log("Best hero with that win percentage: ", bestHero);
-                // console.log("Current iter win count: ", compHeroes[hero].game.games_won);
-                // console.log("Current iter loss count: ", compHeroes[hero].game.games_lost);
             }
         }
     	
@@ -1117,9 +1128,6 @@ function getBestHeroForComp(mostPlayedHero, mostPlayedWinPercentage, compHeroes)
             hero: bestHero,
             win_percentage: bestWinPercentage
         };
-
-        // console.log("Suggested hero: ", bestHeroToPlay.hero);
-        // console.log("Suggested hero's win percentage: ", bestHeroToPlay.win_percentage);
     }
 
     
@@ -1151,8 +1159,6 @@ function getPlayerRank(heroType) {
     return outputSpeech;
 }
 
-/** END OF CUSTOM FUNCTIONS **/
-
 const getRemoteData = function (url) {
     return new Promise((resolve, reject) => {
         const client = url.startsWith('https') ? require('https') : require('http');
@@ -1168,6 +1174,8 @@ const getRemoteData = function (url) {
     })
 };
 
+/** END OF CUSTOM FUNCTIONS **/
+
 const skillBuilder = Alexa.SkillBuilders.custom();
 
 exports.handler = skillBuilder
@@ -1179,7 +1187,6 @@ exports.handler = skillBuilder
         OverwatchLeagueUpcomingMatchesIntentHandler,
         OverwatchLeagueTeamInfoIntentIntentHandler,
         RandomRoleHeroGeneratorIntentHandler,
-        SpecialTestIntentHandler,
         AnotherDrinkIntentHandler,
         HelpIntentHandler,
         YesIntentHandler,

@@ -19,9 +19,9 @@ const responses = {
     GREETING_RESPONSE: "I'm doing just well. I'm glad that you are here!",
     NEED_TO_LINK_MESSAGE: 'Before we can continue, you will need to link your battle.net account to the My Overwatch skill using the card that I have sent to the Alexa app.',
     TOP_MENU: "Great! We can tell you your stats of your Overwatch progress. Say get my stats to hear your stats of your Overwatch profile.",
-    OVERWATCH_SERVICE_UNAVAILABLE: "Oh no! The My Overwatch service is not available at the moment. Please try again later.",
-    OVERWATCH_LEAGUE_SERVICE_UNAVAILABLE: "Oh no! The Overwatch League service is not available at the moment. Please try again later.",
-    OVERWATCH_LEAGUE_TEAM_SERVICE_UNAVAILABLE: "Oh no! The Overwatch Team service is not available at the moment. Please try again later.",
+    OVERWATCH_SERVICE_UNAVAILABLE: "Oh no! The My Overwatch service is not available at the moment. Please try again later. If this continues to occur send us an email at ultriumdev@gmail.com",
+    OVERWATCH_LEAGUE_SERVICE_UNAVAILABLE: "Oh no! The Overwatch League service is not available at the moment. Please try again later. If this continues to occur send us an email at ultriumdev@gmail.com",
+    OVERWATCH_LEAGUE_TEAM_SERVICE_UNAVAILABLE: "Oh no! The Overwatch Team service is not available at the moment. Please try again later. If this continues to occur send us an email at ultriumdev@gmail.com",
     PLEASE_WAIT: "Please wait while we try to retrieve that profile information",
     PLACEMENTS_NOT_COMPLETE: "You have not placed yet in this Competitive season. Make sure you do so in order to hear about your ranking info.",
     GOODBYE: `You are always welcome here ${nickName}! If you have some time, please leave us a rating on the My Overwatch skill in the skill store. We would appreciate it greatly.
