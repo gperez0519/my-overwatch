@@ -407,7 +407,7 @@
                     ]
                 },
                 {
-                    "name": "Mccree",
+                    "name": "McCree",
                     "heroDescription": "Armed with his Peacekeeper revolver, McCree takes out targets with deadeye precision and dives out of danger with eagle-like speed.",
                     "portraitURL": "https://d1u1mce87gyfbn.cloudfront.net/hero/mccree/hero-select-portrait.png",
                     "abilities": [
@@ -627,7 +627,7 @@
                 },
                 {
                     "name": "Widowmaker",
-                    "heroDescription": "Widowmaker equips herself with whatever it takes to eliminate her targets, including mines that dispense poisonous gas, a visor that grants her squad infra-sight, and a powerful sniper rifle that can fire in fully-automatic mode",
+                    "heroDescription": "Widowmaker equips herself with whatever it takes to eliminate her targets, including mines that dispense poisonous gas, a visor that grants her squad infra-sight, and a powerful sniper rifle that can fire in fully-automatic mode.",
                     "portraitURL": "https://d1u1mce87gyfbn.cloudfront.net/hero/widowmaker/hero-select-portrait.png",
                     "abilities": [
                         {
@@ -649,7 +649,7 @@
                     ]
                 }
             ],
-            "healer": [
+            "support": [
                 {
                     "name": "Ana",
                     "heroDescription": "Ana’s versatile arsenal allows her to affect heroes all over the battlefield. Her Biotic Rifle rounds and Biotic Grenades heal allies and damage or impair enemies; her sidearm tranquilizes key targets, and Nano Boost gives one of her comrades a considerable increase in power.",

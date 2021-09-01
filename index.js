@@ -230,14 +230,14 @@ const LaunchRequestHandler = {
         // return a random welcome message to ensure human like interaction.
         try {
             if (randomChoice == 1){
-                welcomeText = VocalResponses.responses.DOOR_OPEN_AUDIO + VocalResponses.responses.ROWDY_BAR_AMBIANCE_AUDIO + GREETING_PERSONALIZED + VocalResponses.responses.POUR_DRINK_AUDIO + "Cheers, my friend!" + VocalResponses.responses.GLASS_CLINK_AUDIO + VocalResponses.responses.OPTIONS;
-                displayText = GREETING_PERSONALIZED_DISPLAY + VocalResponses.responses.OPTIONS;
+                welcomeText = `${VocalResponses.responses.DOOR_OPEN_AUDIO} ${VocalResponses.responses.ROWDY_BAR_AMBIANCE_AUDIO} ${GREETING_PERSONALIZED} ${VocalResponses.responses.POUR_DRINK_AUDIO} Cheers, my friend! ${VocalResponses.responses.GLASS_CLINK_AUDIO} ${VocalResponses.responses.OPTIONS}`;
+                displayText = `${GREETING_PERSONALIZED_DISPLAY} ${VocalResponses.responses.OPTIONS}`;
             } else if (randomChoice == 2) {
-                welcomeText = VocalResponses.responses.DOOR_OPEN_AUDIO + VocalResponses.responses.ROWDY_BAR_AMBIANCE_AUDIO + GREETING_PERSONALIZED_II + VocalResponses.responses.POUR_DRINK_AUDIO + "Cheers, my friend!" + VocalResponses.responses.GLASS_CLINK_AUDIO + VocalResponses.responses.OPTIONS;
-                displayText = GREETING_PERSONALIZED_II_DISPLAY + VocalResponses.responses.OPTIONS;
+                welcomeText = `${VocalResponses.responses.DOOR_OPEN_AUDIO} ${VocalResponses.responses.ROWDY_BAR_AMBIANCE_AUDIO} ${GREETING_PERSONALIZED_II} ${VocalResponses.responses.POUR_DRINK_AUDIO} Cheers, my friend! ${VocalResponses.responses.GLASS_CLINK_AUDIO} ${VocalResponses.responses.OPTIONS}`;
+                displayText = `${GREETING_PERSONALIZED_II_DISPLAY} ${VocalResponses.responses.OPTIONS}`;
             } else if (randomChoice == 3) {
-                welcomeText = VocalResponses.responses.DOOR_OPEN_AUDIO + VocalResponses.responses.ROWDY_BAR_AMBIANCE_AUDIO + GREETING_PERSONALIZED_III + VocalResponses.responses.POUR_DRINK_AUDIO + "Cheers, my friend!" + VocalResponses.responses.GLASS_CLINK_AUDIO + VocalResponses.responses.OPTIONS;
-                displayText = GREETING_PERSONALIZED_III_DISPLAY + VocalResponses.responses.OPTIONS;
+                welcomeText = `${VocalResponses.responses.DOOR_OPEN_AUDIO} ${VocalResponses.responses.ROWDY_BAR_AMBIANCE_AUDIO} ${GREETING_PERSONALIZED_III} ${VocalResponses.responses.POUR_DRINK_AUDIO} Cheers, my friend! ${VocalResponses.responses.GLASS_CLINK_AUDIO} ${VocalResponses.responses.OPTIONS}`;
+                displayText = `${GREETING_PERSONALIZED_III_DISPLAY} ${VocalResponses.responses.OPTIONS}`;
             }
         } catch (error) {
             console.log("Something went wrong with randomization welcome message. Error: ", error.message);
@@ -730,6 +730,15 @@ const RandomRoleHeroGeneratorIntentHandler = {
     handle(handlerInput) {
         
         let role = handlerInput.requestEnvelope.request.intent.slots.role.value;
+
+        console.log(`Role spoken was: ${role}`);
+
+        if (role == "dps") {
+            role = "damage";
+        } else if (role == "healer") {
+            role = "support";
+        }
+
         let heroPicURL = "";
         outputSpeech = VocalResponses.responses.OVERWATCH_HERO_SERVICE_UNAVAILABLE + drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS;
 
@@ -739,22 +748,23 @@ const RandomRoleHeroGeneratorIntentHandler = {
         const sessionAttributes = attributesManager.getSessionAttributes();
 
         try {
-            // Generate random choice
-            randomChoice = getRndInteger(0, (heroes.role[0][role].length));
+            if (heroes.role[0][role]) {
+                // Generate random choice
+                randomChoice = getRndInteger(0, (heroes.role[0][role].length));
 
-            // Get the hero name from random choice
-            let heroName = heroes.role[0][role][randomChoice].name;
+                // Get the hero name from random choice
+                let heroName = heroes.role[0][role][randomChoice].name;
 
-            // Get the hero portrait url from random choice
-            heroPicURL = heroes.role[0][role][randomChoice].portraitURL;
+                // Get the hero portrait url from random choice
+                heroPicURL = heroes.role[0][role][randomChoice].portraitURL;
 
-            // Suggested random hero.
-            outputSpeech = `The ${role} hero you should play is ${heroName}.`;
+                // Suggested random hero.
+                outputSpeech = `The ${role} hero you should play is ${heroName}.`;
 
-            sessionAttributes['hero-info'] = true;
-            sessionAttributes['hero-role'] = role;
-            sessionAttributes['hero-name'] = heroName;
-
+                sessionAttributes['hero-info'] = true;
+                sessionAttributes['hero-role'] = role;
+                sessionAttributes['hero-name'] = heroName;
+            }
         } catch (error) {
             outputSpeech = VocalResponses.responses.OVERWATCH_HERO_SERVICE_UNAVAILABLE + drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS;
             console.log(error.message);
@@ -1002,7 +1012,7 @@ function getHeroInfo(heroName, heroRole) {
                 });
             }
         // check if the hero role passed is a damage role and filter information based on role and hero in context.
-        } else if ((heroRole.toLowerCase().includes("damage") || heroRole.toLowerCase().includes("dps"))) {
+        } else if (heroRole.toLowerCase().includes("damage")) {
 
             // filter for the hero object based on the given hero name within the damage role.
             filteredArray = heroes.role[0].damage.filter(function(itm){
@@ -1024,11 +1034,11 @@ function getHeroInfo(heroName, heroRole) {
                     outputSpeech += `${ability.name}. ${ability.description} `;
                 });
             }
-        // check if the hero role passed is a healer role and filter information based on role and hero in context.
-        } else if (heroRole.toLowerCase().includes("healer")) {
+        // check if the hero role passed is a support role and filter information based on role and hero in context.
+        } else if (heroRole.toLowerCase().includes("support")) {
 
             // filter for the hero object based on the given hero name within the healer role.
-            filteredArray = heroes.role[0].healer.filter(function(itm){
+            filteredArray = heroes.role[0].support.filter(function(itm){
                 return itm.name == heroName;
             });
 
