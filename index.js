@@ -348,7 +348,7 @@ const GetMyStatsIntentHandler = {
 
                     break;
                 } catch (error) {
-                    if (error.message.indexOf("PROFILE_PRIVATE") >= 0){
+                    if (error.message.includes("PROFILE_PRIVATE")){
                         outputSpeech = `${nickName}. I would love to tell you how your Overwatch progress is going but it seems your profile is private. You should set your profile public so my analysis is able to retrieve the data we need.`;
                     } else {
                         outputSpeech = `${nickName}. I would love to tell you how your Overwatch progress is going but it seems my analyzer is not functioning at the moment. The error I see here is ${error.message}. Try again later.`;
@@ -988,76 +988,26 @@ function getHeroInfo(heroName, heroRole) {
         let heroDescription = "";
         let heroAbilities = null;
 
-        // check if the hero role passed is a tank role and filter information based on role and hero in context.
-        if (heroRole.toLowerCase().includes("tank")) {
+        filteredArray = heroes.role[0][heroRole].filter(function(itm){
+            return itm.name == heroName;
+        });
 
-            // filter for the hero object based on the given hero name within the tank role.
-            filteredArray = heroes.role[0].tank.filter(function(itm){
-                return itm.name == heroName;
+        // if the filtered array has data respond back with the hero description and abilities.
+        if (filteredArray) {
+            heroDescription = filteredArray[0].heroDescription;
+            heroAbilities = filteredArray[0].abilities;
+            abilitiesLength = filteredArray[0].abilities.length;
+
+            outputSpeech = heroDescription;
+            outputSpeech += ` ${heroName} has over ${abilitiesLength} abilities. `;
+            heroAbilities.map((ability, index) => {
+                if (index == (abilitiesLength - 1)) {
+                    outputSpeech += `And finally the ultimate ability, `;
+                }
+                outputSpeech += `${ability.name}. ${ability.description} `;
             });
-
-            // if the filtered array has data respond back with the hero description and abilities.
-            if (filteredArray) {
-                heroDescription = filteredArray[0].heroDescription;
-                heroAbilities = filteredArray[0].abilities;
-                abilitiesLength = filteredArray[0].abilities.length;
-
-                outputSpeech = heroDescription;
-                outputSpeech += ` ${heroName} has over ${abilitiesLength} abilities. `;
-                heroAbilities.map((ability, index) => {
-                    if (index == (abilitiesLength - 1)) {
-                        outputSpeech += `And finally the ultimate ability, `;
-                    }
-                    outputSpeech += `${ability.name}. ${ability.description} `;
-                });
-            }
-        // check if the hero role passed is a damage role and filter information based on role and hero in context.
-        } else if (heroRole.toLowerCase().includes("damage")) {
-
-            // filter for the hero object based on the given hero name within the damage role.
-            filteredArray = heroes.role[0].damage.filter(function(itm){
-                return itm.name == heroName;
-            });
-
-            // if the filtered array has data respond back with the hero description and abilities.
-            if (filteredArray) {
-                heroDescription = filteredArray[0].heroDescription;
-                heroAbilities = filteredArray[0].abilities;
-                abilitiesLength = filteredArray[0].abilities.length;
-
-                outputSpeech = heroDescription;
-                outputSpeech += ` ${heroName} has over ${abilitiesLength} abilities. `;
-                heroAbilities.map((ability, index) => {
-                    if (index == (abilitiesLength - 1)) {
-                        outputSpeech += `And finally the ultimate ability, `;
-                    }
-                    outputSpeech += `${ability.name}. ${ability.description} `;
-                });
-            }
-        // check if the hero role passed is a support role and filter information based on role and hero in context.
-        } else if (heroRole.toLowerCase().includes("support")) {
-
-            // filter for the hero object based on the given hero name within the healer role.
-            filteredArray = heroes.role[0].support.filter(function(itm){
-                return itm.name == heroName;
-            });
-
-            // if the filtered array has data respond back with the hero description and abilities.
-            if (filteredArray) {
-                heroDescription = filteredArray[0].heroDescription;
-                heroAbilities = filteredArray[0].abilities;
-                abilitiesLength = filteredArray[0].abilities.length;
-
-                outputSpeech = heroDescription;
-                outputSpeech += ` ${heroName} has over ${abilitiesLength} abilities. `;
-                heroAbilities.map((ability, index) => {
-                    if (index == (abilitiesLength - 1)) {
-                        outputSpeech += `And finally the ultimate ability, `;
-                    }
-                    outputSpeech += `${ability.name}. ${ability.description} `;
-                });
-            }
         }
+
     } catch (error) {
 
         // if an error occurs in the process respond back with the default error indication to the user.
