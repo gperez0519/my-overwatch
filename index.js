@@ -434,9 +434,7 @@ const GetMyStatsIntentHandler = {
                             var suggestedCompHero = getBestHeroForComp(mostPlayedCompetitiveHero, statsCompHeroWinPercentage, stats.heroStats.competitive);
 
                             if (suggestedCompHero !== null){
-                                outputSpeech += ` Fascinating, there is a tip here in my data analysis. It says that based on your win percentage with this hero in competitive, 
-                                                you will have more success with ${toTitleCase(suggestedCompHero.hero)} 
-                                                since your win percentage with that hero in competitive is ${suggestedCompHero.win_percentage}.`;
+                                outputSpeech += ` Fascinating, there is a tip here in my data analysis. It says that based on your win percentage with this hero in competitive, you will have more success with ${toTitleCase(suggestedCompHero.hero)} since your win percentage with that hero in competitive is ${suggestedCompHero.win_percentage}.`;
                             }
 
                             // Tell the player about their combat weapon accuracy for competitive if it exists.
@@ -932,11 +930,28 @@ const ErrorHandler = {
         console.log(`Error handled: ${error.message}`);
 
         return handlerInput.responseBuilder
-            .speak(`<voice name='Emma'>Sorry, my systems have malfunctioned there. Can you repeat that?</voice>`)
-            .reprompt(`<voice name='Emma'>Sorry, my systems have malfunctioned there. Can you repeat that?</voice>`)
+            .speak(`<voice name='Emma'>${VocalResponses.responses.FALLBACK_PROMPT} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " "} ${VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
+            .reprompt(`<voice name='Emma'>${VocalResponses.responses.FALLBACK_PROMPT} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " "} ${VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
             .getResponse();
     },
 };
+
+const FallbackIntentHandler = {
+    canHandle(handlerInput) {
+        const request = handlerInput.requestEnvelope.request;
+        return request.type === 'IntentRequest' 
+            && request.intent.name === 'AMAZON.FallbackIntent';
+    },
+  
+    handle(handlerInput) {
+      return handlerInput.responseBuilder
+        .speak(`${VocalResponses.responses.FALLBACK_PROMPT} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " "} ${VocalResponses.responses.ALTERNATE_OPTIONS}`)
+        .reprompt(`${VocalResponses.responses.FALLBACK_PROMPT} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " "} ${VocalResponses.responses.ALTERNATE_OPTIONS}`)
+        .getResponse();
+  
+    },
+  
+  };
 
 /** BUILT-IN FUNCTIONS **/
 function callDirectiveService(handlerInput) {
@@ -1122,6 +1137,7 @@ exports.handler = skillBuilder
         HelpIntentHandler,
         YesIntentHandler,
         NoIntentHandler,
+        FallbackIntentHandler,
         CancelAndStopIntentHandler,
         SessionEndedRequestHandler
     )
