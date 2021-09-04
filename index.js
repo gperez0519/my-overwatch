@@ -610,9 +610,9 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
             userTimeZone = await upsServiceClient.getSystemTimeZone(deviceId);   
         } catch (error) {
             if (error.name !== 'ServiceError') {
-                return handlerInput.responseBuilder.speak("There was a problem connecting to the service.").getResponse();
+                userTimeZone = "America/New_York";
             }
-            console.log('error', error.message);
+            console.log('Error in time zone retrieval: ', error.message);
         }
         
         outputSpeech = VocalResponses.responses.OVERWATCH_LEAGUE_SERVICE_UNAVAILABLE;
@@ -630,12 +630,6 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
 
                 // save the upcoming matches object array
                 var matches = overwatchLeagueData.props.pageProps.blocks[0].owlHeader.scoreStripList.scoreStrip.matches;
-
-                // configure the date parameters
-                const options = {
-                    month: "long", 
-                    day: "numeric"
-                };
 
                 var matchIterationCount = 1;
                 var liveMatchIterationCount = 1;
@@ -820,6 +814,7 @@ const AnotherDrinkIntentHandler = {
     },
     handle(handlerInput) {
         drinkCount++;
+        console.log(`Current drink count: ${drinkCount}`);
 
         let speechText = `You got it my friend! Coming right up! ${VocalResponses.responses.POUR_DRINK_AUDIO} Cheers! ${VocalResponses.responses.GLASS_CLINK_AUDIO} ${VocalResponses.responses.OPTIONS}`;
 
@@ -973,8 +968,8 @@ const FallbackIntentHandler = {
   
     handle(handlerInput) {
       return handlerInput.responseBuilder
-        .speak(`${VocalResponses.responses.FALLBACK_PROMPT} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " "} ${VocalResponses.responses.ALTERNATE_OPTIONS}`)
-        .reprompt(`${VocalResponses.responses.FALLBACK_PROMPT} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " "} ${VocalResponses.responses.ALTERNATE_OPTIONS}`)
+        .speak(`<voice name='Emma'>${VocalResponses.responses.FALLBACK_PROMPT} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " "} ${VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
+        .reprompt(`<voice name='Emma'>${VocalResponses.responses.FALLBACK_PROMPT} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " "} ${VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
         .getResponse();
   
     },
