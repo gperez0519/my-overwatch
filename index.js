@@ -718,6 +718,11 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
         return handlerInput.responseBuilder
                 .speak(`<voice name='Emma'>${outputSpeech} ${drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
                 .reprompt(`<voice name='Emma'>${VocalResponses.responses.PLEASE_REPEAT} ${drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
+                .withStandardCard(
+                    `Upcoming OWL Matches`,
+                    outputSpeech,
+                    'https://my-overwatch.s3.amazonaws.com/owl/OWL_Logo.png',
+                    'https://my-overwatch.s3.amazonaws.com/owl/OWL_Logo_Large.png')
                 .getResponse();
     },
 };
