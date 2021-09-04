@@ -647,7 +647,9 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
                         // Ensure the upcoming date and time is available
                         if (element.date.startDate) {
                             var eventStartDate = momentTZ.utc(element.date.startDate).tz(userTimeZone);
+                            var curDateTime = momentTZ.utc().tz("America/New_York");
                             const eventStartDateFormatted = eventStartDate.format("LL [at] LT");
+                            var minutesPastEvent = curDateTime.diff(eventStartDate, 'minutes');
 
                             // Ensure the competitors object array is available.
                             if (element.competitors) {
@@ -667,30 +669,40 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
                                 // Ensure the status of the match is available.
                                 if (element.status){
 
+                                    if (matchIterationCount == 1) {
+                                        outputSpeech = `I have the breakdown of the upcoming Overwatch League matches.`;
+                                    }
+
+                                    // Status Text can be Online Play, Encore or LIVE
                                     if (element.statusText == "Online Play"){
                                         if (element.status == "PENDING") {
 
-                                            if (matchIterationCount == 1) {
-                                                outputSpeech = `I have the breakdown of the upcoming Overwatch League matches.`;
-                                            }
-
-                                            outputSpeech += ` On ${eventStartDateFormatted}, `;
-                                            if (oneTeamTBD) {
-                                                if (leftTeamTBD) {
-                                                    outputSpeech += `the ${element.competitors[1].longName} will face the team that is yet to be determined.`;
-                                                } else if (rightTeamTBD) {
-                                                    outputSpeech += `the ${element.competitors[0].longName} will face the team that is yet to be determined.`;
-                                                }
-                                                
+                                            if (minutesPastEvent > 0 && minutesPastEvent <= 120) {
+                                                outputSpeech += ` Great News! Currently, there is a match in progress. The event started on ${eventStartDateFormatted}. `;
+                                                outputSpeech += `The ${element.competitors[0].longName} is currently facing the ${element.competitors[1].longName}. Check it out now and don't miss the event.`;
                                             } else {
-                                                outputSpeech += `the ${element.competitors[0].longName} will face the ${element.competitors[1].longName}.`;
+                                                outputSpeech += ` On ${eventStartDateFormatted}, `;
+                                                if (oneTeamTBD) {
+                                                    if (leftTeamTBD) {
+                                                        outputSpeech += `the ${element.competitors[1].longName} will face the team that is yet to be determined.`;
+                                                    } else if (rightTeamTBD) {
+                                                        outputSpeech += `the ${element.competitors[0].longName} will face the team that is yet to be determined.`;
+                                                    }
+                                                    
+                                                } else {
+                                                    outputSpeech += `the ${element.competitors[0].longName} will face the ${element.competitors[1].longName}.`;
+                                                }
                                             }
+                                            
                                         } else {
-                                            outputSpeech += `There is a match in progress that started on ${eventStartDateFormatted}, `;
+                                            outputSpeech += `Great News! There is a match in progress that started on ${eventStartDateFormatted}, `;
                                             outputSpeech += `the teams that are playing are the ${element.competitors[0].longName} facing against the ${element.competitors[1].longName}.`;
                                         }
                                         
                                         
+                                    } else if (element.status == "LIVE") {
+                                        outputSpeech = ` Great News! Currently, there is a match in progress. The event started on ${eventStartDateFormatted}. `;
+                                        outputSpeech += `The ${element.competitors[0].longName} is currently facing the ${element.competitors[1].longName}. Check it out now and don't miss the event.`;
                                     }
                                     
                                 }
