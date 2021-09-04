@@ -374,31 +374,6 @@ const GetMyStatsIntentHandler = {
                             outputSpeech += ` Whoa, a veteran of Overwatch? Very cool!`;
                         }
                     }
-                    
-                    // Check if player has ranked otherwise let them know they need to place to know their rank.
-                    if (!isObjectEmpty(stats.rank)){
-                        
-                        outputSpeech += ` Lets see here about your rank. Ahh, interesting,`;
-
-                        // Get the tank ranking if placed otherwise don't append response.
-                        if (!!stats.rank.tank) {
-                            outputSpeech += ` For the tank role ${getPlayerRank(stats.rank.tank)},`;
-                        }
-
-                        // Get the damage ranking if placed otherwise don't append response.
-                        if (!!stats.rank.damage) {
-                            outputSpeech += ` For the damage role ${getPlayerRank(stats.rank.damage)},`;
-                        }
-
-                        // Get the healer ranking if placed otherwise don't append response.
-                        if (!!stats.rank.healer) {
-                            outputSpeech += ` For the healer role ${getPlayerRank(stats.rank.healer)},`;
-                        }
-                        
-                    } else {
-                        outputSpeech = " " + VocalResponses.responses.PLACEMENTS_NOT_COMPLETE;
-                        console.log("Player has not placed in rank yet.");
-                    }
 
                     // Check if we retrieved data for the most played heroes
                     if (isObjectEmpty(mostPlayed)) {
@@ -422,29 +397,56 @@ const GetMyStatsIntentHandler = {
                             outputSpeech += ` Analysis shows your weapon accuracy in Quickplay with ${toTitleCase(quickPlayHero)} is ${quickPlayHeroWeaponAccuracy}! ${parseInt(quickPlayHeroWeaponAccuracy) > "50%" ? `That is actually really impressive!` : `I think you might want to practice your aim more in training to increase your chances of success.`}`;
                         }
 
-                        // Check if there are stats for competitive, if there aren't the player doesn't compete
-                        if (!isObjectEmpty(stats.heroStats.competitive)) {
-                            let mostPlayedCompetitiveHero = Object.keys(mostPlayed.competitive)[0];
-                            let statsCompHeroWinPercentage = stats.heroStats.competitive[mostPlayedCompetitiveHero].game.win_percentage;
+                        // Check if player has ranked otherwise let them know they need to place to know their rank.
+                        if (!isObjectEmpty(stats.rank)){
                             
-                            outputSpeech += ` Also, it seems you really enjoy playing ${toTitleCase(mostPlayedCompetitiveHero)} in Competitive. `;
-                            outputSpeech += `Your current win percentage with this hero in Competitive is ${statsCompHeroWinPercentage}.`;
+                            outputSpeech += ` Lets see here about your rank. Ahh, interesting,`;
 
-                            // Check to see if the hero in competitive the user plays the most has the best win percentage, if not suggest the hero with better win percentage.
-                            var suggestedCompHero = getBestHeroForComp(mostPlayedCompetitiveHero, statsCompHeroWinPercentage, stats.heroStats.competitive);
-
-                            if (suggestedCompHero !== null){
-                                outputSpeech += ` Fascinating, there is a tip here in my data analysis. It says that based on your win percentage with this hero in competitive, you will have more success with ${toTitleCase(suggestedCompHero.hero)} since your win percentage with that hero in competitive is ${suggestedCompHero.win_percentage}.`;
+                            // Get the tank ranking if placed otherwise don't append response.
+                            if (!!stats.rank.tank) {
+                                outputSpeech += ` For the tank role ${getPlayerRank(stats.rank.tank)},`;
                             }
 
-                            // Tell the player about their combat weapon accuracy for competitive if it exists.
-                            if (stats.heroStats.competitive[mostPlayedCompetitiveHero].combat.weapon_accuracy) {
-                                let statsCompHeroWeaponAccuracy = stats.heroStats.competitive[mostPlayedCompetitiveHero].combat.weapon_accuracy;
+                            // Get the damage ranking if placed otherwise don't append response.
+                            if (!!stats.rank.damage) {
+                                outputSpeech += ` For the damage role ${getPlayerRank(stats.rank.damage)},`;
+                            }
 
-                                outputSpeech += ` Analysis shows your weapon accuracy in competitive with ${toTitleCase(suggestedCompHero.hero)} is ${statsCompHeroWeaponAccuracy}! ${parseInt(statsCompHeroWeaponAccuracy) > "50%" ? `That is actually really impressive!` : `I think you might want to practice your aim more in training to increase your chances of success.`}`;
+                            // Get the healer ranking if placed otherwise don't append response.
+                            if (!!stats.rank.healer) {
+                                outputSpeech += ` For the healer role ${getPlayerRank(stats.rank.healer)},`;
+                            }
+
+                            // Check if there are stats for competitive, if there aren't the player doesn't compete
+                            if (!isObjectEmpty(stats.heroStats.competitive)) {
+                                let mostPlayedCompetitiveHero = Object.keys(mostPlayed.competitive)[0];
+                                let statsCompHeroWinPercentage = stats.heroStats.competitive[mostPlayedCompetitiveHero].game.win_percentage;
+                                
+                                outputSpeech += ` Also, it seems you really enjoy playing ${toTitleCase(mostPlayedCompetitiveHero)} in Competitive. `;
+                                outputSpeech += `Your current win percentage with this hero in Competitive is ${statsCompHeroWinPercentage}.`;
+
+                                // Check to see if the hero in competitive the user plays the most has the best win percentage, if not suggest the hero with better win percentage.
+                                var suggestedCompHero = getBestHeroForComp(mostPlayedCompetitiveHero, statsCompHeroWinPercentage, stats.heroStats.competitive);
+
+                                if (suggestedCompHero !== null){
+                                    outputSpeech += ` Fascinating, there is a tip here in my data analysis. It says that based on your win percentage with this hero in competitive, you will have more success with ${toTitleCase(suggestedCompHero.hero)} since your win percentage with that hero in competitive is ${suggestedCompHero.win_percentage}.`;
+                                }
+
+                                // Tell the player about their combat weapon accuracy for competitive if it exists.
+                                if (stats.heroStats.competitive[mostPlayedCompetitiveHero].combat.weapon_accuracy) {
+                                    let statsCompHeroWeaponAccuracy = stats.heroStats.competitive[mostPlayedCompetitiveHero].combat.weapon_accuracy;
+
+                                    outputSpeech += ` Analysis shows your weapon accuracy in competitive with ${toTitleCase(suggestedCompHero.hero)} is ${statsCompHeroWeaponAccuracy}! ${parseInt(statsCompHeroWeaponAccuracy) > "50%" ? `That is actually really impressive!` : `I think you might want to practice your aim more in training to increase your chances of success.`}`;
+                                }
+                                
                             }
                             
+                        } else {
+                            outputSpeech += ` ${VocalResponses.responses.PLACEMENTS_NOT_COMPLETE}`;
+                            console.log("Player has not placed in rank yet.");
                         }
+
+                        
                     }
                     
                     // Once all stats are retrieved and appended lets append the options again for the user to choose what they want to do thereafter.
@@ -829,8 +831,8 @@ const HelpIntentHandler = {
         console.log("User asked for help.");
 
         return handlerInput.responseBuilder
-            .speak('Sure. ' + drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS)
-            .reprompt(VocalResponses.responses.PLEASE_REPEAT + drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS)
+            .speak(`<voice name='Emma'>${outputSpeech} ${drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
+            .reprompt(`<voice name='Emma'>${VocalResponses.responses.PLEASE_REPEAT} ${drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
             .getResponse();
     },
 };
