@@ -585,7 +585,7 @@ const OverwatchLeagueTeamInfoIntentIntentHandler = {
                 .speak(`<voice name='Emma'>${outputSpeech} ${drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
                 .reprompt(`<voice name='Emma'>${VocalResponses.responses.PLEASE_REPEAT} ${drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
                 .withStandardCard(
-                    teamName ? `${teamName} OWL Record This Season` : `OWL Record This Season`,
+                    `This team's current OWL Record`,
                     outputSpeech,
                     teamLogoURL ? teamLogoURL : '',
                     teamLogoURL ? teamLogoURL : '')
@@ -620,6 +620,8 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
         // X-ray Web Scraper by Matt Mueller - NPM Package URL: https://www.npmjs.com/package/x-ray **
         const xray = require("x-ray");
         const x = xray();
+        var futureMatches = false;
+        var recentMatches = false;
 
         // Retrieve the JSON Overwatch League Data by method of web scraping using x-ray npm package (https://www.npmjs.com/package/x-ray)
         await x('https://www.overwatchleague.com/', '#__NEXT_DATA__')
@@ -633,6 +635,8 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
 
                 var matchIterationCount = 1;
                 var liveMatchIterationCount = 1;
+                var preIntroMessage = false;
+                var completedPreIntroMessage = false;
                 
                 // Loop through each match and indicate the upcoming matches to the user.
                 for (const match in matches) {
@@ -664,14 +668,16 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
                                 // Ensure the status of the match is available. Status can be LIVE and COMPLETED
                                 if (element.status){
 
-                                    if (matchIterationCount == 1) {
-                                        outputSpeech = `I have the breakdown of the upcoming Overwatch League matches.`;
-                                    }
+                                    if (element.status == "PENDING") {
 
-                                    // Status Text can be Online Play or Encore
-                                    if (element.statusText == "Online Play"){
-                                        if (element.status == "PENDING") {
+                                        if (element.statusText == "Online Play"){ // Status Text can be Online Play or Encore
 
+                                            if (matchIterationCount == 1 && preIntroMessage == false) {
+                                                outputSpeech = `I have the breakdown of the upcoming Overwatch League matches.`;
+                                                futureMatches = true;
+                                                preIntroMessage = true;
+                                            }
+    
                                             if (minutesPastEvent > 0 && minutesPastEvent <= 120) {
                                                 if (matchIterationCount == 1) {
                                                     outputSpeech += ` Great News!`;
@@ -691,10 +697,16 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
                                                     outputSpeech += `the ${element.competitors[0].longName} will face the ${element.competitors[1].longName}.`;
                                                 }
                                             }
-                                            
-                                        }                                        
+                                        }
                                         
-                                    } else if (element.status == "LIVE") {
+                                    }  
+                                    else if (element.status == "LIVE") {
+
+                                        if (matchIterationCount == 1 && preIntroMessage == false) {
+                                            outputSpeech = `I have the breakdown of the upcoming Overwatch League matches.`;
+                                            futureMatches = true;
+                                            preIntroMessage = true;
+                                        }
 
                                         if (liveMatchIterationCount == 1) {
                                             outputSpeech += ` Great News!`;
@@ -706,6 +718,25 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
                                         }
                                         
                                         liveMatchIterationCount++;
+                                    } else if (element.status == "COMPLETED") {
+                                        if (completedPreIntroMessage == false) {
+                                            if (futureMatches) {
+                                                outputSpeech += `It looks like there were some recent matches.`;
+                                            } else {
+                                                outputSpeech = `It looks like there were some recent matches.`;
+                                            }
+                                            
+                                            completedPreIntroMessage = true;
+                                            recentMatches = true;
+                                        }
+
+                                        if (parseInt(element.competitors[0].score) > parseInt(element.competitors[1].score)){
+                                            outputSpeech += ` The ${element.competitors[0].longName} defeated the ${element.competitors[1].longName} with a score of ${element.competitors[0].score} to ${element.competitors[1].score}.`;
+                                        } else if (parseInt(element.competitors[0].score) < parseInt(element.competitors[1].score)) {
+                                            outputSpeech += ` The ${element.competitors[1].longName} defeated the ${element.competitors[0].longName} with a score of ${element.competitors[1].score} to ${element.competitors[0].score}.`;
+                                        } else if (parseInt(element.competitors[0].score) == parseInt(element.competitors[1].score)) {
+                                            outputSpeech += ` The match between the ${element.competitors[1].longName} and the ${element.competitors[0].longName} ended in a tie with a score of ${element.competitors[1].score} to ${element.competitors[0].score}.`;
+                                        }
                                     }
                                     
                                 }
@@ -721,14 +752,16 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
                 outputSpeech = "I'm not seeing any upcoming matches yet for the current season.";
             }
 
-
-
         })
         .catch(err => {
             outputSpeech = VocalResponses.responses.OVERWATCH_LEAGUE_SERVICE_UNAVAILABLE + drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS;
 
             console.log(err.message);
         });
+
+        if (futureMatches == false && recentMatches == false) {
+            outputSpeech = "It doesn't look like there are any upcoming Overwatch League matches yet. Please try again later.";
+        }
 
         return handlerInput.responseBuilder
                 .speak(`<voice name='Emma'>${outputSpeech} ${drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
