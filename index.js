@@ -303,7 +303,7 @@ const GetMyStatsIntentHandler = {
             battletag_number = userInfo.data.battletag.split("#")[1];
         }
 
-        let rePromptText = `Well, I guess you don't find that to be very exciting but in any case I will leave you to it. Let me know if you need anything else. ${drinkCount > 3 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.OPTIONS}`;
+        let rePromptText = `Well, I guess you don't find that to be very exciting but in any case I will leave you to it. Let me know if you need anything else. ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.OPTIONS}`;
 
         console.log("Captured Battletag username: " + battletag_username);
         console.log("Captured Battletag number: " + battletag_number);
@@ -453,7 +453,7 @@ const GetMyStatsIntentHandler = {
                     }
                     
                     // Once all stats are retrieved and appended lets append the options again for the user to choose what they want to do thereafter.
-                    outputSpeech += drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS;
+                    outputSpeech += drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.ALTERNATE_OPTIONS;
                     displayText = outputSpeech;
                 }
 
@@ -592,11 +592,11 @@ const OverwatchLeagueTeamInfoIntentIntentHandler = {
         }
 
         return handlerInput.responseBuilder
-                .speak(`<voice name='Emma'>${outputSpeech} ${drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
-                .reprompt(`<voice name='Emma'>${VocalResponses.responses.PLEASE_REPEAT} ${drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
+                .speak(`<voice name='Emma'>${outputSpeech} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
+                .reprompt(`<voice name='Emma'>${VocalResponses.responses.PLEASE_REPEAT} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
                 .withStandardCard(
                     `This team's current OWL Record`,
-                    `${displayText} ${drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS}`,
+                    `${displayText} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.ALTERNATE_OPTIONS}`,
                     teamLogoURL ? teamLogoURL : '',
                     teamLogoURL ? teamLogoURL : '')
                 .getResponse();
@@ -770,8 +770,8 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
 
         })
         .catch(err => {
-            outputSpeech = VocalResponses.responses.OVERWATCH_LEAGUE_SERVICE_UNAVAILABLE + drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS;
-            displayText = VocalResponses.responses.OVERWATCH_LEAGUE_SERVICE_UNAVAILABLE_DISPLAY + drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS;
+            outputSpeech = VocalResponses.responses.OVERWATCH_LEAGUE_SERVICE_UNAVAILABLE + drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.ALTERNATE_OPTIONS;
+            displayText = VocalResponses.responses.OVERWATCH_LEAGUE_SERVICE_UNAVAILABLE_DISPLAY + drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.ALTERNATE_OPTIONS;
             console.log(err.message);
         });
 
@@ -781,11 +781,11 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
         }
 
         return handlerInput.responseBuilder
-                .speak(`<voice name='Emma'>${outputSpeech} ${drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
-                .reprompt(`<voice name='Emma'>${VocalResponses.responses.PLEASE_REPEAT} ${drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
+                .speak(`<voice name='Emma'>${outputSpeech} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
+                .reprompt(`<voice name='Emma'>${VocalResponses.responses.PLEASE_REPEAT} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
                 .withStandardCard(
                     `Upcoming OWL Matches`,
-                    `${displayText} ${drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS}`,
+                    `${displayText} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.ALTERNATE_OPTIONS}`,
                     'https://my-overwatch.s3.amazonaws.com/owl/OWL_Logo.png',
                     'https://my-overwatch.s3.amazonaws.com/owl/OWL_Logo_Large.png')
                 .getResponse();
@@ -811,8 +811,8 @@ const RandomRoleHeroGeneratorIntentHandler = {
         }
 
         let heroPicURL = "";
-        outputSpeech = VocalResponses.responses.OVERWATCH_HERO_SERVICE_UNAVAILABLE + drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS;
-        displayText = VocalResponses.responses.OVERWATCH_HERO_SERVICE_UNAVAILABLE_DISPLAY + drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS;
+        outputSpeech = VocalResponses.responses.OVERWATCH_HERO_SERVICE_UNAVAILABLE + drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.ALTERNATE_OPTIONS;
+        displayText = VocalResponses.responses.OVERWATCH_HERO_SERVICE_UNAVAILABLE_DISPLAY + drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.ALTERNATE_OPTIONS;
 
         const {attributesManager} = handlerInput;
 
@@ -839,8 +839,8 @@ const RandomRoleHeroGeneratorIntentHandler = {
                 sessionAttributes['hero-name'] = heroName;
             }
         } catch (error) {
-            outputSpeech = VocalResponses.responses.OVERWATCH_HERO_SERVICE_UNAVAILABLE + drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS;
-            displayText = VocalResponses.responses.OVERWATCH_HERO_SERVICE_UNAVAILABLE_DISPLAY + drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS;
+            outputSpeech = VocalResponses.responses.OVERWATCH_HERO_SERVICE_UNAVAILABLE + drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.ALTERNATE_OPTIONS;
+            displayText = VocalResponses.responses.OVERWATCH_HERO_SERVICE_UNAVAILABLE_DISPLAY + drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.ALTERNATE_OPTIONS;
             console.log(error.message);
             return handlerInput.responseBuilder
                 .speak(`<voice name='Emma'>${outputSpeech}</voice>`)
@@ -939,21 +939,21 @@ const YesIntentHandler = {
         var displayText = "";
 
         // default response
-        outputSpeech = `I'm not sure what you are saying yes to but let's start with an option. ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " "} ${VocalResponses.responses.ALTERNATE_OPTIONS}`;
+        outputSpeech = `I'm not sure what you are saying yes to but let's start with an option. ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.ALTERNATE_OPTIONS}`;
         displayText = outputSpeech;
 
         // check to see if session attributes object exists.
         if (sessionAttributes) {
             // if they are responding yes to retrieving more information about the hero in context then retrieve that info and respond back.
             if (sessionAttributes['hero-info'] && sessionAttributes['hero-role'] && sessionAttributes['hero-name']) {
-                outputSpeech = `${getHeroInfo(sessionAttributes['hero-name'], sessionAttributes['hero-role'])} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " "} ${VocalResponses.responses.ALTERNATE_OPTIONS}`;
+                outputSpeech = `${getHeroInfo(sessionAttributes['hero-name'], sessionAttributes['hero-role'])} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.ALTERNATE_OPTIONS}`;
                 displayText = outputSpeech;
             }
         }
 
         return handlerInput.responseBuilder
             .speak(`<voice name='Emma'>${outputSpeech}</voice>`)
-            .reprompt(`<voice name='Emma'>${VocalResponses.responses.PLEASE_REPEAT} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " "} ${VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
+            .reprompt(`<voice name='Emma'>${VocalResponses.responses.PLEASE_REPEAT} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
             .withStandardCard(
                 `Requested Info`,
                 displayText,
@@ -974,11 +974,11 @@ const NoIntentHandler = {
         // const sessionAttributes = attributesManager.getSessionAttributes();
 
         return handlerInput.responseBuilder
-            .speak(`<voice name='Emma'>${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " "} ${VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
-            .reprompt(`<voice name='Emma'>${VocalResponses.responses.PLEASE_REPEAT} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " "} ${VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
+            .speak(`<voice name='Emma'>${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
+            .reprompt(`<voice name='Emma'>${VocalResponses.responses.PLEASE_REPEAT} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
             .withStandardCard(
                 `Options`,
-                `${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " "} ${VocalResponses.responses.ALTERNATE_OPTIONS}`,
+                `${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.ALTERNATE_OPTIONS}`,
                 '',
                 '')
             .getResponse();
@@ -1039,11 +1039,11 @@ const ErrorHandler = {
         console.log(`Error handled: ${error.message}`);
 
         return handlerInput.responseBuilder
-            .speak(`<voice name='Emma'>${VocalResponses.responses.ERROR_PROMPT} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " "} ${VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
-            .reprompt(`<voice name='Emma'>${VocalResponses.responses.ERROR_PROMPT} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " "} ${VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
+            .speak(`<voice name='Emma'>${VocalResponses.responses.ERROR_PROMPT} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
+            .reprompt(`<voice name='Emma'>${VocalResponses.responses.ERROR_PROMPT} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
             .withStandardCard(
                 `My apologies, something went wrong!`,
-                `${VocalResponses.responses.ERROR_PROMPT_DISPLAY} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " "} ${VocalResponses.responses.ALTERNATE_OPTIONS}`,
+                `${VocalResponses.responses.ERROR_PROMPT_DISPLAY} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.ALTERNATE_OPTIONS}`,
                 '',
                 '')
             .getResponse();
@@ -1059,11 +1059,11 @@ const FallbackIntentHandler = {
   
     handle(handlerInput) {
       return handlerInput.responseBuilder
-        .speak(`<voice name='Emma'>${VocalResponses.responses.FALLBACK_PROMPT} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " "} ${VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
-        .reprompt(`<voice name='Emma'>${VocalResponses.responses.FALLBACK_PROMPT} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " "} ${VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
+        .speak(`<voice name='Emma'>${VocalResponses.responses.FALLBACK_PROMPT} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
+        .reprompt(`<voice name='Emma'>${VocalResponses.responses.FALLBACK_PROMPT} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.ALTERNATE_OPTIONS}</voice>`)
         .withStandardCard(
             `My apologies, something went wrong!`,
-            `${VocalResponses.responses.FALLBACK_PROMPT} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " "} ${VocalResponses.responses.ALTERNATE_OPTIONS}`,
+            `${VocalResponses.responses.FALLBACK_PROMPT} ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.ALTERNATE_OPTIONS}`,
             '',
             '')
         .getResponse();
@@ -1145,7 +1145,7 @@ function getHeroInfo(heroName, heroRole) {
     } catch (error) {
 
         // if an error occurs in the process respond back with the default error indication to the user.
-        outputSpeech = VocalResponses.responses.OVERWATCH_SERVICE_UNAVAILABLE + drinkCount > 2 ? " " + VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : " " + VocalResponses.responses.ALTERNATE_OPTIONS;
+        outputSpeech = VocalResponses.responses.OVERWATCH_SERVICE_UNAVAILABLE + drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.ALTERNATE_OPTIONS;
         console.log(error.message);
         return outputSpeech;
         
