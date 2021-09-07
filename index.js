@@ -12,7 +12,7 @@ var persistenceAdapter = getPersistenceAdapter();
 const ow = require('overwatch-stats-api');
 
 // Default parameters
-const appName = 'Blizz Tavern - Overwatch';
+const appName = 'Blizzard Tavern - Overwatch';
 let nickName = "my friend";
 let drinkCount = 0;
 let platforms = [
@@ -453,7 +453,7 @@ const GetMyStatsIntentHandler = {
                     }
                     
                     // Once all stats are retrieved and appended lets append the options again for the user to choose what they want to do thereafter.
-                    outputSpeech += drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.ALTERNATE_OPTIONS;
+                    outputSpeech += ` ${drinkCount > 2 ? VocalResponses.responses.TOO_MANY_DRINKS_OPTIONS : VocalResponses.responses.ALTERNATE_OPTIONS}`;
                     displayText = outputSpeech;
                 }
 
