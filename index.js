@@ -171,28 +171,21 @@ const LaunchRequestHandler = {
         */
 
         // if this isn't the first time the user is using the skill add their saved nick name to personalization.
-        if (sessionAttributes['nickName']) {
-            if (sessionAttributes['sessionCounter'] >= 1) {
-                nickName = sessionAttributes['nickName'];
-            }
-            
-        } else {
-            // retrieve the user's battletag
-            try {
+        // retrieve the user's battletag
+        try {
                 
-                userInfo = await axios.get(`https://us.battle.net/oauth/userinfo?:region=us&access_token=${accessToken}`);
-                    console.log("Blizzard user info: ",userInfo.data);
-                    console.log("Blizzard user battle tag: ",userInfo.data.battletag);
+            userInfo = await axios.get(`https://us.battle.net/oauth/userinfo?:region=us&access_token=${accessToken}`);
+                console.log("Blizzard user info: ",userInfo.data);
+                console.log("Blizzard user battle tag: ",userInfo.data.battletag);
 
-                if (userInfo) {
-                    // capture the username portion of the battletag if the session attribute for nickname does not exist.
-                    nickName = userInfo.data.battletag.split("#")[0];
-                    sessionAttributes['nickName'] = nickName;
-                }
-
-            } catch(error) {
-                console.log("Error occurred getting user info: ", error);
+            if (userInfo) {
+                // capture the username portion of the battletag if the session attribute for nickname does not exist.
+                nickName = userInfo.data.battletag.split("#")[0];
+                sessionAttributes['nickName'] = nickName;
             }
+
+        } catch(error) {
+            console.log("Error occurred getting user info: ", error);
         }
 
         // Reset particular session attributes
@@ -200,21 +193,23 @@ const LaunchRequestHandler = {
         sessionAttributes['hero-role'] = "";
         sessionAttributes['hero-name'] = "";
 
-        if (nickName != "my friend" && sessionAttributes['sessionCounter'] >= 1){
-            // replace the words my friend with the person's name for more personalization if this isn't the first time they are using the skill.
+        if (nickName != "my friend"){
+            // replace the words my friend with the person's name for more personalization every time they are using the skill.
             GREETING_PERSONALIZED = GREETING_PERSONALIZED.replace("my friend", nickName);
             GREETING_PERSONALIZED_II = GREETING_PERSONALIZED_II.replace("my friend", nickName);
             GREETING_PERSONALIZED_III = GREETING_PERSONALIZED_III.replace("my friend", nickName);
 
+            // replace the words my friend with the person's name for more personalization every time they are using the skill.
+            GREETING_PERSONALIZED_DISPLAY = GREETING_PERSONALIZED_DISPLAY.replace("my friend", nickName);
+            GREETING_PERSONALIZED_II_DISPLAY = GREETING_PERSONALIZED_II_DISPLAY.replace("my friend", nickName);
+            GREETING_PERSONALIZED_III_DISPLAY = GREETING_PERSONALIZED_III_DISPLAY.replace("my friend", nickName);
+        }
+
+        if (sessionAttributes['sessionCounter'] > 1) {
             // replace the words welcome with welcome back for more personalization if this isn't the first time they are using the skill.
             GREETING_PERSONALIZED = GREETING_PERSONALIZED.replace("Welcome", "Welcome back");
             GREETING_PERSONALIZED_II = GREETING_PERSONALIZED_II.replace("Welcome", "Welcome back");
             GREETING_PERSONALIZED_III = GREETING_PERSONALIZED_III.replace("Welcome", "Welcome back");
-
-            // replace the words my friend with the person's name for more personalization if this isn't the first time they are using the skill.
-            GREETING_PERSONALIZED_DISPLAY = GREETING_PERSONALIZED_DISPLAY.replace("my friend", nickName);
-            GREETING_PERSONALIZED_II_DISPLAY = GREETING_PERSONALIZED_II_DISPLAY.replace("my friend", nickName);
-            GREETING_PERSONALIZED_III_DISPLAY = GREETING_PERSONALIZED_III_DISPLAY.replace("my friend", nickName);
 
             // replace the words welcome with welcome back for more personalization if this isn't the first time they are using the skill.
             GREETING_PERSONALIZED_DISPLAY = GREETING_PERSONALIZED_DISPLAY.replace("Welcome", "Welcome back");
