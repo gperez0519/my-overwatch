@@ -146,10 +146,12 @@ const LaunchRequestHandler = {
         let GREETING_PERSONALIZED = VocalResponses.responses.GREETING_PERSONALIZED;
         let GREETING_PERSONALIZED_II = VocalResponses.responses.GREETING_PERSONALIZED_II;
         let GREETING_PERSONALIZED_III = VocalResponses.responses.GREETING_PERSONALIZED_III;
+        let GREETING_PERSONALIZED_IV = VocalResponses.responses.GREETING_PERSONALIZED_IV;
 
         let GREETING_PERSONALIZED_DISPLAY = VocalResponses.responses.GREETING_PERSONALIZED_DISPLAY;
         let GREETING_PERSONALIZED_II_DISPLAY = VocalResponses.responses.GREETING_PERSONALIZED_II_DISPLAY;
         let GREETING_PERSONALIZED_III_DISPLAY = VocalResponses.responses.GREETING_PERSONALIZED_III_DISPLAY;
+        let GREETING_PERSONALIZED_IV_DISPLAY = VocalResponses.responses.GREETING_PERSONALIZED_IV_DISPLAY;
 
         if (accessToken == undefined){
             // The request did not include a token, so tell the user to link
@@ -198,11 +200,13 @@ const LaunchRequestHandler = {
             GREETING_PERSONALIZED = GREETING_PERSONALIZED.replace("my friend", nickName);
             GREETING_PERSONALIZED_II = GREETING_PERSONALIZED_II.replace("my friend", nickName);
             GREETING_PERSONALIZED_III = GREETING_PERSONALIZED_III.replace("my friend", nickName);
+            GREETING_PERSONALIZED_IV = GREETING_PERSONALIZED_IV.replace("my friend", nickName);
 
             // replace the words my friend with the person's name for more personalization every time they are using the skill.
             GREETING_PERSONALIZED_DISPLAY = GREETING_PERSONALIZED_DISPLAY.replace("my friend", nickName);
             GREETING_PERSONALIZED_II_DISPLAY = GREETING_PERSONALIZED_II_DISPLAY.replace("my friend", nickName);
             GREETING_PERSONALIZED_III_DISPLAY = GREETING_PERSONALIZED_III_DISPLAY.replace("my friend", nickName);
+            GREETING_PERSONALIZED_IV_DISPLAY = GREETING_PERSONALIZED_IV_DISPLAY.replace("my friend", nickName);
         }
 
         if (sessionAttributes['sessionCounter'] > 1) {
@@ -210,18 +214,20 @@ const LaunchRequestHandler = {
             GREETING_PERSONALIZED = GREETING_PERSONALIZED.replace("Welcome", "Welcome back");
             GREETING_PERSONALIZED_II = GREETING_PERSONALIZED_II.replace("Welcome", "Welcome back");
             GREETING_PERSONALIZED_III = GREETING_PERSONALIZED_III.replace("Welcome", "Welcome back");
+            GREETING_PERSONALIZED_IV = GREETING_PERSONALIZED_IV.replace("Welcome", "Welcome back");
 
             // replace the words welcome with welcome back for more personalization if this isn't the first time they are using the skill.
             GREETING_PERSONALIZED_DISPLAY = GREETING_PERSONALIZED_DISPLAY.replace("Welcome", "Welcome back");
             GREETING_PERSONALIZED_II_DISPLAY  = GREETING_PERSONALIZED_II_DISPLAY.replace("Welcome", "Welcome back");
             GREETING_PERSONALIZED_III_DISPLAY  = GREETING_PERSONALIZED_III_DISPLAY.replace("Welcome", "Welcome back");
+            GREETING_PERSONALIZED_IV_DISPLAY  = GREETING_PERSONALIZED_IV_DISPLAY.replace("Welcome", "Welcome back");
         }
 
         // default welcome message
         let welcomeText = `${VocalResponses.responses.DOOR_OPEN_AUDIO} ${VocalResponses.responses.ROWDY_BAR_AMBIANCE_AUDIO} ${GREETING_PERSONALIZED} ${VocalResponses.responses.POUR_DRINK_AUDIO} Cheers, my friend! ${VocalResponses.responses.GLASS_CLINK_AUDIO} ${VocalResponses.responses.OPTIONS}`;
 
-        // Get a random number between 1 and 3
-        let randomChoice = getRndInteger(1,4);
+        // Get a random number between 1 and 4
+        let randomChoice = getRndInteger(1,5);
 
         // return a random welcome message to ensure human like interaction.
         try {
@@ -234,6 +240,9 @@ const LaunchRequestHandler = {
             } else if (randomChoice == 3) {
                 welcomeText = `${VocalResponses.responses.DOOR_OPEN_AUDIO} ${VocalResponses.responses.ROWDY_BAR_AMBIANCE_AUDIO} ${GREETING_PERSONALIZED_III} ${VocalResponses.responses.POUR_DRINK_AUDIO} Cheers, my friend! ${VocalResponses.responses.GLASS_CLINK_AUDIO} ${VocalResponses.responses.OPTIONS}`;
                 displayText = `${GREETING_PERSONALIZED_III_DISPLAY} ${VocalResponses.responses.OPTIONS}`;
+            } else if (randomChoice == 4) {
+                welcomeText = `${VocalResponses.responses.DOOR_OPEN_AUDIO} ${VocalResponses.responses.ROWDY_BAR_AMBIANCE_AUDIO} ${GREETING_PERSONALIZED_IV} ${VocalResponses.responses.POUR_DRINK_AUDIO} Cheers, my friend! ${VocalResponses.responses.GLASS_CLINK_AUDIO} ${VocalResponses.responses.OPTIONS}`;
+                displayText = `${GREETING_PERSONALIZED_IV_DISPLAY} ${VocalResponses.responses.OPTIONS}`;
             }
         } catch (error) {
             console.log("Something went wrong with randomization welcome message. Error: ", error.message);
@@ -1053,6 +1062,7 @@ const SessionEndedRequestHandler = {
     },
     handle(handlerInput) {
         console.log(`Session ended with reason: ${handlerInput.requestEnvelope.request.reason}`);
+        console.log(`Session ended with error: ${handlerInput.requestEnvelope.request.error.message}`);
 
         return handlerInput.responseBuilder.getResponse();
     },

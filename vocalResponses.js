@@ -7,9 +7,11 @@ const responses = {
     GREETING_PERSONALIZED: `Welcome ${nickName} to Blizzard Tavern! Please, have a seat and take a load off! Here's a round on the house!`,
     GREETING_PERSONALIZED_II: `<prosody volume="x-loud">Hey you miscreants! You throw another chair and I'll toss you out myself!</prosody> Oh hey there ${nickName}! Welcome to Blizzard Tavern! You must be exhausted, drinks are <emphasis level="reduced">on</emphasis> me!`,
     GREETING_PERSONALIZED_III: `<prosody volume="x-loud">Hey Jack! don't make me come back there!</prosody> Oh hey ${nickName}, sorry about that. Some people get a little <emphasis level="moderate">rowdy</emphasis> a round here. Welcome to Blizzard Tavern! You must be exhausted. Here, drinks are on me!`,
+    GREETING_PERSONALIZED_IV: `Junkrat, come on, you can't bury your treasure behind the bar. What is wrong with you? <audio src='https://my-overwatch.s3.amazonaws.com/Junkrat+-+Treasure.mp3'/> Uh, okay. Whatever, Oh hey there ${nickName}! Don't mind him, he can be a little weird sometimes. Welcome to Blizzard Tavern! You must be exhausted, drinks are <emphasis level="reduced">on</emphasis> me!`,
     GREETING_PERSONALIZED_DISPLAY: `Welcome ${nickName} to Blizzard Tavern! Please, have a seat and take a load off! Here's a round on the house!`,
     GREETING_PERSONALIZED_II_DISPLAY: `Hey you miscreants! You throw another chair and I'll toss you out myself! Oh hey there ${nickName}! Welcome to Blizzard Tavern! You must be exhausted, drinks are on me!`,
     GREETING_PERSONALIZED_III_DISPLAY: `Hey Jack! don't make me come back there! Oh hey ${nickName}, sorry about that. Some people get a little rowdy a round here. Welcome to Blizzard Tavern! You must be exhausted. Here, drinks are on me!`,
+    GREETING_PERSONALIZED_IV_DISPLAY: `Junkrat, come on, you can't bury your treasure behind the bar. What is wrong with you? Uh, okay. Whatever, Oh hey there ${nickName}! Don't mind him, he can be a little weird sometimes. Welcome to Blizzard Tavern! You must be exhausted, drinks are on me!`,
     ERROR_PROMPT: `My apologies, my data analysis unit has malfunctioned there for a second. If this continues to occur, send us an email at ultriumdev@gmail.com, that is <say-as interpret-as='spell-out'>ultriumdev@gmail.com</say-as>`,
     ERROR_PROMPT_DISPLAY: `My apologies, my data analysis unit has malfunctioned there for a second. If this continues to occur, send us an email at ultriumdev@gmail.com.`,
     HELP_PROMPT: `Sure, we have a couple of features in this skill to assist you. However, if you are experiencing any issues with the skill, please let us know by sending us an email at ultriumdev@gmail.com, that is <say-as interpret-as='spell-out'>ultriumdev@gmail.com</say-as>. In any case, here are the options, would you like another drink, do you want to check on your Overwatch progress, do you want us to pick a random hero for you to play, do you want to hear about upcoming Overwatch League matches, do you want to find out how your favorite Overwatch League team is doing this season, or would you like to leave the tavern?`,
@@ -44,7 +46,9 @@ const responses = {
     POUR_DRINK_AUDIO: "<audio src='soundbank://soundlibrary/household/water/pour_water_01'/>",
     DOOR_OPEN_AUDIO: "<audio src='soundbank://soundlibrary/home/amzn_sfx_door_open_01'/>",
     GLASS_CLINK_AUDIO: "<audio src='soundbank://soundlibrary/glass/clink/glasses_clink_04'/>",
-    ROWDY_BAR_AMBIANCE_AUDIO: "<audio src='soundbank://soundlibrary/ambience/amzn_sfx_crowd_bar_rowdy_01'/>"
+    ROWDY_BAR_AMBIANCE_AUDIO: "<audio src='soundbank://soundlibrary/ambience/amzn_sfx_crowd_bar_rowdy_01'/>",
+    HANZO_GIFT_FOR_YOU_AUDIO: "<audio src='https://my-overwatch.s3.amazonaws.com/Hanzo+-+A+Gift+for+You.mp3'/>",
+    JUNKRAT_TREASURE_AUDIO: "<audio src='https://my-overwatch.s3.amazonaws.com/Junkrat+-+Treasure.mp3'/>"
 }
 
 module.exports = {
