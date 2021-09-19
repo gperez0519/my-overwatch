@@ -238,7 +238,7 @@ const LaunchRequestHandler = {
         // default welcome message
         let welcomeText = `${VocalResponses.responses.DOOR_OPEN_AUDIO} ${VocalResponses.responses.ROWDY_BAR_AMBIANCE_AUDIO} ${GREETING_PERSONALIZED} ${VocalResponses.responses.POUR_DRINK_AUDIO} Cheers, my friend! ${VocalResponses.responses.GLASS_CLINK_AUDIO} ${VocalResponses.responses.OPTIONS}`;
 
-        // Get a random number between 1 and 5
+        // Get a random number between 1 and 6
         let randomChoice = getRndInteger(1,7);
 
         // return a random welcome message to ensure human like interaction.
