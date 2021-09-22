@@ -660,7 +660,17 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
                             if (element.date.startDate) {
                                 var eventStartDate = momentTZ.utc(element.date.startDate).tz(userTimeZone);
                                 var curDateTime = momentTZ.utc().tz(userTimeZone);
-                                const eventStartDateFormatted = eventStartDate.format("LL [at] LT");
+                                var eventStartDateOnly = momentTZ.utc(element.date.startDate).tz("America/New_York").format("MM-DD-YYYY");
+                                var curDateOnly = momentTZ.utc().tz("America/New_York").format("MM-DD-YYYY");
+
+                                var eventStartDateFormatted = "";
+
+                                if (eventStartDateOnly == curDateOnly) {
+                                    eventStartDateFormatted = eventStartDate.format("[today] [at] LT");
+                                } else {
+                                    eventStartDateFormatted = eventStartDate.format("[on] LL [at] LT");
+                                }
+
                                 var minutesPastEvent = curDateTime.diff(eventStartDate, 'minutes');
             
                                 // Ensure the competitors object array is available.
@@ -700,10 +710,16 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
                                                     if (matchIterationCount == 1) {
                                                         matchResultInfo += ` Great News!`;
                                                     }
-                                                    matchResultInfo += ` Currently, there is a match in progress. The event started on ${eventStartDateFormatted}. `;
+                                                    matchResultInfo += ` Currently, there is a match in progress. The event started ${eventStartDateFormatted}. `;
                                                     matchResultInfo += `The ${element.competitors[0].longName} is currently facing the ${element.competitors[1].longName}. Check it out now and don't miss the event.`;
                                                 } else {
-                                                    matchResultInfo += ` On ${eventStartDateFormatted}, `;
+
+                                                    // If the event start date format includes the today keyword capitalize it for this portion.
+                                                    if (eventStartDateFormatted.includes('today')){
+                                                        eventStartDateFormatted = eventStartDateFormatted.replace('today', 'Today');
+                                                    }
+                                                    
+                                                    matchResultInfo += ` ${eventStartDateFormatted}, `;
                                                     if (leftTeamTBD && rightTeamTBD) {
                                                         matchResultInfo += `there will be a match between two Overwatch League teams who is yet to be determined.`;
                                                     } else {
@@ -724,24 +740,27 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
                                             
                                         }  
                                         else if (element.status == "LIVE") {
-            
-                                            if (matchIterationCount == 1 && preIntroMessage == false) {
-                                                matchResultInfo = `I have the breakdown of the upcoming Overwatch League matches.`;
-                                                futureMatches = true;
-                                                preIntroMessage = true;
+
+                                            if (element.statusText == "Online Play"){
+                                                if (matchIterationCount == 1 && preIntroMessage == false) {
+                                                    matchResultInfo = `I have the breakdown of the upcoming Overwatch League matches.`;
+                                                    futureMatches = true;
+                                                    preIntroMessage = true;
+                                                }
+                
+                                                if (liveMatchIterationCount == 1) {
+                                                    matchResultInfo += ` Great News!`;
+                                                    matchResultInfo += ` Currently, there is a match in progress. The event started ${eventStartDateFormatted}. `;
+                                                    matchResultInfo += `The ${element.competitors[0].longName} is currently facing the ${element.competitors[1].longName}. Check it out now on youtube.com/overwatchleague and don't miss the event.`;
+                                                } else {
+                                                    matchResultInfo += ` There is another match in progress. The event started ${eventStartDateFormatted}. `;
+                                                    matchResultInfo += `The ${element.competitors[0].longName} is currently facing the ${element.competitors[1].longName}. Check it out now on youtube.com/overwatchleague and don't miss the event.`;
+                                                }
+                                                
+                                                liveMatchIterationCount++;
+                                                matchIterationCount++;
                                             }
-            
-                                            if (liveMatchIterationCount == 1) {
-                                                matchResultInfo += ` Great News!`;
-                                                matchResultInfo += ` Currently, there is a match in progress. The event started on ${eventStartDateFormatted}. `;
-                                                matchResultInfo += `The ${element.competitors[0].longName} is currently facing the ${element.competitors[1].longName}. Check it out now on youtube.com/overwatchleague and don't miss the event.`;
-                                            } else {
-                                                matchResultInfo += ` There is another match in progress. The event started on ${eventStartDateFormatted}. `;
-                                                matchResultInfo += `The ${element.competitors[0].longName} is currently facing the ${element.competitors[1].longName}. Check it out now on youtube.com/overwatchleague and don't miss the event.`;
-                                            }
-                                            
-                                            liveMatchIterationCount++;
-                                            matchIterationCount++;
+
                                         } else if (element.status == "COMPLETED") {
                                             if (completedPreIntroMessage == false) {
                                                 if (futureMatches) {
