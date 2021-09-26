@@ -737,7 +737,7 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
                                         }  
                                         else if (element.status == "LIVE") {
 
-                                            if (element.statusText == "Online Play"){ // Watch Now status text only with LIVE
+                                            if (element.statusText == "Online Play" || element.statusText == "Watch Now"){ // Watch Now status text only with LIVE
                                                 if (matchIterationCount == 1 && preIntroMessage == false) {
                                                     matchResultInfo = `I have the breakdown of the upcoming Overwatch League matches.`;
                                                     futureMatches = true;
