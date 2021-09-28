@@ -757,7 +757,7 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
                                                 matchIterationCount++;
                                             }
 
-                                        } else if (element.status == "COMPLETED" && completeMatchesCount < 2 && (eventStartDateOnly == yesterdayDateOnly || eventStartDateOnly == curDateOnly)) {
+                                        } else if (element.status == "COMPLETED" && completeMatchesCount < 3 && (eventStartDateOnly == yesterdayDateOnly || eventStartDateOnly == curDateOnly)) {
                                             if (completedPreIntroMessage == false) {
                                                 if (futureMatches) {
                                                     matchResultInfo += `It looks like there were some recent matches.`;
