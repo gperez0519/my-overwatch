@@ -793,7 +793,7 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
         
                     }
                 } else {
-                    matchResultInfo = "I'm not seeing any upcoming matches yet for the current season.";
+                    matchResultInfo = "It doesn't look like there are any upcoming Overwatch League matches yet. Please try again later.";
                 }
             
                 if (futureMatches == false && recentMatches == false) {
@@ -833,13 +833,18 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
         .then(overwatchLeagueData => JSON.parse(overwatchLeagueData)) // parse the overwatch data as JSON
         .then(overwatchLeagueData => {
 
-            if (overwatchLeagueData.props.pageProps.blocks[0].owlHeader.scoreStripList.scoreStrip.matches.length > 0) {
-                outputSpeech = retrieveOWLMatches(overwatchLeagueData.props.pageProps.blocks[0].owlHeader.scoreStripList.scoreStrip.matches, userTimeZone);
-            } else if (overwatchLeagueData.props.pageProps.blocks[0].owlHeader.scoreStripList.nextScoreStrip.matches.length > 0) {
-                outputSpeech = retrieveOWLMatches(overwatchLeagueData.props.pageProps.blocks[0].owlHeader.scoreStripList.nextScoreStrip.matches, userTimeZone);
+            if (overwatchLeagueData.props.pageProps.blocks[0].owlHeader){
+                if (overwatchLeagueData.props.pageProps.blocks[0].owlHeader.scoreStripList.scoreStrip.matches.length > 0) {
+                    outputSpeech = retrieveOWLMatches(overwatchLeagueData.props.pageProps.blocks[0].owlHeader.scoreStripList.scoreStrip.matches, userTimeZone);
+                } else if (overwatchLeagueData.props.pageProps.blocks[0].owlHeader.scoreStripList.nextScoreStrip.matches.length > 0) {
+                    outputSpeech = retrieveOWLMatches(overwatchLeagueData.props.pageProps.blocks[0].owlHeader.scoreStripList.nextScoreStrip.matches, userTimeZone);
+                } else {
+                    outputSpeech = "It doesn't look like there are any upcoming Overwatch League matches yet. Please try again later.";
+                }
             } else {
-                outputSpeech = "I'm not seeing any upcoming matches yet for the current season.";
+                outputSpeech = "It doesn't look like there are any upcoming Overwatch League matches yet. Please try again later.";
             }
+            
 
         })
         .catch(err => {
