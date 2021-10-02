@@ -362,9 +362,10 @@ const GetMyStatsIntentHandler = {
             var stats = null;
             var mostPlayed = null;
 
-            // loop through rest of platforms.
-            for (const platform in platforms){
-                try {
+            try {
+
+                // loop through rest of platforms.
+                for (const platform in platforms){
                     // get all stats for the given user
                     stats = await ow.getAllStats(battletag, platforms[platform]);
 
@@ -372,22 +373,12 @@ const GetMyStatsIntentHandler = {
                     mostPlayed = await ow.getMostPlayed(battletag, platforms[platform]);
 
                     break;
-                } catch (error) {
-                    if (error.message.includes("PROFILE_PRIVATE")){
-                        outputSpeech = `${nickName}. I would love to tell you how your Overwatch progress is going but it seems your profile is private. You should set your profile public so my analysis is able to retrieve the data we need.`;
-                    } else {
-                        outputSpeech = `${nickName}. I would love to tell you how your Overwatch progress is going but it seems my analyzer is not functioning at the moment. The error I see here is ${error.message}. Try again later.`;
-                    }
-                    
                 }
-            }
-
-            try {
 
                 // Check if stats are retrieved for the player
                 if (isObjectEmpty(stats)) {
-                    outputSpeech = " " + VocalResponses.responses.OVERWATCH_SERVICE_UNAVAILABLE;
-                    displayText = VocalResponses.responses.OVERWATCH_SERVICE_UNAVAILABLE_DISPLAY;
+                    outputSpeech = " " + VocalResponses.responses.OVERWATCH_STATS_NOT_AVAILABLE;
+                    displayText = VocalResponses.responses.OVERWATCH_STATS_NOT_AVAILABLE;
                 } else {
 
                     outputSpeech = `${nickName},`;
@@ -402,10 +393,7 @@ const GetMyStatsIntentHandler = {
                     }
 
                     // Check if we retrieved data for the most played heroes
-                    if (isObjectEmpty(mostPlayed)) {
-                        outputSpeech = VocalResponses.responses.OVERWATCH_SERVICE_UNAVAILABLE;
-                        displayText = VocalResponses.responses.OVERWATCH_SERVICE_UNAVAILABLE_DISPLAY;
-                    } else {
+                    if (!isObjectEmpty(mostPlayed)) {
                         console.log("All stats data payload: ", JSON.stringify(stats));
                         console.log("Most played data payload: ", JSON.stringify(mostPlayed));
 
@@ -414,8 +402,10 @@ const GetMyStatsIntentHandler = {
                         // Tell the player about their most played hero in Quick Play.
                         outputSpeech += ` It seems you really enjoy playing ${toTitleCase(quickPlayHero)} in Quickplay. `;
 
-                        // Tell the player about the most played hero's win percentage.
-                        outputSpeech += `Your current win percentage with this hero in Quickplay is ${stats.heroStats.quickplay[quickPlayHero].game.win_percentage}.`;
+                        if (stats.heroStats.quickplay[quickPlayHero].game.win_percentage) {
+                            // Tell the player about the most played hero's win percentage.
+                            outputSpeech += `Your current win percentage with this hero in Quickplay is ${stats.heroStats.quickplay[quickPlayHero].game.win_percentage}.`;
+                        }
 
                         // Tell the player about their combat weapon accuracy for competitive if it exists
                         if (stats.heroStats.quickplay[quickPlayHero].combat.weapon_accuracy) {
@@ -472,8 +462,6 @@ const GetMyStatsIntentHandler = {
                             outputSpeech += ` ${VocalResponses.responses.PLACEMENTS_NOT_COMPLETE}`;
                             console.log("Player has not placed in rank yet.");
                         }
-
-                        
                     }
                     
                     // Once all stats are retrieved and appended lets append the options again for the user to choose what they want to do thereafter.
@@ -482,7 +470,14 @@ const GetMyStatsIntentHandler = {
                 }
 
             } catch (error) {
-                outputSpeech = `${nickName}. I would love to tell you how your Overwatch progress is going but it seems my analyzer is not functioning at the moment. The error I see here is ${error.message}. Try again later.`;
+
+                console.log(`User experienced the following error when attempt to retrieve stats: ${error.message}`);
+                if (error.message.includes("PROFILE_PRIVATE")){
+                    outputSpeech = `${nickName}. I would love to tell you how your Overwatch progress is going but it seems your profile is private. You should set your profile public so my analysis is able to retrieve your statistics. In order to set your profile to public, open the Overwatch game, click on Options, click Social and toggle the arrow for Career Profile Visibility to Public. When you exit the game, I should be able to retrieve your statistics thereafter.`;
+                } else {
+                    outputSpeech = `${nickName}. I would love to tell you how your Overwatch progress is going but it seems my analyzer is not functioning at the moment. Please ask me about your stats again later.`;
+                }
+
                 displayText = outputSpeech;
             }
 

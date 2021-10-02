@@ -37,6 +37,7 @@ const responses = {
     OVERWATCH_LEAGUE_SERVICE_UNAVAILABLE_DISPLAY: "Oh no! The Overwatch League service is not available at the moment. Please try again later. If this continues to occur, send us an email at ultriumdev@gmail.com.",
     OVERWATCH_LEAGUE_TEAM_SERVICE_UNAVAILABLE_DISPLAY: "Oh no! The Overwatch Team service is not available at the moment. Please try again later. If this continues to occur, send us an email at ultriumdev@gmail.com.",
     OVERWATCH_HERO_SERVICE_UNAVAILABLE_DISPLAY: "Oh no! The Overwatch Hero service is not available at the moment. Please try again later. If this continues to occur, send us an email at ultriumdev@gmail.com.",
+    OVERWATCH_STATS_NOT_AVAILABLE: `Interesting, I don't believe you have played any games just yet. Make sure you login to Overwatch and start playing silly.`,
     FALLBACK_PROMPT: `Sorry, I could not recognize the option that you are referring to.`,
     PLEASE_WAIT: "Please wait while I try to retrieve that profile information",
     PLACEMENTS_NOT_COMPLETE: "You have not placed yet in this Competitive season. Make sure you do so in order to hear about your ranking info.",
