@@ -1,18 +1,18 @@
 {
-  "name": "scary-stories",
+  "name": "my-overwatch",
   "version": "1.0.0",
-  "description": "Skill to tell scary stories to anyone that wishes to listen",
+  "description": "An Overwatch companion Alexa skill",
   "main": "index.js",
   "dependencies": {
-    "ask-sdk-core": "^2.8.0",
+    "ask-sdk-core": "^2.11.0",
     "ask-sdk-dynamodb-persistence-adapter": "^2.11.0",
-    "ask-sdk-model": "^1.28.0",
+    "ask-sdk-model": "^1.36.1",
     "ask-sdk-s3-persistence-adapter": "^2.11.0",
-    "axios": "^0.21.1",
+    "axios": "^0.21.4",
     "fs": "0.0.1-security",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.33",
-    "overwatch-stats-api": "^2.0.6",
+    "overwatch-stats-api": "^2.1.0",
     "x-ray": "^2.3.4"
   },
   "devDependencies": {},
@@ -20,14 +20,18 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "scary",
-    "stories",
-    "fiction",
-    "monsters",
-    "thrillers",
-    "spooky",
-    "storytellers",
-    "story"
+    "overwatch",
+    "ow",
+    "ow2",
+    "blizzard",
+    "battlenet",
+    "blizz",
+    "games",
+    "fps",
+    "video",
+    "games",
+    "linking",
+    "gamer"
   ],
   "author": "Gabriel Perez",
   "license": "ISC"
