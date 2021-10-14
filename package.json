@@ -8,7 +8,7 @@
     "ask-sdk-dynamodb-persistence-adapter": "^2.11.0",
     "ask-sdk-model": "^1.36.1",
     "ask-sdk-s3-persistence-adapter": "^2.11.0",
-    "axios": "^0.21.4",
+    "axios": "^0.23.0",
     "fs": "0.0.1-security",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.33",
