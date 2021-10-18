@@ -12,7 +12,7 @@ var persistenceAdapter = getPersistenceAdapter();
 const ow = require('overwatch-stats-api');
 
 // Default parameters
-const appName = 'Hero Tavern - Overwatch';
+const appName = 'Hero Tavern';
 let nickName = "my friend";
 let drinkCount = 0;
 let platforms = [
