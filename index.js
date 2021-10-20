@@ -12,7 +12,7 @@ var persistenceAdapter = getPersistenceAdapter();
 const ow = require('overwatch-stats-api');
 
 // Default parameters
-const appName = 'Hero Tavern';
+const appName = 'Blizzard Tavern - Overwatch';
 let nickName = "my friend";
 let drinkCount = 0;
 let platforms = [
@@ -525,7 +525,7 @@ const GetMyStatsIntentHandler = {
                                 }
 
                                 // Tell the player about their combat weapon accuracy for competitive if it exists.
-                                if (stats.heroStats.competitive[mostPlayedCompetitiveHero].combat.weapon_accuracy) {
+                                if (stats.heroStats.competitive[mostPlayedCompetitiveHero].combat.weapon_accuracy && suggestedCompHero !== null) {
                                     let statsCompHeroWeaponAccuracy = stats.heroStats.competitive[mostPlayedCompetitiveHero].combat.weapon_accuracy;
 
                                     outputSpeech += ` Analysis shows your weapon accuracy in competitive with ${toTitleCase(suggestedCompHero.hero)} is ${statsCompHeroWeaponAccuracy}! ${parseInt(statsCompHeroWeaponAccuracy) > "50%" ? `That is actually really impressive!` : `I think you might want to practice your aim more in training to increase your chances of success.`}`;
@@ -636,11 +636,11 @@ const OverwatchLeagueTeamInfoIntentIntentHandler = {
 
                                                         let howTeamIsFaringThisSeason = '';
                                                         if (parseInt(curTeam.w) > parseInt(curTeam.l)) {
-                                                            howTeamIsFaringThisSeason = 'They are doing pretty good so far.';
+                                                            howTeamIsFaringThisSeason = 'they are doing pretty good this season.';
                                                         } else {
-                                                            howTeamIsFaringThisSeason = "Oh no! They are not doing so great this season.";
+                                                            howTeamIsFaringThisSeason = "oh no, they are not doing so great this season.";
                                                         }
-                                                        outputSpeech = `The ${curTeam.teamName} currently has a record of ${curTeam.w} wins and ${curTeam.l} losses. ${howTeamIsFaringThisSeason}`;
+                                                        outputSpeech = `Sure, it looks like the ${curTeam.teamName} currently has a record of ${curTeam.w} wins and ${curTeam.l} losses, ${howTeamIsFaringThisSeason}`;
                                                         displayText = outputSpeech;
                                                         break;
                                                     }
@@ -1044,15 +1044,15 @@ const AnotherDrinkIntentHandler = {
         var displayText = "";
         var options = getCurrentOptionSetResponse();
 
-        let speechText = `You got it my friend! Coming right up! ${VocalResponses.responses.POUR_DRINK_AUDIO} Cheers! ${VocalResponses.responses.GLASS_CLINK_AUDIO} ${VocalResponses.responses.ANYTHING_ELSE} ${options}`;
-        displayText = `You got it my friend! Coming right up! Cheers! ${VocalResponses.responses.ANYTHING_ELSE} ${options}`;
+        let speechText = `Sure, you've got it my friend! Coming right up! ${VocalResponses.responses.POUR_DRINK_AUDIO} Cheers! ${VocalResponses.responses.GLASS_CLINK_AUDIO} ${VocalResponses.responses.ANYTHING_ELSE} ${options}`;
+        displayText = `Sure, you've got it my friend! Coming right up! Cheers! ${VocalResponses.responses.ANYTHING_ELSE} ${options}`;
 
         // Check to see which current set we are on and set that option.
 
         // Serve up the drinks but limit them based on the amount of drinks they've had already.
         if (drinkCount == 1) {
-            speechText = `You got it my friend! Coming right up! ${VocalResponses.responses.POUR_DRINK_AUDIO} Cheers! ${VocalResponses.responses.GLASS_CLINK_AUDIO} ${VocalResponses.responses.ANYTHING_ELSE} ${options}`;
-            displayText = `You got it my friend! Coming right up! Cheers! ${VocalResponses.responses.ANYTHING_ELSE} ${options}`;
+            speechText = `Sure, you've got it my friend! Coming right up! ${VocalResponses.responses.POUR_DRINK_AUDIO} Cheers! ${VocalResponses.responses.GLASS_CLINK_AUDIO} ${VocalResponses.responses.ANYTHING_ELSE} ${options}`;
+            displayText = `Sure, you've got it my friend! Coming right up! Cheers! ${VocalResponses.responses.ANYTHING_ELSE} ${options}`;
         } else if (drinkCount == 2) {
             speechText = `Here's another round my friend. ${VocalResponses.responses.POUR_DRINK_AUDIO} Cheers, to great friends! ${VocalResponses.responses.GLASS_CLINK_AUDIO} ${VocalResponses.responses.ANYTHING_ELSE} ${options}`;
             displayText = `Here's another round my friend. Cheers, to great friends! ${VocalResponses.responses.ANYTHING_ELSE} ${options}`;
@@ -1062,11 +1062,11 @@ const AnotherDrinkIntentHandler = {
             // update option set for no drinks
             options = updateAndReturnOptionSetForDrinks();
 
-            speechText = `Whoa, another one? Thirsty aren't we. You got it my friend! Coming right up! Although, I want you conscious for our conversation you know. ${VocalResponses.responses.POUR_DRINK_AUDIO} Cheers, to friends and great battles! ${VocalResponses.responses.GLASS_CLINK_AUDIO} ${VocalResponses.responses.ANYTHING_ELSE} ${options}`;
-            displayText = `Whoa, another one? Thirsty aren't we. You got it my friend! Coming right up! Although, I want you conscious for our conversation you know. Cheers, to friends and great battles! ${VocalResponses.responses.ANYTHING_ELSE} ${options}`;
+            speechText = `Whoa, another one? Thirsty aren't we. Sure, you've got it my friend! Coming right up! Although, I want you conscious for our conversation you know. ${VocalResponses.responses.POUR_DRINK_AUDIO} Cheers, to friends and great battles! ${VocalResponses.responses.GLASS_CLINK_AUDIO} ${VocalResponses.responses.ANYTHING_ELSE} ${options}`;
+            displayText = `Whoa, another one? Thirsty aren't we. Sure, you've got it my friend! Coming right up! Although, I want you conscious for our conversation you know. Cheers, to friends and great battles! ${VocalResponses.responses.ANYTHING_ELSE} ${options}`;
             
         } else if (drinkCount > 3) {
-            speechText = `I'm sorry my friend. I cannot in all good conscience allow you to drink that much. ${VocalResponses.responses.ANYTHING_ELSE} ${options}`;
+            speechText = `I apologize my friend, I cannot in all good conscience allow you to drink that much. ${VocalResponses.responses.ANYTHING_ELSE} ${options}`;
             displayText = speechText;
         }
         
@@ -1177,25 +1177,33 @@ const CancelAndStopIntentHandler = {
                 || handlerInput.requestEnvelope.request.intent.name === 'AMAZON.StopIntent');
     },
     handle(handlerInput) {
-        let speechText = VocalResponses.responses.GOODBYE;
+        let speechText = `<voice name="Emma">${VocalResponses.responses.GOODBYE}</voice>`;
 
-        const {attributesManager} = handlerInput;
+        try {
 
-        // the attributes manager allows us to access session attributes
-        const sessionAttributes = attributesManager.getSessionAttributes();
+            const {attributesManager} = handlerInput;
 
-        // if this isn't the first time the user is using the skill add their saved nick name to personalization.
-        if (sessionAttributes['nickName']) {
-            nickName = sessionAttributes['nickName'];
+            // the attributes manager allows us to access session attributes
+            const sessionAttributes = attributesManager.getSessionAttributes();
 
-            // replace the words my friend with the person's name for more personalization if this isn't the first time they are using the skill.
-            speechText = speechText.replace("my friend", nickName);
+            // if this isn't the first time the user is using the skill add their saved nick name to personalization.
+            if (sessionAttributes['nickName']) {
+                nickName = sessionAttributes['nickName'];
+
+                // replace the words my friend with the person's name for more personalization if this isn't the first time they are using the skill.
+                speechText = speechText.replace("my friend", nickName);
+            }
+
+            console.log("User left tavern");
+
+        } catch (error) {
+            console.log(`Error occurred in the stop and cancel intent: ${error.message}`);
         }
 
-        console.log("User left tavern");
+        
 
         return handlerInput.responseBuilder
-            .speak(`<voice name='Emma'>${speechText}</voice>`)
+            .speak(speechText)
             .withStandardCard(
                 `Thanks for coming! Until Next Time!`,
                 `${speechText}`,
