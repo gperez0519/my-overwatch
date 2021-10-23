@@ -207,6 +207,12 @@ const LaunchRequestHandler = {
         return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
     },
     async handle(handlerInput) {
+
+        // Reset certain parameters
+        drinkCount = 0;
+        patronAllowedDrinks = true;
+        currentOptionSet = "OPTION_ONE_WITH_DRINKS";
+
         const { attributesManager } = handlerInput;
         
         // the attributes manager allows us to access session attributes
@@ -1178,6 +1184,7 @@ const CancelAndStopIntentHandler = {
     },
     handle(handlerInput) {
         let speechText = `<voice name="Emma">${VocalResponses.responses.GOODBYE}</voice>`;
+        let displayText = `${VocalResponses.responses.GOODBYE}`;
 
         try {
 
@@ -1206,7 +1213,7 @@ const CancelAndStopIntentHandler = {
             .speak(speechText)
             .withStandardCard(
                 `Thanks for coming! Until Next Time!`,
-                `${speechText}`,
+                `${displayText}`,
                 '',
                 '')
             .getResponse();
