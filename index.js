@@ -955,6 +955,10 @@ const RandomRoleHeroGeneratorIntentHandler = {
     handle(handlerInput) {
         
         let role = handlerInput.requestEnvelope.request.intent.slots.role.value;
+
+        // force lowercase of role spoken.
+        role = role.toLowerCase();
+        
         var displayText = "";
         var options = getCurrentOptionSetResponse();
 
