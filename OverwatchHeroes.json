@@ -407,25 +407,25 @@
                     ]
                 },
                 {
-                    "name": "McCree",
-                    "heroDescription": "Armed with his Peacekeeper revolver, McCree takes out targets with deadeye precision and dives out of danger with eagle-like speed.",
-                    "portraitURL": "https://d1u1mce87gyfbn.cloudfront.net/hero/mccree/hero-select-portrait.png",
+                    "name": "Cassidy",
+                    "heroDescription": "Armed with his Peacekeeper revolver, Cassidy takes out targets with deadeye precision and dives out of danger with eagle-like speed.",
+                    "portraitURL": "https://d1u1mce87gyfbn.cloudfront.net/hero/cassidy/hero-select-portrait.png",
                     "abilities": [
                         {
                             "name": "Peacekeeper",
-                            "description": "McCree fires off a round from his trusty six-shooter. He can fan the Peacekeeper’s hammer to swiftly unload the entire cylinder."
+                            "description": "Cassidy fires off a round from his trusty six-shooter. He can fan the Peacekeeper’s hammer to swiftly unload the entire cylinder."
                         },
                         {
                             "name": "Combat Roll",
-                            "description": "McCree dives in the direction he’s moving, effortlessly reloading his Peacekeeper in the process."
+                            "description": "Cassidy dives in the direction he’s moving, effortlessly reloading his Peacekeeper in the process."
                         },
                         {
                             "name": "Flashbang",
-                            "description": "McCree heaves a blinding grenade that explodes shortly after it leaves his hand. The blast staggers enemies in a small radius."
+                            "description": "Cassidy heaves a blinding grenade that explodes shortly after it leaves his hand. The blast staggers enemies in a small radius."
                         },
                         {
                             "name": "Deadeye",
-                            "description": "Focus. Mark. Draw. McCree takes a few precious moments to aim; when he’s ready to fire, he shoots every enemy in his line of sight. The weaker his targets are, the faster he’ll line up a killshot."
+                            "description": "Focus. Mark. Draw. Cassidy takes a few precious moments to aim; when he’s ready to fire, he shoots every enemy in his line of sight. The weaker his targets are, the faster he’ll line up a killshot."
                         }
                     ]
                 },
