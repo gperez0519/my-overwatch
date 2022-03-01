@@ -737,10 +737,10 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
                             const element = matches[match];
             
                             // Ensure the upcoming date and time is available
-                            if (element.date.startDate) {
-                                var eventStartDate = momentTZ.utc(element.date.startDate).tz(userTimeZone);
+                            if (element.startDate) {
+                                var eventStartDate = momentTZ.utc(element.startDate).tz(userTimeZone);
                                 var curDateTime = momentTZ.utc().tz(userTimeZone);
-                                var eventStartDateOnly = momentTZ.utc(element.date.startDate).tz("America/New_York").format("MM-DD-YYYY");
+                                var eventStartDateOnly = momentTZ.utc(element.startDate).tz("America/New_York").format("MM-DD-YYYY");
                                 var yesterdayDateOnly = momentTZ.utc().tz("America/New_York").subtract(1, 'days').format("MM-DD-YYYY");
                                 var curDateOnly = momentTZ.utc().tz("America/New_York").format("MM-DD-YYYY");
 
@@ -761,14 +761,14 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
                                     var rightTeamTBD = false;
             
                                     // Check to see if one or more of the teams is TBD if so change response.
-                                    if (element.competitors[0].longName == "TBD" && element.competitors[1].longName == "TBD") {
+                                    if (element.competitors[0].name == "TBD" && element.competitors[1].name == "TBD") {
                                         leftTeamTBD = true;
                                         rightTeamTBD = true;
                                     } else {
-                                        if (element.competitors[0].longName == "TBD") {
+                                        if (element.competitors[0].name == "TBD") {
                                             oneTeamTBD = true;
                                             leftTeamTBD = true;
-                                        } else if (element.competitors[1].longName == "TBD") {
+                                        } else if (element.competitors[1].name == "TBD") {
                                             oneTeamTBD = true;
                                             rightTeamTBD = true;
                                         }
@@ -779,7 +779,7 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
             
                                         if (element.status == "PENDING") {
             
-                                            if (element.statusText == "Online Play"){ // Status Text can be Online Play, Watch Now or Encore
+                                            if (element.statusText[0].value == "Online Play"){ // Status Text can be Online Play, Watch Now or Encore
             
                                                 if (matchIterationCount == 1 && preIntroMessage == false) {
                                                     matchResultInfo = `I have the breakdown of the upcoming Overwatch League matches.`;
@@ -792,7 +792,7 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
                                                         matchResultInfo += ` Great News!`;
                                                     }
                                                     matchResultInfo += ` Currently, there is a match in progress. The event started ${eventStartDateFormatted}. `;
-                                                    matchResultInfo += `The ${element.competitors[0].longName} is currently facing the ${element.competitors[1].longName}${element.link.includes('Playoffs') ? ' in the playoffs!' : '.'} Check it out now and don't miss the event.`;
+                                                    matchResultInfo += `The ${element.competitors[0].name} is currently facing the ${element.competitors[1].name}${element.link.includes('Playoffs') ? ' in the playoffs!' : '.'} Check it out now and don't miss the event.`;
                                                 } else {                                                    
                                                     matchResultInfo += ` ${eventStartDateFormatted}, `;
                                                     if (leftTeamTBD && rightTeamTBD) {
@@ -800,13 +800,13 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
                                                     } else {
                                                         if (oneTeamTBD) {
                                                             if (leftTeamTBD) {
-                                                                matchResultInfo += `the ${element.competitors[1].longName} will face the team that is yet to be determined.`;
+                                                                matchResultInfo += `the ${element.competitors[1].name} will face the team that is yet to be determined.`;
                                                             } else if (rightTeamTBD) {
-                                                                matchResultInfo += `the ${element.competitors[0].longName} will face the team that is yet to be determined.`;
+                                                                matchResultInfo += `the ${element.competitors[0].name} will face the team that is yet to be determined.`;
                                                             }
                                                             
                                                         } else {
-                                                            matchResultInfo += `the ${element.competitors[0].longName} will face the ${element.competitors[1].longName}${element.link.includes('Playoffs') ? ' in the playoffs!' : '.'}`;
+                                                            matchResultInfo += `the ${element.competitors[0].name} will face the ${element.competitors[1].name}${element.link.includes('Playoffs') ? ' in the playoffs!' : '.'}`;
                                                         }
                                                     }
                                                 }
@@ -816,7 +816,7 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
                                         }  
                                         else if (element.status == "LIVE") {
 
-                                            if (element.statusText == "Online Play" || element.statusText == "Watch Now"){ // Watch Now status text only with LIVE
+                                            if (element.statusText[0].value == "Online Play" || element.statusText[0].value == "Watch Now"){ // Watch Now status text only with LIVE
                                                 if (matchIterationCount == 1 && preIntroMessage == false) {
                                                     matchResultInfo = `I have the breakdown of the upcoming Overwatch League matches.`;
                                                     futureMatches = true;
@@ -826,17 +826,17 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
                                                 if (liveMatchIterationCount == 1) {
                                                     matchResultInfo += ` Great News!`;
                                                     matchResultInfo += ` Currently, there is a match in progress. The event started ${eventStartDateFormatted}. `;
-                                                    matchResultInfo += `The ${element.competitors[0].longName} is currently facing the ${element.competitors[1].longName}${element.link.includes('Playoffs') ? ' in the playoffs!' : '.'} Check it out now on youtube.com/overwatchleague and don't miss the event.`;
+                                                    matchResultInfo += `The ${element.competitors[0].name} is currently facing the ${element.competitors[1].name}${element.link.includes('Playoffs') ? ' in the playoffs!' : '.'} Check it out now on youtube.com/overwatchleague and don't miss the event.`;
                                                 } else {
                                                     matchResultInfo += ` There is another match in progress. The event started ${eventStartDateFormatted}. `;
-                                                    matchResultInfo += `The ${element.competitors[0].longName} is currently facing the ${element.competitors[1].longName}${element.link.includes('Playoffs') ? ' in the playoffs!' : '.'} Check it out now on youtube.com/overwatchleague and don't miss the event.`;
+                                                    matchResultInfo += `The ${element.competitors[0].name} is currently facing the ${element.competitors[1].name}${element.link.includes('Playoffs') ? ' in the playoffs!' : '.'} Check it out now on youtube.com/overwatchleague and don't miss the event.`;
                                                 }
                                                 
                                                 liveMatchIterationCount++;
                                                 matchIterationCount++;
                                             }
 
-                                        } else if (element.status == "COMPLETED" && completeMatchesCount < 3 && (eventStartDateOnly == yesterdayDateOnly || eventStartDateOnly == curDateOnly)) {
+                                        } else if ((element.status == "COMPLETED" || element.status == "CONCLUDED") && completeMatchesCount < 3 && (eventStartDateOnly == yesterdayDateOnly || eventStartDateOnly == curDateOnly)) {
                                             if (completedPreIntroMessage == false) {
                                                 if (futureMatches) {
                                                     matchResultInfo += `It looks like there were some recent matches.`;
@@ -848,12 +848,12 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
                                                 recentMatches = true;
                                             }
             
-                                            if (parseInt(element.competitors[0].score) > parseInt(element.competitors[1].score)){
-                                                matchResultInfo += ` The ${element.competitors[0].longName} defeated the ${element.competitors[1].longName} with a score of ${element.competitors[0].score} to ${element.competitors[1].score}${element.link.includes('Playoffs') ? ' in the playoffs!' : '.'}`;
-                                            } else if (parseInt(element.competitors[0].score) < parseInt(element.competitors[1].score)) {
-                                                matchResultInfo += ` The ${element.competitors[1].longName} defeated the ${element.competitors[0].longName} with a score of ${element.competitors[1].score} to ${element.competitors[0].score}${element.link.includes('Playoffs') ? ' in the playoffs!' : '.'}`;
-                                            } else if (parseInt(element.competitors[0].score) == parseInt(element.competitors[1].score)) {
-                                                matchResultInfo += ` The match between the ${element.competitors[1].longName} and the ${element.competitors[0].longName} ended in a tie with a score of ${element.competitors[1].score} to ${element.competitors[0].score}${element.link.includes('Playoffs') ? ' in the playoffs!' : '.'}`;
+                                            if (parseInt(element.scores[0]) > parseInt(element.scores[1])){
+                                                matchResultInfo += ` The ${element.competitors[0].name} defeated the ${element.competitors[1].name} with a score of ${element.scores[0]} to ${element.scores[1]}${element.link.includes('Playoffs') ? ' in the playoffs!' : '.'}`;
+                                            } else if (parseInt(element.scores[0]) < parseInt(element.scores[1])) {
+                                                matchResultInfo += ` The ${element.competitors[1].name} defeated the ${element.competitors[0].name} with a score of ${element.scores[1]} to ${element.scores[0]}${element.link.includes('Playoffs') ? ' in the playoffs!' : '.'}`;
+                                            } else if (parseInt(element.scores[0]) == parseInt(element.scores[1])) {
+                                                matchResultInfo += ` The match between the ${element.competitors[0].name} and the ${element.competitors[1].name} ended in a tie with a score of ${element.scores[0]} to ${element.scores[1]}${element.link.includes('Playoffs') ? ' in the playoffs!' : '.'}`;
                                             }
                                             matchIterationCount++;
                                             completeMatchesCount++;
@@ -879,6 +879,7 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
                     matchResultInfo = "It doesn't look like there are any upcoming Overwatch League matches yet. Please try again later.";
                 }
             } catch (error) {
+                console.log(`Overwatch league match info retrieval error occurred: ${error.message}`)
                 matchResultInfo = `${VocalResponses.responses.OVERWATCH_LEAGUE_SERVICE_UNAVAILABLE}`;
             }
         
@@ -908,15 +909,16 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
         const x = xray();
 
         // Retrieve the JSON Overwatch League Data by method of web scraping using x-ray npm package (https://www.npmjs.com/package/x-ray)
-        await x('https://www.overwatchleague.com/', '#__NEXT_DATA__')
+        await x('https://overwatchleague.com/en-us/schedule/', '#__NEXT_DATA__')
         .then(overwatchLeagueData => JSON.parse(overwatchLeagueData)) // parse the overwatch data as JSON
         .then(overwatchLeagueData => {
 
-            if (overwatchLeagueData.props.pageProps.blocks[0].owlHeader){
-                if (overwatchLeagueData.props.pageProps.blocks[0].owlHeader.scoreStripList.scoreStrip.matches.length > 0) {
-                    outputSpeech = retrieveOWLMatches(overwatchLeagueData.props.pageProps.blocks[0].owlHeader.scoreStripList.scoreStrip.matches, userTimeZone);
-                } else if (overwatchLeagueData.props.pageProps.blocks[0].owlHeader.scoreStripList.nextScoreStrip.matches.length > 0) {
-                    outputSpeech = retrieveOWLMatches(overwatchLeagueData.props.pageProps.blocks[0].owlHeader.scoreStripList.nextScoreStrip.matches, userTimeZone);
+            var overwatchLeagueScheduleBlock = overwatchLeagueData.props.pageProps.blocks[2].schedule;
+            var overwatchLeagueScheduleMatches = overwatchLeagueData.props.pageProps.blocks[2].schedule.tableData.events[0].matches;
+
+            if (overwatchLeagueScheduleBlock){
+                if (overwatchLeagueScheduleMatches.length > 0) {
+                    outputSpeech = retrieveOWLMatches(overwatchLeagueScheduleMatches, userTimeZone);
                 } else {
                     outputSpeech = "It doesn't look like there are any upcoming Overwatch League matches yet. Please try again later.";
                 }
