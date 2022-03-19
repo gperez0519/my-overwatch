@@ -867,6 +867,9 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
                             
                         }
                         if (matchIterationCount == 6){
+                            if (matches.length > 6) {
+                                matchResultInfo += " There are more matches scheduled with other teams. For more information, please visit overwatchleague.com.";
+                            }
                             break;
                         }
         
