@@ -953,7 +953,10 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
 
                   // Ensure the status of the match is available. Status can be LIVE and COMPLETED
                   if (element.status) {
-                    if (element.status == "PENDING") {
+                    if (
+                      element.status == "PENDING" &&
+                      element.isEncore == false
+                    ) {
                       if (
                         element.tickets.statusText[0].value == "Online Play"
                       ) {
@@ -1006,7 +1009,10 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
                         }
                         matchIterationCount++;
                       }
-                    } else if (element.status == "LIVE") {
+                    } else if (
+                      element.status == "LIVE" &&
+                      element.isEncore == false
+                    ) {
                       if (
                         element.tickets.statusText[0].value == "Online Play" ||
                         element.tickets.statusText[0].value == "Watch Now"
@@ -1050,8 +1056,10 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
                         matchIterationCount++;
                       }
                     } else if (
-                      (element.status == "COMPLETED" ||
-                        element.status == "CONCLUDED") &&
+                      ((element.status == "COMPLETED" &&
+                        element.isEncore == false) ||
+                        (element.status == "CONCLUDED" &&
+                          element.isEncore == false)) &&
                       completeMatchesCount < 3 &&
                       (eventStartDateOnly == yesterdayDateOnly ||
                         eventStartDateOnly == curDateOnly)
