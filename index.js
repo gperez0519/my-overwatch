@@ -958,7 +958,9 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
                       element.isEncore == false
                     ) {
                       if (
-                        element.tickets.statusText[0].value == "Online Play"
+                        element.tickets.statusText[0].value == "Online Play" ||
+                        element.tickets.statusText[0].value == "Watch Now" ||
+                        element.tickets.statusText[0].value == "Tickets"
                       ) {
                         // Status Text can be Online Play, Watch Now or Encore
 
@@ -1015,7 +1017,8 @@ const OverwatchLeagueUpcomingMatchesIntentHandler = {
                     ) {
                       if (
                         element.tickets.statusText[0].value == "Online Play" ||
-                        element.tickets.statusText[0].value == "Watch Now"
+                        element.tickets.statusText[0].value == "Watch Now" ||
+                        element.tickets.statusText[0].value == "Tickets"
                       ) {
                         // Watch Now status text only with LIVE
                         if (
