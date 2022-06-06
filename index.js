@@ -1737,33 +1737,33 @@ function getPlayerRank(heroType) {
 
   // Check if rank is empty which means they haven't placed and return a message to place for the current season.
   if (!isObjectEmpty(heroType)) {
-    if (heroType.sr > 4000) {
+    if (heroType.sr >= 4000) {
       outputSpeech = `you are currently ranked Grandmaster at ${heroType.sr}!`;
-    } else if (heroType.sr < 3999 && heroType.sr > 3500) {
+    } else if (heroType.sr >= 3500 && heroType.sr < 3999) {
       outputSpeech = `you are currently ranked Master at ${heroType.sr}, ${
         heroType.sr > 3950
           ? "you are very close to Grandmaster rank. Amazing! Keep pushing"
           : "you got a ways to go to get to Grandmaster rank. Amazing! Keep pushing"
       }!`;
-    } else if (heroType.sr < 3499 && heroType.sr > 3000) {
+    } else if (heroType.sr >= 3000 && heroType.sr < 3499) {
       outputSpeech = `you are currently ranked Diamond at ${heroType.sr}, ${
         heroType.sr > 3450
           ? "you are very close to Master rank. Almost there my friend, keep going"
           : "you got a ways to go to get to Master rank. Almost there my friend, keep going"
       }!`;
-    } else if (heroType.sr < 2999 && heroType.sr > 2500) {
+    } else if (heroType.sr >= 2500 && heroType.sr < 2999) {
       outputSpeech = `you are currently ranked Platinum at ${heroType.sr}, ${
         heroType.sr > 2950
           ? "you are very close to Diamond rank. Amazing! Keep pushing"
           : "you got a ways to go to get to Diamond rank. Amazing! Keep pushing"
       }!`;
-    } else if (heroType.sr < 2499 && heroType.sr > 2000) {
+    } else if (heroType.sr >= 2000 && heroType.sr < 2499) {
       outputSpeech = `you are currently ranked Gold at ${heroType.sr}, ${
         heroType.sr > 2450
           ? "you are very close to Platinum rank. Almost there my friend, keep going"
           : "you got a ways to go to get to Platinum rank. Almost there my friend, keep going"
       }!`;
-    } else if (heroType.sr < 1999 && heroType.sr > 1500) {
+    } else if (heroType.sr >= 1500 && heroType.sr < 1999) {
       outputSpeech = `you are currently ranked Silver at ${heroType.sr}, ${
         heroType.sr > 1950
           ? "you are very close to Gold rank. Amazing! Keep pushing"
