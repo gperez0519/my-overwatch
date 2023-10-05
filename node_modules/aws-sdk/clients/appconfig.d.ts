@@ -12,19 +12,19 @@ declare class AppConfig extends Service {
   constructor(options?: AppConfig.Types.ClientConfiguration)
   config: Config & AppConfig.Types.ClientConfiguration;
   /**
-   * Creates an application. An application in AppConfig is a logical unit of code that provides capabilities for your customers. For example, an application can be a microservice that runs on Amazon EC2 instances, a mobile application installed by your users, a serverless application using Amazon API Gateway and Lambda, or any system you run on behalf of others.
+   * Creates an application. In AppConfig, an application is simply an organizational construct like a folder. This organizational construct has a relationship with some unit of executable code. For example, you could create an application called MyMobileApp to organize and manage configuration data for a mobile application installed by your users.
    */
   createApplication(params: AppConfig.Types.CreateApplicationRequest, callback?: (err: AWSError, data: AppConfig.Types.Application) => void): Request<AppConfig.Types.Application, AWSError>;
   /**
-   * Creates an application. An application in AppConfig is a logical unit of code that provides capabilities for your customers. For example, an application can be a microservice that runs on Amazon EC2 instances, a mobile application installed by your users, a serverless application using Amazon API Gateway and Lambda, or any system you run on behalf of others.
+   * Creates an application. In AppConfig, an application is simply an organizational construct like a folder. This organizational construct has a relationship with some unit of executable code. For example, you could create an application called MyMobileApp to organize and manage configuration data for a mobile application installed by your users.
    */
   createApplication(callback?: (err: AWSError, data: AppConfig.Types.Application) => void): Request<AppConfig.Types.Application, AWSError>;
   /**
-   * Creates a configuration profile, which is information that enables AppConfig to access the configuration source. Valid configuration sources include the AppConfig hosted configuration store, Amazon Web Services Systems Manager (SSM) documents, SSM Parameter Store parameters, Amazon S3 objects, or any integration source action supported by CodePipeline. A configuration profile includes the following information:   The URI location of the configuration data.   The Identity and Access Management (IAM) role that provides access to the configuration data.   A validator for the configuration data. Available validators include either a JSON Schema or an Amazon Web Services Lambda function.   For more information, see Create a Configuration and a Configuration Profile in the AppConfig User Guide.
+   * Creates a configuration profile, which is information that enables AppConfig to access the configuration source. Valid configuration sources include the following:   Configuration data in YAML, JSON, and other formats stored in the AppConfig hosted configuration store   Configuration data stored as objects in an Amazon Simple Storage Service (Amazon S3) bucket   Pipelines stored in CodePipeline   Secrets stored in Secrets Manager   Standard and secure string parameters stored in Amazon Web Services Systems Manager Parameter Store   Configuration data in SSM documents stored in the Systems Manager document store   A configuration profile includes the following information:   The URI location of the configuration data.   The Identity and Access Management (IAM) role that provides access to the configuration data.   A validator for the configuration data. Available validators include either a JSON Schema or an Amazon Web Services Lambda function.   For more information, see Create a Configuration and a Configuration Profile in the AppConfig User Guide.
    */
   createConfigurationProfile(params: AppConfig.Types.CreateConfigurationProfileRequest, callback?: (err: AWSError, data: AppConfig.Types.ConfigurationProfile) => void): Request<AppConfig.Types.ConfigurationProfile, AWSError>;
   /**
-   * Creates a configuration profile, which is information that enables AppConfig to access the configuration source. Valid configuration sources include the AppConfig hosted configuration store, Amazon Web Services Systems Manager (SSM) documents, SSM Parameter Store parameters, Amazon S3 objects, or any integration source action supported by CodePipeline. A configuration profile includes the following information:   The URI location of the configuration data.   The Identity and Access Management (IAM) role that provides access to the configuration data.   A validator for the configuration data. Available validators include either a JSON Schema or an Amazon Web Services Lambda function.   For more information, see Create a Configuration and a Configuration Profile in the AppConfig User Guide.
+   * Creates a configuration profile, which is information that enables AppConfig to access the configuration source. Valid configuration sources include the following:   Configuration data in YAML, JSON, and other formats stored in the AppConfig hosted configuration store   Configuration data stored as objects in an Amazon Simple Storage Service (Amazon S3) bucket   Pipelines stored in CodePipeline   Secrets stored in Secrets Manager   Standard and secure string parameters stored in Amazon Web Services Systems Manager Parameter Store   Configuration data in SSM documents stored in the Systems Manager document store   A configuration profile includes the following information:   The URI location of the configuration data.   The Identity and Access Management (IAM) role that provides access to the configuration data.   A validator for the configuration data. Available validators include either a JSON Schema or an Amazon Web Services Lambda function.   For more information, see Create a Configuration and a Configuration Profile in the AppConfig User Guide.
    */
   createConfigurationProfile(callback?: (err: AWSError, data: AppConfig.Types.ConfigurationProfile) => void): Request<AppConfig.Types.ConfigurationProfile, AWSError>;
   /**
@@ -36,13 +36,29 @@ declare class AppConfig extends Service {
    */
   createDeploymentStrategy(callback?: (err: AWSError, data: AppConfig.Types.DeploymentStrategy) => void): Request<AppConfig.Types.DeploymentStrategy, AWSError>;
   /**
-   * Creates an environment. For each application, you define one or more environments. An environment is a logical deployment group of AppConfig targets, such as applications in a Beta or Production environment. You can also define environments for application subcomponents such as the Web, Mobile and Back-end components for your application. You can configure Amazon CloudWatch alarms for each environment. The system monitors alarms during a configuration deployment. If an alarm is triggered, the system rolls back the configuration.
+   * Creates an environment. For each application, you define one or more environments. An environment is a deployment group of AppConfig targets, such as applications in a Beta or Production environment. You can also define environments for application subcomponents such as the Web, Mobile and Back-end components for your application. You can configure Amazon CloudWatch alarms for each environment. The system monitors alarms during a configuration deployment. If an alarm is triggered, the system rolls back the configuration.
    */
   createEnvironment(params: AppConfig.Types.CreateEnvironmentRequest, callback?: (err: AWSError, data: AppConfig.Types.Environment) => void): Request<AppConfig.Types.Environment, AWSError>;
   /**
-   * Creates an environment. For each application, you define one or more environments. An environment is a logical deployment group of AppConfig targets, such as applications in a Beta or Production environment. You can also define environments for application subcomponents such as the Web, Mobile and Back-end components for your application. You can configure Amazon CloudWatch alarms for each environment. The system monitors alarms during a configuration deployment. If an alarm is triggered, the system rolls back the configuration.
+   * Creates an environment. For each application, you define one or more environments. An environment is a deployment group of AppConfig targets, such as applications in a Beta or Production environment. You can also define environments for application subcomponents such as the Web, Mobile and Back-end components for your application. You can configure Amazon CloudWatch alarms for each environment. The system monitors alarms during a configuration deployment. If an alarm is triggered, the system rolls back the configuration.
    */
   createEnvironment(callback?: (err: AWSError, data: AppConfig.Types.Environment) => void): Request<AppConfig.Types.Environment, AWSError>;
+  /**
+   * Creates an AppConfig extension. An extension augments your ability to inject logic or behavior at different points during the AppConfig workflow of creating or deploying a configuration. You can create your own extensions or use the Amazon Web Services authored extensions provided by AppConfig. For most use cases, to create your own extension, you must create an Lambda function to perform any computation and processing defined in the extension. For more information about extensions, see Working with AppConfig extensions in the AppConfig User Guide.
+   */
+  createExtension(params: AppConfig.Types.CreateExtensionRequest, callback?: (err: AWSError, data: AppConfig.Types.Extension) => void): Request<AppConfig.Types.Extension, AWSError>;
+  /**
+   * Creates an AppConfig extension. An extension augments your ability to inject logic or behavior at different points during the AppConfig workflow of creating or deploying a configuration. You can create your own extensions or use the Amazon Web Services authored extensions provided by AppConfig. For most use cases, to create your own extension, you must create an Lambda function to perform any computation and processing defined in the extension. For more information about extensions, see Working with AppConfig extensions in the AppConfig User Guide.
+   */
+  createExtension(callback?: (err: AWSError, data: AppConfig.Types.Extension) => void): Request<AppConfig.Types.Extension, AWSError>;
+  /**
+   * When you create an extension or configure an Amazon Web Services authored extension, you associate the extension with an AppConfig application, environment, or configuration profile. For example, you can choose to run the AppConfig deployment events to Amazon SNS Amazon Web Services authored extension and receive notifications on an Amazon SNS topic anytime a configuration deployment is started for a specific application. Defining which extension to associate with an AppConfig resource is called an extension association. An extension association is a specified relationship between an extension and an AppConfig resource, such as an application or a configuration profile. For more information about extensions and associations, see Working with AppConfig extensions in the AppConfig User Guide.
+   */
+  createExtensionAssociation(params: AppConfig.Types.CreateExtensionAssociationRequest, callback?: (err: AWSError, data: AppConfig.Types.ExtensionAssociation) => void): Request<AppConfig.Types.ExtensionAssociation, AWSError>;
+  /**
+   * When you create an extension or configure an Amazon Web Services authored extension, you associate the extension with an AppConfig application, environment, or configuration profile. For example, you can choose to run the AppConfig deployment events to Amazon SNS Amazon Web Services authored extension and receive notifications on an Amazon SNS topic anytime a configuration deployment is started for a specific application. Defining which extension to associate with an AppConfig resource is called an extension association. An extension association is a specified relationship between an extension and an AppConfig resource, such as an application or a configuration profile. For more information about extensions and associations, see Working with AppConfig extensions in the AppConfig User Guide.
+   */
+  createExtensionAssociation(callback?: (err: AWSError, data: AppConfig.Types.ExtensionAssociation) => void): Request<AppConfig.Types.ExtensionAssociation, AWSError>;
   /**
    * Creates a new configuration in the AppConfig hosted configuration store.
    */
@@ -84,6 +100,22 @@ declare class AppConfig extends Service {
    */
   deleteEnvironment(callback?: (err: AWSError, data: {}) => void): Request<{}, AWSError>;
   /**
+   * Deletes an AppConfig extension. You must delete all associations to an extension before you delete the extension.
+   */
+  deleteExtension(params: AppConfig.Types.DeleteExtensionRequest, callback?: (err: AWSError, data: {}) => void): Request<{}, AWSError>;
+  /**
+   * Deletes an AppConfig extension. You must delete all associations to an extension before you delete the extension.
+   */
+  deleteExtension(callback?: (err: AWSError, data: {}) => void): Request<{}, AWSError>;
+  /**
+   * Deletes an extension association. This action doesn't delete extensions defined in the association.
+   */
+  deleteExtensionAssociation(params: AppConfig.Types.DeleteExtensionAssociationRequest, callback?: (err: AWSError, data: {}) => void): Request<{}, AWSError>;
+  /**
+   * Deletes an extension association. This action doesn't delete extensions defined in the association.
+   */
+  deleteExtensionAssociation(callback?: (err: AWSError, data: {}) => void): Request<{}, AWSError>;
+  /**
    * Deletes a version of a configuration from the AppConfig hosted configuration store.
    */
   deleteHostedConfigurationVersion(params: AppConfig.Types.DeleteHostedConfigurationVersionRequest, callback?: (err: AWSError, data: {}) => void): Request<{}, AWSError>;
@@ -100,11 +132,11 @@ declare class AppConfig extends Service {
    */
   getApplication(callback?: (err: AWSError, data: AppConfig.Types.Application) => void): Request<AppConfig.Types.Application, AWSError>;
   /**
-   * Retrieves the latest deployed configuration.  Note the following important information.   This API action has been deprecated. Calls to receive configuration data should use the StartConfigurationSession and GetLatestConfiguration APIs instead.     GetConfiguration is a priced call. For more information, see Pricing.   AppConfig uses the value of the ClientConfigurationVersion parameter to identify the configuration version on your clients. If you don’t send ClientConfigurationVersion with each call to GetConfiguration, your clients receive the current configuration. You are charged each time your clients receive a configuration. To avoid excess charges, we recommend you use the StartConfigurationSession and GetLatestConfiguration APIs, which track the client configuration version on your behalf. If you choose to continue using GetConfiguration, we recommend that you include the ClientConfigurationVersion value with every call to GetConfiguration. The value to use for ClientConfigurationVersion comes from the ConfigurationVersion attribute returned by GetConfiguration when there is new or updated data, and should be saved for subsequent calls to GetConfiguration.   
+   * (Deprecated) Retrieves the latest deployed configuration.  Note the following important information.   This API action is deprecated. Calls to receive configuration data should use the StartConfigurationSession and GetLatestConfiguration APIs instead.     GetConfiguration is a priced call. For more information, see Pricing.   
    */
   getConfiguration(params: AppConfig.Types.GetConfigurationRequest, callback?: (err: AWSError, data: AppConfig.Types.Configuration) => void): Request<AppConfig.Types.Configuration, AWSError>;
   /**
-   * Retrieves the latest deployed configuration.  Note the following important information.   This API action has been deprecated. Calls to receive configuration data should use the StartConfigurationSession and GetLatestConfiguration APIs instead.     GetConfiguration is a priced call. For more information, see Pricing.   AppConfig uses the value of the ClientConfigurationVersion parameter to identify the configuration version on your clients. If you don’t send ClientConfigurationVersion with each call to GetConfiguration, your clients receive the current configuration. You are charged each time your clients receive a configuration. To avoid excess charges, we recommend you use the StartConfigurationSession and GetLatestConfiguration APIs, which track the client configuration version on your behalf. If you choose to continue using GetConfiguration, we recommend that you include the ClientConfigurationVersion value with every call to GetConfiguration. The value to use for ClientConfigurationVersion comes from the ConfigurationVersion attribute returned by GetConfiguration when there is new or updated data, and should be saved for subsequent calls to GetConfiguration.   
+   * (Deprecated) Retrieves the latest deployed configuration.  Note the following important information.   This API action is deprecated. Calls to receive configuration data should use the StartConfigurationSession and GetLatestConfiguration APIs instead.     GetConfiguration is a priced call. For more information, see Pricing.   
    */
   getConfiguration(callback?: (err: AWSError, data: AppConfig.Types.Configuration) => void): Request<AppConfig.Types.Configuration, AWSError>;
   /**
@@ -132,13 +164,29 @@ declare class AppConfig extends Service {
    */
   getDeploymentStrategy(callback?: (err: AWSError, data: AppConfig.Types.DeploymentStrategy) => void): Request<AppConfig.Types.DeploymentStrategy, AWSError>;
   /**
-   * Retrieves information about an environment. An environment is a logical deployment group of AppConfig applications, such as applications in a Production environment or in an EU_Region environment. Each configuration deployment targets an environment. You can enable one or more Amazon CloudWatch alarms for an environment. If an alarm is triggered during a deployment, AppConfig roles back the configuration.
+   * Retrieves information about an environment. An environment is a deployment group of AppConfig applications, such as applications in a Production environment or in an EU_Region environment. Each configuration deployment targets an environment. You can enable one or more Amazon CloudWatch alarms for an environment. If an alarm is triggered during a deployment, AppConfig roles back the configuration.
    */
   getEnvironment(params: AppConfig.Types.GetEnvironmentRequest, callback?: (err: AWSError, data: AppConfig.Types.Environment) => void): Request<AppConfig.Types.Environment, AWSError>;
   /**
-   * Retrieves information about an environment. An environment is a logical deployment group of AppConfig applications, such as applications in a Production environment or in an EU_Region environment. Each configuration deployment targets an environment. You can enable one or more Amazon CloudWatch alarms for an environment. If an alarm is triggered during a deployment, AppConfig roles back the configuration.
+   * Retrieves information about an environment. An environment is a deployment group of AppConfig applications, such as applications in a Production environment or in an EU_Region environment. Each configuration deployment targets an environment. You can enable one or more Amazon CloudWatch alarms for an environment. If an alarm is triggered during a deployment, AppConfig roles back the configuration.
    */
   getEnvironment(callback?: (err: AWSError, data: AppConfig.Types.Environment) => void): Request<AppConfig.Types.Environment, AWSError>;
+  /**
+   * Returns information about an AppConfig extension.
+   */
+  getExtension(params: AppConfig.Types.GetExtensionRequest, callback?: (err: AWSError, data: AppConfig.Types.Extension) => void): Request<AppConfig.Types.Extension, AWSError>;
+  /**
+   * Returns information about an AppConfig extension.
+   */
+  getExtension(callback?: (err: AWSError, data: AppConfig.Types.Extension) => void): Request<AppConfig.Types.Extension, AWSError>;
+  /**
+   * Returns information about an AppConfig extension association. For more information about extensions and associations, see Working with AppConfig extensions in the AppConfig User Guide.
+   */
+  getExtensionAssociation(params: AppConfig.Types.GetExtensionAssociationRequest, callback?: (err: AWSError, data: AppConfig.Types.ExtensionAssociation) => void): Request<AppConfig.Types.ExtensionAssociation, AWSError>;
+  /**
+   * Returns information about an AppConfig extension association. For more information about extensions and associations, see Working with AppConfig extensions in the AppConfig User Guide.
+   */
+  getExtensionAssociation(callback?: (err: AWSError, data: AppConfig.Types.ExtensionAssociation) => void): Request<AppConfig.Types.ExtensionAssociation, AWSError>;
   /**
    * Retrieves information about a specific configuration version.
    */
@@ -187,6 +235,22 @@ declare class AppConfig extends Service {
    * Lists the environments for an application.
    */
   listEnvironments(callback?: (err: AWSError, data: AppConfig.Types.Environments) => void): Request<AppConfig.Types.Environments, AWSError>;
+  /**
+   * Lists all AppConfig extension associations in the account. For more information about extensions and associations, see Working with AppConfig extensions in the AppConfig User Guide.
+   */
+  listExtensionAssociations(params: AppConfig.Types.ListExtensionAssociationsRequest, callback?: (err: AWSError, data: AppConfig.Types.ExtensionAssociations) => void): Request<AppConfig.Types.ExtensionAssociations, AWSError>;
+  /**
+   * Lists all AppConfig extension associations in the account. For more information about extensions and associations, see Working with AppConfig extensions in the AppConfig User Guide.
+   */
+  listExtensionAssociations(callback?: (err: AWSError, data: AppConfig.Types.ExtensionAssociations) => void): Request<AppConfig.Types.ExtensionAssociations, AWSError>;
+  /**
+   * Lists all custom and Amazon Web Services authored AppConfig extensions in the account. For more information about extensions, see Working with AppConfig extensions in the AppConfig User Guide.
+   */
+  listExtensions(params: AppConfig.Types.ListExtensionsRequest, callback?: (err: AWSError, data: AppConfig.Types.Extensions) => void): Request<AppConfig.Types.Extensions, AWSError>;
+  /**
+   * Lists all custom and Amazon Web Services authored AppConfig extensions in the account. For more information about extensions, see Working with AppConfig extensions in the AppConfig User Guide.
+   */
+  listExtensions(callback?: (err: AWSError, data: AppConfig.Types.Extensions) => void): Request<AppConfig.Types.Extensions, AWSError>;
   /**
    * Lists configurations stored in the AppConfig hosted configuration store by version.
    */
@@ -268,6 +332,22 @@ declare class AppConfig extends Service {
    */
   updateEnvironment(callback?: (err: AWSError, data: AppConfig.Types.Environment) => void): Request<AppConfig.Types.Environment, AWSError>;
   /**
+   * Updates an AppConfig extension. For more information about extensions, see Working with AppConfig extensions in the AppConfig User Guide.
+   */
+  updateExtension(params: AppConfig.Types.UpdateExtensionRequest, callback?: (err: AWSError, data: AppConfig.Types.Extension) => void): Request<AppConfig.Types.Extension, AWSError>;
+  /**
+   * Updates an AppConfig extension. For more information about extensions, see Working with AppConfig extensions in the AppConfig User Guide.
+   */
+  updateExtension(callback?: (err: AWSError, data: AppConfig.Types.Extension) => void): Request<AppConfig.Types.Extension, AWSError>;
+  /**
+   * Updates an association. For more information about extensions and associations, see Working with AppConfig extensions in the AppConfig User Guide.
+   */
+  updateExtensionAssociation(params: AppConfig.Types.UpdateExtensionAssociationRequest, callback?: (err: AWSError, data: AppConfig.Types.ExtensionAssociation) => void): Request<AppConfig.Types.ExtensionAssociation, AWSError>;
+  /**
+   * Updates an association. For more information about extensions and associations, see Working with AppConfig extensions in the AppConfig User Guide.
+   */
+  updateExtensionAssociation(callback?: (err: AWSError, data: AppConfig.Types.ExtensionAssociation) => void): Request<AppConfig.Types.ExtensionAssociation, AWSError>;
+  /**
    * Uses the validators in a configuration profile to validate a configuration.
    */
   validateConfiguration(params: AppConfig.Types.ValidateConfigurationRequest, callback?: (err: AWSError, data: {}) => void): Request<{}, AWSError>;
@@ -277,6 +357,58 @@ declare class AppConfig extends Service {
   validateConfiguration(callback?: (err: AWSError, data: {}) => void): Request<{}, AWSError>;
 }
 declare namespace AppConfig {
+  export interface Action {
+    /**
+     * The action name.
+     */
+    Name?: Name;
+    /**
+     * Information about the action.
+     */
+    Description?: Description;
+    /**
+     * The extension URI associated to the action point in the extension definition. The URI can be an Amazon Resource Name (ARN) for one of the following: an Lambda function, an Amazon Simple Queue Service queue, an Amazon Simple Notification Service topic, or the Amazon EventBridge default event bus.
+     */
+    Uri?: Uri;
+    /**
+     * An Amazon Resource Name (ARN) for an Identity and Access Management assume role.
+     */
+    RoleArn?: Arn;
+  }
+  export interface ActionInvocation {
+    /**
+     * The name, the ID, or the Amazon Resource Name (ARN) of the extension.
+     */
+    ExtensionIdentifier?: Identifier;
+    /**
+     * The name of the action.
+     */
+    ActionName?: Name;
+    /**
+     * The extension URI associated to the action point in the extension definition. The URI can be an Amazon Resource Name (ARN) for one of the following: an Lambda function, an Amazon Simple Queue Service queue, an Amazon Simple Notification Service topic, or the Amazon EventBridge default event bus.
+     */
+    Uri?: Uri;
+    /**
+     * An Amazon Resource Name (ARN) for an Identity and Access Management assume role.
+     */
+    RoleArn?: Arn;
+    /**
+     * The error message when an extension invocation fails.
+     */
+    ErrorMessage?: String;
+    /**
+     * The error code when an extension invocation fails.
+     */
+    ErrorCode?: String;
+    /**
+     * A system-generated ID for this invocation.
+     */
+    InvocationId?: Id;
+  }
+  export type ActionInvocations = ActionInvocation[];
+  export type ActionList = Action[];
+  export type ActionPoint = "PRE_CREATE_HOSTED_CONFIGURATION_VERSION"|"PRE_START_DEPLOYMENT"|"ON_DEPLOYMENT_START"|"ON_DEPLOYMENT_STEP"|"ON_DEPLOYMENT_BAKING"|"ON_DEPLOYMENT_COMPLETE"|"ON_DEPLOYMENT_ROLLED_BACK"|string;
+  export type ActionsMap = {[key: string]: ActionList};
   export interface Application {
     /**
      * The application ID.
@@ -302,8 +434,28 @@ declare namespace AppConfig {
      */
     NextToken?: NextToken;
   }
+  export interface AppliedExtension {
+    /**
+     * The system-generated ID of the extension.
+     */
+    ExtensionId?: Id;
+    /**
+     * The system-generated ID for the association.
+     */
+    ExtensionAssociationId?: Id;
+    /**
+     * The extension version number.
+     */
+    VersionNumber?: Integer;
+    /**
+     * One or more parameters for the actions called by the extension.
+     */
+    Parameters?: ParameterValueMap;
+  }
+  export type AppliedExtensions = AppliedExtension[];
   export type Arn = string;
   export type _Blob = Buffer|Uint8Array|Blob|string;
+  export type Boolean = boolean;
   export interface Configuration {
     /**
      * The content of the configuration or the configuration data.  The Content attribute only contains data if the system finds new or updated configuration data. If there is no new or updated data and ClientConfigurationVersion matches the version of the current configuration, AppConfig returns a 204 No Content HTTP response code and the Content value will be empty. 
@@ -330,7 +482,7 @@ declare namespace AppConfig {
     /**
      * The name of the configuration profile.
      */
-    Name?: Name;
+    Name?: LongName;
     /**
      * The configuration profile description.
      */
@@ -364,7 +516,7 @@ declare namespace AppConfig {
     /**
      * The name of the configuration profile.
      */
-    Name?: Name;
+    Name?: LongName;
     /**
      * The URI location of the configuration.
      */
@@ -412,13 +564,13 @@ declare namespace AppConfig {
     /**
      * A name for the configuration profile.
      */
-    Name: Name;
+    Name: LongName;
     /**
      * A description of the configuration profile.
      */
     Description?: Description;
     /**
-     * A URI to locate the configuration. You can specify the AppConfig hosted configuration store, Systems Manager (SSM) document, an SSM Parameter Store parameter, or an Amazon S3 object. For the hosted configuration store and for feature flags, specify hosted. For an SSM document, specify either the document name in the format ssm-document://&lt;Document_name&gt; or the Amazon Resource Name (ARN). For a parameter, specify either the parameter name in the format ssm-parameter://&lt;Parameter_name&gt; or the ARN. For an Amazon S3 object, specify the URI in the following format: s3://&lt;bucket&gt;/&lt;objectKey&gt; . Here is an example: s3://my-bucket/my-app/us-east-1/my-config.json 
+     * A URI to locate the configuration. You can specify the following:   For the AppConfig hosted configuration store and for feature flags, specify hosted.   For an Amazon Web Services Systems Manager Parameter Store parameter, specify either the parameter name in the format ssm-parameter://&lt;parameter name&gt; or the ARN.   For an Secrets Manager secret, specify the URI in the following format: secrets-manager://&lt;secret name&gt;.   For an Amazon S3 object, specify the URI in the following format: s3://&lt;bucket&gt;/&lt;objectKey&gt; . Here is an example: s3://my-bucket/my-app/us-east-1/my-config.json    For an SSM document, specify either the document name in the format ssm-document://&lt;document name&gt; or the Amazon Resource Name (ARN).  
      */
     LocationUri: Uri;
     /**
@@ -452,7 +604,7 @@ declare namespace AppConfig {
      */
     DeploymentDurationInMinutes: MinutesBetween0And24Hours;
     /**
-     * The amount of time AppConfig monitors for alarms before considering the deployment to be complete and no longer eligible for automatic roll back.
+     * Specifies the amount of time AppConfig monitors for Amazon CloudWatch alarms after the configuration has been deployed to 100% of its targets, before considering the deployment to be complete. If an alarm is triggered during this time, AppConfig rolls back the deployment. You must configure permissions for AppConfig to roll back based on CloudWatch alarms. For more information, see Configuring permissions for rollback based on Amazon CloudWatch alarms in the AppConfig User Guide.
      */
     FinalBakeTimeInMinutes?: MinutesBetween0And24Hours;
     /**
@@ -466,7 +618,7 @@ declare namespace AppConfig {
     /**
      * Save the deployment strategy to a Systems Manager (SSM) document.
      */
-    ReplicateTo: ReplicateTo;
+    ReplicateTo?: ReplicateTo;
     /**
      * Metadata to assign to the deployment strategy. Tags help organize and categorize your AppConfig resources. Each tag consists of a key and an optional value, both of which you define.
      */
@@ -494,6 +646,54 @@ declare namespace AppConfig {
      */
     Tags?: TagMap;
   }
+  export interface CreateExtensionAssociationRequest {
+    /**
+     * The name, the ID, or the Amazon Resource Name (ARN) of the extension.
+     */
+    ExtensionIdentifier: Identifier;
+    /**
+     * The version number of the extension. If not specified, AppConfig uses the maximum version of the extension.
+     */
+    ExtensionVersionNumber?: Integer;
+    /**
+     * The ARN of an application, configuration profile, or environment.
+     */
+    ResourceIdentifier: Identifier;
+    /**
+     * The parameter names and values defined in the extensions. Extension parameters marked Required must be entered for this field.
+     */
+    Parameters?: ParameterValueMap;
+    /**
+     * Adds one or more tags for the specified extension association. Tags are metadata that help you categorize resources in different ways, for example, by purpose, owner, or environment. Each tag consists of a key and an optional value, both of which you define. 
+     */
+    Tags?: TagMap;
+  }
+  export interface CreateExtensionRequest {
+    /**
+     * A name for the extension. Each extension name in your account must be unique. Extension versions use the same name.
+     */
+    Name: Name;
+    /**
+     * Information about the extension.
+     */
+    Description?: Description;
+    /**
+     * The actions defined in the extension.
+     */
+    Actions: ActionsMap;
+    /**
+     * The parameters accepted by the extension. You specify parameter values when you associate the extension to an AppConfig resource by using the CreateExtensionAssociation API action. For Lambda extension actions, these parameters are included in the Lambda request object.
+     */
+    Parameters?: ParameterMap;
+    /**
+     * Adds one or more tags for the specified extension. Tags are metadata that help you categorize resources in different ways, for example, by purpose, owner, or environment. Each tag consists of a key and an optional value, both of which you define. 
+     */
+    Tags?: TagMap;
+    /**
+     * You can omit this field when you create an extension. When you create a new version, specify the most recent current version number. For example, you create version 3, enter 2 for this field.
+     */
+    LatestVersionNumber?: Integer;
+  }
   export interface CreateHostedConfigurationVersionRequest {
     /**
      * The application ID.
@@ -519,6 +719,10 @@ declare namespace AppConfig {
      * An optional locking token used to prevent race conditions from overwriting configuration updates when creating a new version. To ensure your data is not overwritten when creating multiple hosted configuration versions in rapid succession, specify the version number of the latest hosted configuration version.
      */
     LatestVersionNumber?: Integer;
+    /**
+     * An optional, user-defined label for the AppConfig hosted configuration version. This value must contain at least one non-numeric character. For example, "v2.2.0".
+     */
+    VersionLabel?: VersionLabel;
   }
   export interface DeleteApplicationRequest {
     /**
@@ -551,6 +755,22 @@ declare namespace AppConfig {
      * The ID of the environment that you want to delete.
      */
     EnvironmentId: Id;
+  }
+  export interface DeleteExtensionAssociationRequest {
+    /**
+     * The ID of the extension association to delete.
+     */
+    ExtensionAssociationId: Id;
+  }
+  export interface DeleteExtensionRequest {
+    /**
+     * The name, ID, or Amazon Resource Name (ARN) of the extension you want to delete.
+     */
+    ExtensionIdentifier: Identifier;
+    /**
+     * A specific version of an extension to delete. If omitted, the highest version is deleted.
+     */
+    VersionNumber?: Integer;
   }
   export interface DeleteHostedConfigurationVersionRequest {
     /**
@@ -639,6 +859,18 @@ declare namespace AppConfig {
      * The time the deployment completed. 
      */
     CompletedAt?: Iso8601DateTime;
+    /**
+     * A list of extensions that were processed as part of the deployment. The extensions that were previously associated to the configuration profile, environment, or the application when StartDeployment was called.
+     */
+    AppliedExtensions?: AppliedExtensions;
+    /**
+     * The Amazon Resource Name of the Key Management Service key used to encrypt configuration data. You can encrypt secrets stored in Secrets Manager, Amazon Simple Storage Service (Amazon S3) objects encrypted with SSE-KMS, or secure string parameters stored in Amazon Web Services Systems Manager Parameter Store. 
+     */
+    KmsKeyArn?: Arn;
+    /**
+     * The KMS key identifier (key ID, key alias, or key ARN). AppConfig uses this ID to encrypt the configuration data using a customer managed key. 
+     */
+    KmsKeyIdentifier?: Identifier;
   }
   export interface DeploymentEvent {
     /**
@@ -653,6 +885,10 @@ declare namespace AppConfig {
      * A description of the deployment event. Descriptions include, but are not limited to, the user account or the Amazon CloudWatch alarm ARN that initiated a rollback, the percentage of hosts that received the deployment, or in the case of an internal error, a recommendation to attempt a new deployment.
      */
     Description?: Description;
+    /**
+     * The list of extensions that were invoked as part of the deployment.
+     */
+    ActionInvocations?: ActionInvocations;
     /**
      * The date and time the event occurred.
      */
@@ -803,6 +1039,120 @@ declare namespace AppConfig {
      */
     NextToken?: NextToken;
   }
+  export interface Extension {
+    /**
+     * The system-generated ID of the extension.
+     */
+    Id?: Id;
+    /**
+     * The extension name.
+     */
+    Name?: Name;
+    /**
+     * The extension version number.
+     */
+    VersionNumber?: Integer;
+    /**
+     * The system-generated Amazon Resource Name (ARN) for the extension.
+     */
+    Arn?: Arn;
+    /**
+     * Information about the extension.
+     */
+    Description?: Description;
+    /**
+     * The actions defined in the extension.
+     */
+    Actions?: ActionsMap;
+    /**
+     * The parameters accepted by the extension. You specify parameter values when you associate the extension to an AppConfig resource by using the CreateExtensionAssociation API action. For Lambda extension actions, these parameters are included in the Lambda request object.
+     */
+    Parameters?: ParameterMap;
+  }
+  export interface ExtensionAssociation {
+    /**
+     * The system-generated ID for the association.
+     */
+    Id?: Identifier;
+    /**
+     * The ARN of the extension defined in the association.
+     */
+    ExtensionArn?: Arn;
+    /**
+     * The ARNs of applications, configuration profiles, or environments defined in the association.
+     */
+    ResourceArn?: Arn;
+    /**
+     * The system-generated Amazon Resource Name (ARN) for the extension.
+     */
+    Arn?: Arn;
+    /**
+     * The parameter names and values defined in the association.
+     */
+    Parameters?: ParameterValueMap;
+    /**
+     * The version number for the extension defined in the association.
+     */
+    ExtensionVersionNumber?: Integer;
+  }
+  export type ExtensionAssociationSummaries = ExtensionAssociationSummary[];
+  export interface ExtensionAssociationSummary {
+    /**
+     * The extension association ID. This ID is used to call other ExtensionAssociation API actions such as GetExtensionAssociation or DeleteExtensionAssociation.
+     */
+    Id?: Identifier;
+    /**
+     * The system-generated Amazon Resource Name (ARN) for the extension.
+     */
+    ExtensionArn?: Arn;
+    /**
+     * The ARNs of applications, configuration profiles, or environments defined in the association.
+     */
+    ResourceArn?: Arn;
+  }
+  export interface ExtensionAssociations {
+    /**
+     * The list of extension associations. Each item represents an extension association to an application, environment, or configuration profile. 
+     */
+    Items?: ExtensionAssociationSummaries;
+    /**
+     * The token for the next set of items to return. Use this token to get the next set of results.
+     */
+    NextToken?: NextToken;
+  }
+  export type ExtensionSummaries = ExtensionSummary[];
+  export interface ExtensionSummary {
+    /**
+     * The system-generated ID of the extension.
+     */
+    Id?: Id;
+    /**
+     * The extension name.
+     */
+    Name?: Name;
+    /**
+     * The extension version number.
+     */
+    VersionNumber?: Integer;
+    /**
+     * The system-generated Amazon Resource Name (ARN) for the extension.
+     */
+    Arn?: Arn;
+    /**
+     * Information about the extension.
+     */
+    Description?: Description;
+  }
+  export interface Extensions {
+    /**
+     * The list of available extensions. The list includes Amazon Web Services authored and user-created extensions.
+     */
+    Items?: ExtensionSummaries;
+    /**
+     * The token for the next set of items to return. Use this token to get the next set of results.
+     */
+    NextToken?: NextToken;
+  }
   export interface GetApplicationRequest {
     /**
      * The ID of the application you want to get.
@@ -837,7 +1187,7 @@ declare namespace AppConfig {
      */
     ClientId: StringWithLengthBetween1And64;
     /**
-     * The configuration version returned in the most recent GetConfiguration response.  AppConfig uses the value of the ClientConfigurationVersion parameter to identify the configuration version on your clients. If you don’t send ClientConfigurationVersion with each call to GetConfiguration, your clients receive the current configuration. You are charged each time your clients receive a configuration. To avoid excess charges, we recommend that you include the ClientConfigurationVersion value with every call to GetConfiguration. This value must be saved on your client. Subsequent calls to GetConfiguration must pass this value by using the ClientConfigurationVersion parameter.   For more information about working with configurations, see Retrieving the Configuration in the AppConfig User Guide.
+     * The configuration version returned in the most recent GetConfiguration response.  AppConfig uses the value of the ClientConfigurationVersion parameter to identify the configuration version on your clients. If you don’t send ClientConfigurationVersion with each call to GetConfiguration, your clients receive the current configuration. You are charged each time your clients receive a configuration. To avoid excess charges, we recommend you use the StartConfigurationSession and GetLatestConfiguration APIs, which track the client configuration version on your behalf. If you choose to continue using GetConfiguration, we recommend that you include the ClientConfigurationVersion value with every call to GetConfiguration. The value to use for ClientConfigurationVersion comes from the ConfigurationVersion attribute returned by GetConfiguration when there is new or updated data, and should be saved for subsequent calls to GetConfiguration.  For more information about working with configurations, see Retrieving the Configuration in the AppConfig User Guide.
      */
     ClientConfigurationVersion?: Version;
   }
@@ -870,6 +1220,22 @@ declare namespace AppConfig {
      * The ID of the environment that you want to get.
      */
     EnvironmentId: Id;
+  }
+  export interface GetExtensionAssociationRequest {
+    /**
+     * The extension association ID to get.
+     */
+    ExtensionAssociationId: Id;
+  }
+  export interface GetExtensionRequest {
+    /**
+     * The name, the ID, or the Amazon Resource Name (ARN) of the extension.
+     */
+    ExtensionIdentifier: Identifier;
+    /**
+     * The extension version number. If no version number was defined, AppConfig uses the highest version.
+     */
+    VersionNumber?: Integer;
   }
   export interface GetHostedConfigurationVersionRequest {
     /**
@@ -912,6 +1278,10 @@ declare namespace AppConfig {
      * A standard MIME type describing the format of the configuration content. For more information, see Content-Type.
      */
     ContentType?: StringWithLengthBetween1And255;
+    /**
+     * A user-defined label for an AppConfig hosted configuration version.
+     */
+    VersionLabel?: VersionLabel;
   }
   export interface HostedConfigurationVersionSummary {
     /**
@@ -934,6 +1304,10 @@ declare namespace AppConfig {
      * A standard MIME type describing the format of the configuration content. For more information, see Content-Type.
      */
     ContentType?: StringWithLengthBetween1And255;
+    /**
+     * A user-defined label for an AppConfig hosted configuration version.
+     */
+    VersionLabel?: VersionLabel;
   }
   export type HostedConfigurationVersionSummaryList = HostedConfigurationVersionSummary[];
   export interface HostedConfigurationVersions {
@@ -947,6 +1321,7 @@ declare namespace AppConfig {
     NextToken?: NextToken;
   }
   export type Id = string;
+  export type Identifier = string;
   export type Integer = number;
   export type Iso8601DateTime = Date;
   export interface ListApplicationsRequest {
@@ -1019,6 +1394,42 @@ declare namespace AppConfig {
      */
     NextToken?: NextToken;
   }
+  export interface ListExtensionAssociationsRequest {
+    /**
+     * The ARN of an application, configuration profile, or environment.
+     */
+    ResourceIdentifier?: Arn;
+    /**
+     * The name, the ID, or the Amazon Resource Name (ARN) of the extension.
+     */
+    ExtensionIdentifier?: Identifier;
+    /**
+     * The version number for the extension defined in the association.
+     */
+    ExtensionVersionNumber?: Integer;
+    /**
+     * The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
+     */
+    MaxResults?: MaxResults;
+    /**
+     * A token to start the list. Use this token to get the next set of results or pass null to get the first set of results. 
+     */
+    NextToken?: NextToken;
+  }
+  export interface ListExtensionsRequest {
+    /**
+     * The maximum number of items to return for this call. The call also returns a token that you can specify in a subsequent call to get the next set of results.
+     */
+    MaxResults?: MaxResults;
+    /**
+     * A token to start the list. Use this token to get the next set of results. 
+     */
+    NextToken?: NextToken;
+    /**
+     * The extension name.
+     */
+    Name?: QueryName;
+  }
   export interface ListHostedConfigurationVersionsRequest {
     /**
      * The application ID.
@@ -1036,6 +1447,10 @@ declare namespace AppConfig {
      * A token to start the list. Use this token to get the next set of results. 
      */
     NextToken?: NextToken;
+    /**
+     * An optional filter that can be used to specify the version label of an AppConfig hosted configuration version. This parameter supports filtering by prefix using a wildcard, for example "v2*". If you don't specify an asterisk at the end of the value, only an exact match is returned.
+     */
+    VersionLabel?: QueryName;
   }
   export interface ListTagsForResourceRequest {
     /**
@@ -1043,6 +1458,7 @@ declare namespace AppConfig {
      */
     ResourceArn: Arn;
   }
+  export type LongName = string;
   export type MaxResults = number;
   export type MinutesBetween0And24Hours = number;
   export interface Monitor {
@@ -1058,7 +1474,20 @@ declare namespace AppConfig {
   export type MonitorList = Monitor[];
   export type Name = string;
   export type NextToken = string;
+  export interface Parameter {
+    /**
+     * Information about the parameter.
+     */
+    Description?: Description;
+    /**
+     * A parameter value must be specified in the extension association.
+     */
+    Required?: Boolean;
+  }
+  export type ParameterMap = {[key: string]: Parameter};
+  export type ParameterValueMap = {[key: string]: StringWithLengthBetween1And2048};
   export type Percentage = number;
+  export type QueryName = string;
   export type ReplicateTo = "NONE"|"SSM_DOCUMENT"|string;
   export interface ResourceTags {
     /**
@@ -1085,7 +1514,7 @@ declare namespace AppConfig {
      */
     ConfigurationProfileId: Id;
     /**
-     * The configuration version to deploy.
+     * The configuration version to deploy. If deploying an AppConfig hosted configuration version, you can specify either the version number or version label.
      */
     ConfigurationVersion: Version;
     /**
@@ -1096,6 +1525,10 @@ declare namespace AppConfig {
      * Metadata to assign to the deployment. Tags help organize and categorize your AppConfig resources. Each tag consists of a key and an optional value, both of which you define.
      */
     Tags?: TagMap;
+    /**
+     * The KMS key identifier (key ID, key alias, or key ARN). AppConfig uses this ID to encrypt the configuration data using a customer managed key. 
+     */
+    KmsKeyIdentifier?: Identifier;
   }
   export interface StopDeploymentRequest {
     /**
@@ -1229,6 +1662,38 @@ declare namespace AppConfig {
      */
     Monitors?: MonitorList;
   }
+  export interface UpdateExtensionAssociationRequest {
+    /**
+     * The system-generated ID for the association.
+     */
+    ExtensionAssociationId: Id;
+    /**
+     * The parameter names and values defined in the extension.
+     */
+    Parameters?: ParameterValueMap;
+  }
+  export interface UpdateExtensionRequest {
+    /**
+     * The name, the ID, or the Amazon Resource Name (ARN) of the extension.
+     */
+    ExtensionIdentifier: Identifier;
+    /**
+     * Information about the extension.
+     */
+    Description?: Description;
+    /**
+     * The actions defined in the extension.
+     */
+    Actions?: ActionsMap;
+    /**
+     * One or more parameters for the actions called by the extension.
+     */
+    Parameters?: ParameterMap;
+    /**
+     * The extension version number.
+     */
+    VersionNumber?: Integer;
+  }
   export type Uri = string;
   export interface ValidateConfigurationRequest {
     /**
@@ -1258,6 +1723,7 @@ declare namespace AppConfig {
   export type ValidatorType = "JSON_SCHEMA"|"LAMBDA"|string;
   export type ValidatorTypeList = ValidatorType[];
   export type Version = string;
+  export type VersionLabel = string;
   /**
    * A string in YYYY-MM-DD format that represents the latest possible API version that can be used in this service. Specify 'latest' to use the latest possible version.
    */

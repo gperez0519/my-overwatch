@@ -126,11 +126,12 @@ declare class IotDeviceAdvisor extends Service {
 }
 declare namespace IotDeviceAdvisor {
   export type AmazonResourceName = string;
+  export type AuthenticationMethod = "X509ClientCertificate"|"SignatureVersion4"|string;
   export interface CreateSuiteDefinitionRequest {
     /**
      * Creates a Device Advisor test suite with suite definition configuration.
      */
-    suiteDefinitionConfiguration?: SuiteDefinitionConfiguration;
+    suiteDefinitionConfiguration: SuiteDefinitionConfiguration;
     /**
      * The tags to be attached to the suite definition.
      */
@@ -138,19 +139,19 @@ declare namespace IotDeviceAdvisor {
   }
   export interface CreateSuiteDefinitionResponse {
     /**
-     * Creates a Device Advisor test suite with suite UUID.
+     * The UUID of the test suite created.
      */
     suiteDefinitionId?: UUID;
     /**
-     * Creates a Device Advisor test suite with Amazon Resource Name (ARN).
+     * The Amazon Resource Name (ARN) of the test suite.
      */
     suiteDefinitionArn?: AmazonResourceName;
     /**
-     * Creates a Device Advisor test suite with suite definition name.
+     * The suite definition name of the test suite. This is a required parameter.
      */
     suiteDefinitionName?: SuiteDefinitionName;
     /**
-     * Creates a Device Advisor test suite with TimeStamp of when it was created.
+     * The timestamp of when the test suite was created.
      */
     createdAt?: Timestamp;
   }
@@ -164,13 +165,17 @@ declare namespace IotDeviceAdvisor {
   }
   export interface DeviceUnderTest {
     /**
-     * Lists devices thing ARN.
+     * Lists device's thing ARN.
      */
     thingArn?: AmazonResourceName;
     /**
-     * Lists devices certificate ARN.
+     * Lists device's certificate ARN.
      */
     certificateArn?: AmazonResourceName;
+    /**
+     * Lists device's role ARN.
+     */
+    deviceRoleArn?: AmazonResourceName;
   }
   export type DeviceUnderTestList = DeviceUnderTest[];
   export type Endpoint = string;
@@ -185,6 +190,14 @@ declare namespace IotDeviceAdvisor {
      * The certificate ARN of the device. This is an optional parameter.
      */
     certificateArn?: AmazonResourceName;
+    /**
+     * The device role ARN of the device. This is an optional parameter.
+     */
+    deviceRoleArn?: AmazonResourceName;
+    /**
+     * The authentication method used during the device connection.
+     */
+    authenticationMethod?: AuthenticationMethod;
   }
   export interface GetEndpointResponse {
     /**
@@ -325,6 +338,7 @@ declare namespace IotDeviceAdvisor {
   }
   export type GroupResultList = GroupResult[];
   export type IntendedForQualificationBoolean = boolean;
+  export type IsLongDurationTestBoolean = boolean;
   export interface ListSuiteDefinitionsRequest {
     /**
      * The maximum number of results to return at once.
@@ -375,7 +389,7 @@ declare namespace IotDeviceAdvisor {
   }
   export interface ListTagsForResourceRequest {
     /**
-     * The ARN of the IoT Device Advisor resource.
+     * The resource ARN of the IoT Device Advisor resource. This can be SuiteDefinition ARN or SuiteRun ARN.
      */
     resourceArn: AmazonResourceName;
   }
@@ -388,6 +402,7 @@ declare namespace IotDeviceAdvisor {
   export type LogUrl = string;
   export type MaxResults = number;
   export type ParallelRun = boolean;
+  export type Protocol = "MqttV3_1_1"|"MqttV5"|"MqttV3_1_1_OverWebSocket"|"MqttV5_OverWebSocket"|string;
   export type QualificationReportDownloadUrl = string;
   export type RootGroup = string;
   export type SelectedTestList = UUID[];
@@ -403,7 +418,7 @@ declare namespace IotDeviceAdvisor {
     /**
      * Suite run configuration.
      */
-    suiteRunConfiguration?: SuiteRunConfiguration;
+    suiteRunConfiguration: SuiteRunConfiguration;
     /**
      * The tags to be attached to the suite run.
      */
@@ -422,6 +437,10 @@ declare namespace IotDeviceAdvisor {
      * Starts a Device Advisor test suite run based on suite create time.
      */
     createdAt?: Timestamp;
+    /**
+     * The response of an Device Advisor test endpoint.
+     */
+    endpoint?: Endpoint;
   }
   export type Status = "PASS"|"FAIL"|"CANCELED"|"PENDING"|"RUNNING"|"STOPPING"|"STOPPED"|"PASS_WITH_WARNINGS"|"ERROR"|string;
   export interface StopSuiteRunRequest {
@@ -440,9 +459,9 @@ declare namespace IotDeviceAdvisor {
   export type String256 = string;
   export interface SuiteDefinitionConfiguration {
     /**
-     * Gets Suite Definition Configuration name.
+     * Gets the suite definition name. This is a required parameter.
      */
-    suiteDefinitionName?: SuiteDefinitionName;
+    suiteDefinitionName: SuiteDefinitionName;
     /**
      * Gets the devices configured.
      */
@@ -452,13 +471,21 @@ declare namespace IotDeviceAdvisor {
      */
     intendedForQualification?: IntendedForQualificationBoolean;
     /**
-     * Gets test suite root group.
+     * Verifies if the test suite is a long duration test.
      */
-    rootGroup?: RootGroup;
+    isLongDurationTest?: IsLongDurationTestBoolean;
     /**
-     * Gets the device permission ARN.
+     * Gets the test suite root group. This is a required parameter. For updating or creating the latest qualification suite, if intendedForQualification is set to true, rootGroup can be an empty string. If intendedForQualification is false, rootGroup cannot be an empty string. If rootGroup is empty, and intendedForQualification is set to true, all the qualification tests are included, and the configuration is default.  For a qualification suite, the minimum length is 0, and the maximum is 2048. For a non-qualification suite, the minimum length is 1, and the maximum is 2048. 
      */
-    devicePermissionRoleArn?: AmazonResourceName;
+    rootGroup: RootGroup;
+    /**
+     * Gets the device permission ARN. This is a required parameter.
+     */
+    devicePermissionRoleArn: AmazonResourceName;
+    /**
+     * Sets the MQTT protocol that is configured in the suite definition.
+     */
+    protocol?: Protocol;
   }
   export interface SuiteDefinitionInformation {
     /**
@@ -478,6 +505,14 @@ declare namespace IotDeviceAdvisor {
      */
     intendedForQualification?: IntendedForQualificationBoolean;
     /**
+     * Verifies if the test suite is a long duration test.
+     */
+    isLongDurationTest?: IsLongDurationTestBoolean;
+    /**
+     * Gets the MQTT protocol that is configured in the suite definition.
+     */
+    protocol?: Protocol;
+    /**
      * Date (in Unix epoch time) when the test suite was created.
      */
     createdAt?: Timestamp;
@@ -487,11 +522,11 @@ declare namespace IotDeviceAdvisor {
   export type SuiteDefinitionVersion = string;
   export interface SuiteRunConfiguration {
     /**
-     * Gets the primary device for suite run.
+     * Sets the primary device for the test suite run. This requires a thing ARN or a certificate ARN.
      */
-    primaryDevice?: DeviceUnderTest;
+    primaryDevice: DeviceUnderTest;
     /**
-     * Gets test case list.
+     * Sets test case list.
      */
     selectedTestList?: SelectedTestList;
     /**
@@ -544,11 +579,12 @@ declare namespace IotDeviceAdvisor {
   export type SuiteRunResultCount = number;
   export type SuiteRunStatus = "PASS"|"FAIL"|"CANCELED"|"PENDING"|"RUNNING"|"STOPPING"|"STOPPED"|"PASS_WITH_WARNINGS"|"ERROR"|string;
   export type SuiteRunsList = SuiteRunInformation[];
+  export type SystemMessage = string;
   export type TagKeyList = String128[];
   export type TagMap = {[key: string]: String256};
   export interface TagResourceRequest {
     /**
-     * The resource ARN of an IoT Device Advisor resource.
+     * The resource ARN of an IoT Device Advisor resource. This can be SuiteDefinition ARN or SuiteRun ARN.
      */
     resourceArn: AmazonResourceName;
     /**
@@ -596,8 +632,38 @@ declare namespace IotDeviceAdvisor {
      * Provides test case run failure result.
      */
     failure?: Failure;
+    /**
+     *  Provides the test scenarios for the test case run. 
+     */
+    testScenarios?: TestCaseScenariosList;
   }
   export type TestCaseRuns = TestCaseRun[];
+  export interface TestCaseScenario {
+    /**
+     * Provides test case scenario ID.
+     */
+    testCaseScenarioId?: TestCaseScenarioId;
+    /**
+     * Provides test case scenario type. Type is one of the following:   Advanced   Basic  
+     */
+    testCaseScenarioType?: TestCaseScenarioType;
+    /**
+     * Provides the test case scenario status. Status is one of the following:    PASS: Test passed.    FAIL: Test failed.    PENDING: Test has not started running but is scheduled.    RUNNING: Test is running.    STOPPING: Test is performing cleanup steps. You will see this status only if you stop a suite run.    STOPPED Test is stopped. You will see this status only if you stop a suite run.    PASS_WITH_WARNINGS: Test passed with warnings.    ERORR: Test faced an error when running due to an internal issue.  
+     */
+    status?: TestCaseScenarioStatus;
+    /**
+     * Provides test case scenario failure result.
+     */
+    failure?: Failure;
+    /**
+     * Provides test case scenario system messages if any.
+     */
+    systemMessage?: SystemMessage;
+  }
+  export type TestCaseScenarioId = string;
+  export type TestCaseScenarioStatus = "PASS"|"FAIL"|"CANCELED"|"PENDING"|"RUNNING"|"STOPPING"|"STOPPED"|"PASS_WITH_WARNINGS"|"ERROR"|string;
+  export type TestCaseScenarioType = "Advanced"|"Basic"|string;
+  export type TestCaseScenariosList = TestCaseScenario[];
   export interface TestResult {
     /**
      * Show each group of test results.
@@ -609,7 +675,7 @@ declare namespace IotDeviceAdvisor {
   export type UUID = string;
   export interface UntagResourceRequest {
     /**
-     * The resource ARN of an IoT Device Advisor resource.
+     * The resource ARN of an IoT Device Advisor resource. This can be SuiteDefinition ARN or SuiteRun ARN.
      */
     resourceArn: AmazonResourceName;
     /**
@@ -627,7 +693,7 @@ declare namespace IotDeviceAdvisor {
     /**
      * Updates a Device Advisor test suite with suite definition configuration.
      */
-    suiteDefinitionConfiguration?: SuiteDefinitionConfiguration;
+    suiteDefinitionConfiguration: SuiteDefinitionConfiguration;
   }
   export interface UpdateSuiteDefinitionResponse {
     /**
@@ -639,7 +705,7 @@ declare namespace IotDeviceAdvisor {
      */
     suiteDefinitionArn?: AmazonResourceName;
     /**
-     * Suite definition name of the updated test suite.
+     * Updates the suite definition name. This is a required parameter.
      */
     suiteDefinitionName?: SuiteDefinitionName;
     /**
