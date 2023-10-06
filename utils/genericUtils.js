@@ -1,4 +1,4 @@
-function getRndInteger(minimum, maximum) {
+function getRandInteger(minimum, maximum) {
   return Math.floor(Math.random() * (maximum - minimum)) + minimum;
 }
 
@@ -31,7 +31,7 @@ const getRemoteData = function (url) {
 };
 
 module.exports = {
-  getRndInteger,
+  getRandInteger,
   toTitleCase,
   isObjectEmpty,
   getRemoteData,

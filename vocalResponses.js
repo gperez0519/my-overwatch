@@ -9,7 +9,7 @@ const responses = {
   GREETING_PERSONALIZED_DISPLAY: `Junkrat, come on, you can't bury your treasure behind the bar. What is wrong with you? Uh, okay. Whatever, Oh hey there ${nickName}! Don't mind him, he can be a little weird sometimes. Welcome to Blizzard Tavern! You must be exhausted, drinks are on me!`,
   GREETING_PERSONALIZED_II_DISPLAY: `Bastion, can you do me a favor and bring me those boxes? Wait, what? Bastion, I don't speak that language. Is anyone a translator in here? You know what, nevermind. ${nickName}, I'm so glad you are here. Welcome to Blizzard Tavern! I bet you could use a drink. I could as well.`,
   GREETING_PERSONALIZED_III_DISPLAY: `Genji, we don't serve Ramen here, where did you get Ramen from? Actually, you know what, I don't want to know. Hey ${nickName}, Welcome to Blizzard Tavern! You must be exhausted, drinks are on me!`,
-  ERROR_PROMPT: `My apologies, my data analysis unit has malfunctioned there for a second. If this continues to occur, send us an email at ultrium dev at gmail.com, that is <say-as interpret-as='spell-out'>ultriumdev@gmail.com</say-as>`,
+  ERROR_PROMPT: `My apologies, my data analysis unit has malfunctioned <emphasis level='strong'>there</emphasis> for a second. If this continues to occur, send us an email at ultrium dev at gmail.com, that is <say-as interpret-as='spell-out'>ultriumdev@gmail.com</say-as>`,
   ERROR_PROMPT_DISPLAY: `My apologies, my data analysis unit has malfunctioned there for a second. If this continues to occur, send us an email at ultriumdev@gmail.com.`,
   HELP_PROMPT: `Sure, we have a couple of features in this skill to assist you. However, if you are experiencing any issues with the skill, please let us know by sending us an email at ultriumdev@gmail.com, that is <say-as interpret-as='spell-out'>ultriumdev@gmail.com</say-as>. In any case, here are the options,`,
   HELP_PROMPT_DISPLAY: `Sure, we have a couple of features in this skill to assist you. However, if you are experiencing any issues with the skill, please let us know by sending us an email at ultriumdev@gmail.com. In any case, here are the options,`,
@@ -47,6 +47,7 @@ const responses = {
   OVERWATCH_HERO_SERVICE_UNAVAILABLE_DISPLAY:
     "Oh no! The Overwatch Hero service is not available at the moment. Please try again later. If this continues to occur, send us an email at ultriumdev@gmail.com.",
   OVERWATCH_STATS_NOT_AVAILABLE: `Interesting, I don't believe you have played any games just yet. Make sure you login to Overwatch and start playing silly.`,
+  PRIVATE_PROFILE_ISSUE: `I would love to tell you how your Overwatch progress is going but it seems your profile is private. You should set your profile public so my analysis is able to retrieve your statistics. In order to set your profile to public, open the Overwatch game, click on Options, click Social and toggle the arrow for Career Profile Visibility to Public. When you exit the game, I should be able to retrieve your statistics thereafter.`,
   FALLBACK_PROMPT: `Sorry, I could not recognize the option that you are referring to.`,
   PLEASE_WAIT: "Please wait while I try to retrieve that profile information",
   PLACEMENTS_NOT_COMPLETE:

@@ -1,4 +1,5 @@
 const { isObjectEmpty } = require("./genericUtils");
+const xray = require("x-ray");
 
 function getHeroInfo(heroName, heroRole, heroes) {
   try {
@@ -133,8 +134,119 @@ function getPlayerRank(heroType) {
   return outputSpeech;
 }
 
+async function getStats(battletag) {
+  let playerStats = {};
+  let mostPlayedQP = "";
+  let mostPlayedComp = "";
+  let gamesWon = "";
+  let gamesLost = "";
+
+  try {
+    const x = xray();
+
+    // Most played hero in QP
+    await x(
+      `https://overwatch.blizzard.com/en-us/career/${battletag}/`,
+      ".quickPlay-view .Profile-progressBar-title"
+    ).then((playerData) => {
+      if (playerData) {
+        mostPlayedQP = playerData;
+      }
+    });
+
+    // Append most played qp to the player stats.
+    playerStats = {
+      stats: {
+        ...playerStats.stats,
+        mostPlayedQP,
+      },
+    };
+
+    // Most played hero in competitive
+    await x(
+      `https://overwatch.blizzard.com/en-us/career/${battletag}/`,
+      ".competitive-view .Profile-progressBar-title"
+    ).then((playerData) => {
+      if (playerData) {
+        mostPlayedComp = playerData;
+      }
+    });
+
+    // Append the most played hero in competitive stat to the player stats.
+    playerStats = {
+      stats: {
+        ...playerStats.stats,
+        mostPlayedComp,
+      },
+    };
+
+    // Get games won
+    await x(
+      `https://overwatch.blizzard.com/en-us/career/${battletag}/`,
+      ".option-0 .category:nth-child(3) .stat-item:nth-child(4) .value"
+    ).then((playerData) => {
+      if (playerData) {
+        gamesWon = playerData;
+      }
+    });
+
+    // Append the games won to the player stats.
+    playerStats = {
+      stats: {
+        ...playerStats.stats,
+        gamesWon,
+      },
+    };
+
+    // Get games lost
+    await x(
+      `https://overwatch.blizzard.com/en-us/career/${battletag}/`,
+      ".option-0 .category:nth-child(3) .stat-item:nth-child(5) .value"
+    ).then((playerData) => {
+      if (playerData) {
+        gamesLost = playerData;
+      }
+    });
+
+    // Append the games lost stat to the player stats.
+    playerStats = {
+      stats: {
+        ...playerStats.stats,
+        gamesLost,
+      },
+    };
+  } catch (err) {
+    console.log("Profile is possibly private! Make your profile public.");
+    console.log("Error caught from getStats func: ", err);
+    playerStats = {
+      error: "Profile is possibly private! Make your profile public.",
+      stats: {
+        ...playerStats.stats,
+      },
+    };
+  }
+
+  let everyStatEmpty = Object.values(playerStats.stats).every(
+    (stat) => stat === ""
+  );
+
+  // If every stat is empty odds are the profile is private.
+  if (everyStatEmpty) {
+    playerStats = {
+      error: "Profile is possibly private! Make your profile public.",
+      stats: {
+        ...playerStats.stats,
+      },
+    };
+  }
+
+  console.log(`Player stats before return: `, playerStats);
+  return playerStats;
+}
+
 module.exports = {
   getHeroInfo,
   getBestHeroForComp,
   getPlayerRank,
+  getStats,
 };

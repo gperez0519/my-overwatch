@@ -5,11 +5,15 @@ const momentTZ = require("moment-timezone");
 const teamInfo = require("./TeamListData.json");
 const heroes = require("./OverwatchHeroes.json");
 const {
-  getRndInteger,
+  getRandInteger,
   toTitleCase,
   isObjectEmpty,
 } = require("./utils/genericUtils");
-const { getHeroInfo, getBestHeroForComp } = require("./utils/heroUtils");
+const {
+  getHeroInfo,
+  getBestHeroForComp,
+  getStats,
+} = require("./utils/heroUtils");
 const { getPersistenceAdapter } = require("./utils/persistanceUtils");
 const { configureAndReturnNextOptionSet } = require("./utils/patronUtils");
 
@@ -253,13 +257,13 @@ const LaunchRequestHandler = {
         GREETING_PERSONALIZED_III_DISPLAY.replace("Welcome", "Welcome back");
     }
 
-    // default welcome message
+    // Default welcome message
     let welcomeText = `${responses.DOOR_OPEN_AUDIO} ${responses.ROWDY_BAR_AMBIANCE_AUDIO} ${GREETING_PERSONALIZED} ${responses.POUR_DRINK_AUDIO} Cheers, my friend! ${responses.GLASS_CLINK_AUDIO} ${responses.ANYTHING_ELSE} ${options.optionResponse}`;
 
     // Get a random number between 1 and 3
-    let randomChoice = getRndInteger(1, 4);
+    let randomChoice = getRandInteger(1, 4);
 
-    // return a random welcome message to ensure human like interaction.
+    // Return a random welcome message to ensure human like interaction.
     try {
       if (randomChoice == 1) {
         welcomeText = `${responses.DOOR_OPEN_AUDIO} ${responses.ROWDY_BAR_AMBIANCE_AUDIO} ${GREETING_PERSONALIZED} ${responses.POUR_DRINK_AUDIO} Cheers, my friend! ${responses.GLASS_CLINK_AUDIO} ${responses.ANYTHING_ELSE} ${options.optionResponse}`;
@@ -278,6 +282,7 @@ const LaunchRequestHandler = {
       );
     }
 
+    // If the user doesn't say anything the system will reprompt and this is the custom message that reprompts user
     let rePromptText = `Are you going to stare at me or do you want to choose? ${responses.ANYTHING_ELSE} ${options.optionResponse}`;
 
     return handlerInput.responseBuilder
@@ -384,167 +389,98 @@ const GetMyStatsIntentHandler = {
         nickName = sessionAttributes["nickName"];
       }
 
-      let stats = null;
-      let mostPlayed = null;
-
       try {
-        // loop through rest of platforms.
-        for (const platform in platforms) {
-          // get all stats for the given user
-          stats = await ow.getAllStats(battletag, platforms[platform]);
+        // Retrieve player stats from my new xray scrubber of Overwatch 2 site.
+        await getStats(battletag)
+          .then((playerStats) => {
+            if (playerStats.error) {
+              outputSpeech = responses.PRIVATE_PROFILE_ISSUE;
+              displayText = responses.PRIVATE_PROFILE_ISSUE;
+            } else {
+              outputSpeech = `Data analysis complete, ${nickName}, here is what I see.`;
 
-          // get most played heroes per given user
-          mostPlayed = await ow.getMostPlayed(battletag, platforms[platform]);
-
-          break;
-        }
-
-        // Check if stats are retrieved for the player
-        if (isObjectEmpty(stats)) {
-          outputSpeech = " " + responses.OVERWATCH_STATS_NOT_AVAILABLE;
-          displayText = responses.OVERWATCH_STATS_NOT_AVAILABLE;
-        } else {
-          outputSpeech = `${nickName},`;
-
-          // Get the players current level and prestige.
-          outputSpeech += ` you are currently level ${stats.level} ${
-            stats.prestige ? `at prestige ${stats.prestige}` : ``
-          } .`;
-
-          if (stats.prestige != "") {
-            if (stats.prestige > 3) {
-              outputSpeech += ` Whoa, a veteran of Overwatch? Very cool!`;
-            }
-          }
-
-          // Check if we retrieved data for the most played heroes
-          if (!isObjectEmpty(mostPlayed)) {
-            console.log("All stats data payload: ", JSON.stringify(stats));
-            console.log(
-              "Most played data payload: ",
-              JSON.stringify(mostPlayed)
-            );
-
-            let quickPlayHero = Object.keys(mostPlayed.quickplay)[0];
-
-            // Tell the player about their most played hero in Quick Play.
-            outputSpeech += ` It seems you really enjoy playing ${toTitleCase(
-              quickPlayHero
-            )} in Quickplay. `;
-
-            if (stats.heroStats.quickplay[quickPlayHero].game.win_percentage) {
-              // Tell the player about the most played hero's win percentage.
-              outputSpeech += `Your current win percentage with this hero in Quickplay is ${stats.heroStats.quickplay[quickPlayHero].game.win_percentage}.`;
-            }
-
-            // Tell the player about their combat weapon accuracy for competitive if it exists
-            if (
-              stats.heroStats.quickplay[quickPlayHero].combat.weapon_accuracy
-            ) {
-              let quickPlayHeroWeaponAccuracy =
-                stats.heroStats.quickplay[quickPlayHero].combat.weapon_accuracy;
-
-              outputSpeech += ` Analysis shows your weapon accuracy in Quickplay with ${toTitleCase(
-                quickPlayHero
-              )} is ${quickPlayHeroWeaponAccuracy}! ${
-                parseInt(quickPlayHeroWeaponAccuracy) > "50%"
-                  ? `That is actually really impressive!`
-                  : `I think you might want to practice your aim more in training to increase your chances of success.`
-              }`;
-            }
-
-            // Check if player has ranked otherwise let them know they need to place to know their rank.
-            if (!isObjectEmpty(stats.rank)) {
-              outputSpeech += ` Lets see here about your rank. Ahh, interesting,`;
-
-              // Get the tank ranking if placed otherwise don't append response.
-              if (!!stats.rank.tank) {
-                outputSpeech += ` For the tank role ${getPlayerRank(
-                  stats.rank.tank
-                )},`;
-              }
-
-              // Get the damage ranking if placed otherwise don't append response.
-              if (!!stats.rank.damage) {
-                outputSpeech += ` For the damage role ${getPlayerRank(
-                  stats.rank.damage
-                )},`;
-              }
-
-              // Get the healer ranking if placed otherwise don't append response.
-              if (!!stats.rank.healer) {
-                outputSpeech += ` For the healer role ${getPlayerRank(
-                  stats.rank.healer
-                )},`;
-              }
-
-              // Check if there are stats for competitive, if there aren't the player doesn't compete
-              if (!isObjectEmpty(stats.heroStats.competitive)) {
-                let mostPlayedCompetitiveHero = Object.keys(
-                  mostPlayed.competitive
-                )[0];
-                let statsCompHeroWinPercentage =
-                  stats.heroStats.competitive[mostPlayedCompetitiveHero].game
-                    .win_percentage;
-
-                outputSpeech += ` Also, it seems you really enjoy playing ${toTitleCase(
-                  mostPlayedCompetitiveHero
-                )} in Competitive. `;
-                outputSpeech += `Your current win percentage with this hero in Competitive is ${statsCompHeroWinPercentage}.`;
-
-                // Check to see if the hero in competitive the user plays the most has the best win percentage, if not suggest the hero with better win percentage.
-                let suggestedCompHero = getBestHeroForComp(
-                  mostPlayedCompetitiveHero,
-                  statsCompHeroWinPercentage,
-                  stats.heroStats.competitive
+              // Check if we retrieved data for the most played heroes
+              if (!isObjectEmpty(playerStats.stats.mostPlayedQP)) {
+                console.log(
+                  "All stats data payload: ",
+                  JSON.stringify(playerStats)
+                );
+                console.log(
+                  "Most played data payload: ",
+                  JSON.stringify(playerStats.stats.mostPlayedQP)
                 );
 
-                if (suggestedCompHero !== null) {
-                  outputSpeech += ` Fascinating, there is a tip here in my data analysis. It says that based on your win percentage with this hero in competitive, you will have more success with ${toTitleCase(
-                    suggestedCompHero.hero
-                  )} since your win percentage with that hero in competitive is ${
-                    suggestedCompHero.win_percentage
-                  }.`;
-                }
+                // Tell the player about their most played hero in Quick Play.
+                outputSpeech += ` It seems you really enjoy playing ${playerStats.stats.mostPlayedQP} in Quickplay. `;
 
-                // Tell the player about their combat weapon accuracy for competitive if it exists.
-                if (
-                  stats.heroStats.competitive[mostPlayedCompetitiveHero].combat
-                    .weapon_accuracy &&
-                  suggestedCompHero !== null
-                ) {
-                  let statsCompHeroWeaponAccuracy =
-                    stats.heroStats.competitive[mostPlayedCompetitiveHero]
-                      .combat.weapon_accuracy;
+                // TODO: ADD WIN PERCENTAGE STAT TO GET STATS XRAY SCRUBBER UTIL FUNCTION.
+                // if (
+                //   stats.heroStats.quickplay[quickPlayHero].game.win_percentage
+                // ) {
+                //   // Tell the player about the most played hero's win percentage.
+                //   outputSpeech += `Your current win percentage with this hero in Quickplay is ${stats.heroStats.quickplay[quickPlayHero].game.win_percentage}.`;
+                // }
 
-                  outputSpeech += ` Analysis shows your weapon accuracy in competitive with ${toTitleCase(
-                    suggestedCompHero.hero
-                  )} is ${statsCompHeroWeaponAccuracy}! ${
-                    parseInt(statsCompHeroWeaponAccuracy) > "50%"
-                      ? `That is actually really impressive!`
-                      : `I think you might want to practice your aim more in training to increase your chances of success.`
-                  }`;
-                }
+                // TODO: ADD WEAPON ACCURACY STAT TO GET STATS XRAY SCRUBBER UTIL FUNCTION.
+                // Tell the player about their combat weapon accuracy for competitive if it exists
+                // if (
+                //   stats.heroStats.quickplay[quickPlayHero].combat
+                //     .weapon_accuracy
+                // ) {
+                //   let quickPlayHeroWeaponAccuracy =
+                //     stats.heroStats.quickplay[quickPlayHero].combat
+                //       .weapon_accuracy;
+
+                //   outputSpeech += ` Analysis shows your weapon accuracy in Quickplay with ${toTitleCase(
+                //     quickPlayHero
+                //   )} is ${quickPlayHeroWeaponAccuracy}! ${
+                //     parseInt(quickPlayHeroWeaponAccuracy) > "50%"
+                //       ? `That is actually really impressive!`
+                //       : `I think you might want to practice your aim more in training to increase your chances of success.`
+                //   }`;
+                // }
               }
-            } else {
-              outputSpeech += ` ${responses.PLACEMENTS_NOT_COMPLETE}`;
-              console.log("Player has not placed in rank yet.");
-            }
-          }
 
-          // Once all stats are retrieved and appended lets append the options again for the user to choose what they want to do thereafter.
-          outputSpeech += ` ${responses.ANYTHING_ELSE} ${options}`;
-          displayText = outputSpeech;
-        }
+              // APPEND MOST PLAYED COMP
+              if (!isObjectEmpty(playerStats.stats.mostPlayedComp)) {
+                outputSpeech += `You also seem to be fond of ${playerStats.stats.mostPlayedQP} in Competitive. That hero is quite fun to play as, I can attest to that. `;
+              }
+              // APPEND GAMES WON
+
+              if (!isObjectEmpty(playerStats.stats.gamesWon)) {
+                outputSpeech += `Over the course of your battle <emphasis level='strong'>career</emphasis>, you have won ${
+                  playerStats.stats.gamesWon
+                } games. ${
+                  playerStats.stats.gamesWon > 200
+                    ? "Fascinating, you seem to be quite the veteran. "
+                    : "It seems you are quite new to battlefield still. Keep kicking butt out there. "
+                }`;
+              }
+
+              // APPEND GAMES LOST
+              if (!isObjectEmpty(playerStats.stats.gamesLost)) {
+                outputSpeech += `Lastly, you have suffered over ${
+                  playerStats.stats.gamesLost
+                } losses. ${
+                  playerStats.stats.gamesWon > playerStats.stats.gamesLost
+                    ? "Although, it seems your win percentage is higher. Very nice, you are quite a strong warrior I see."
+                    : "Your losses seem to be greater than your wins, you should learn where your weaknesses lie and try to improve those areas."
+                }`;
+              }
+
+              // Once all stats are retrieved and appended lets append the options again for the user to choose what they want to do thereafter.
+              outputSpeech += ` ${responses.ANYTHING_ELSE} ${options.optionResponse}`;
+              displayText = outputSpeech;
+            }
+          })
+          .catch((err) => {
+            outputSpeech = " " + responses.OVERWATCH_STATS_NOT_AVAILABLE;
+            displayText = responses.OVERWATCH_STATS_NOT_AVAILABLE;
+          });
       } catch (error) {
         console.log(
           `User experienced the following error when attempt to retrieve stats: ${error.message}`
         );
-        if (error.message.includes("PROFILE_PRIVATE")) {
-          outputSpeech = `${nickName}. I would love to tell you how your Overwatch progress is going but it seems your profile is private. You should set your profile public so my analysis is able to retrieve your statistics. In order to set your profile to public, open the Overwatch game, click on Options, click Social and toggle the arrow for Career Profile Visibility to Public. When you exit the game, I should be able to retrieve your statistics thereafter.`;
-        } else {
-          outputSpeech = `${nickName}. I would love to tell you how your Overwatch progress is going but it seems my analyzer is not functioning at the moment. Please ask me about your stats again later.`;
-        }
 
         displayText = outputSpeech;
       }
@@ -559,8 +495,8 @@ const GetMyStatsIntentHandler = {
       .withStandardCard(
         nickName ? ` Profile Analysis` : `Your Profile Analysis`,
         displayText,
-        stats.iconURL ? stats.iconURL : "",
-        stats.iconURL ? stats.iconURL : ""
+        "",
+        ""
       )
       .getResponse();
   },
@@ -1152,7 +1088,7 @@ const RandomRoleHeroGeneratorIntentHandler = {
     try {
       if (heroes.role[0][role]) {
         // Generate random choice
-        randomChoice = getRndInteger(0, heroes.role[0][role].length);
+        randomChoice = getRandInteger(0, heroes.role[0][role].length);
 
         // Get the hero name from random choice
         let heroName = heroes.role[0][role][randomChoice].name;
